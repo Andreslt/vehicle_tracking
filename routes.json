@@ -1,0 +1,80 @@
+{
+    "routes": [
+        {
+            "id": 0,
+            "title": "Default",
+            "zone": "SAMPLE",
+            "mapProps": {
+                "kml": "http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml",
+                "defLat": 41.9,
+                "defLong": -87.624,
+                "defZoom": 9
+            },
+            "createdAt": 0,
+            "updatedAt": 0
+        },
+        {
+            "id": 1,
+            "title": "Puerta de Oro 1",
+            "zone": "ZONE 1",
+            "mapProps": {
+                "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/KML1.kml",
+                "defLat": 11.0182277,
+                "defLong": -74.941609,
+                "defZoom": 13
+            },
+            "createdAt": 0,
+            "updatedAt": 0
+        },        
+        
+        {
+            "id": 2,
+            "title": "Puerta de Oro 2",
+            "zone": "ZONE 2",
+            "mapProps": {
+                "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/KML2.kml",
+                "defLat": 11.0199172,
+                "defLong": -74.8716309,
+                "defZoom": 13
+            },
+            "createdAt": 0,
+            "updatedAt": 0
+        },
+        {
+            "id": 3,
+            "title": "Puerta de Oro 4",
+            "zone": "ZONE 3",
+            "mapProps": {
+                "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/KML3.kml",
+                "defLat": 11.001004,
+                "defLong": -74.950761,
+                "defZoom": 13
+            },
+            "createdAt": 0,
+            "updatedAt": 0
+        }
+    ],
+    "vehicles": [
+        {
+            "id": 1,
+            "type": "Truck 1",
+            "active": true,
+            "gps": [
+                {
+                    "lat": 0,
+                    "long": 0,
+                    "timestamp": 9999
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "type": "Truck 2",
+            "timestamp": 8888,
+            "gps": {
+                "lat": 0,
+                "long": 0
+            }
+        }
+    ]
+}
