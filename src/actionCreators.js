@@ -14,9 +14,22 @@ const printRoute = (route) => {
   return async dispatch => {
     dispatch({
       type: "PRINT_ROUTE",
-      mapProps: route.mapProps
+      mapProps: route.mapProps,
+      currentRoute: route.id
+    })
+    dispatch(liveRoadmap(route.id))
+  };
+}
+
+const liveRoadmap = (route) => {
+  return async dispatch => {
+    const response = await(axios.get(`http://localhost:8000/roadmap/${route}`));
+    dispatch({
+      type: "LIVE_ROADMAP",
+      roadmap: response.data
     })
   };
 }
 
-export { fetchRoutes, printRoute };
+
+export { fetchRoutes, printRoute, liveRoadmap };

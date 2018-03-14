@@ -33,13 +33,15 @@ class Sidebar extends Component {
         >
           {this.props.routes.map(route => (            
             <Panel eventKey={route.id} key={route.id}>
-            {console.log('route->', route)}
               <Panel.Heading>
-                <Panel.Title toggle>{route.zone}</Panel.Title>
-              </Panel.Heading>
-              <Panel.Body collapsible
+                <Panel.Title 
+                toggle
                 onClick={() => this.props.printRoute(route)}
-              >{route.title}</Panel.Body>
+                >{route.title}</Panel.Title>
+              </Panel.Heading>
+              {/* <Panel.Body collapsible
+                onClick={() => this.props.printRoute(route)}
+              >{route.title}</Panel.Body> */}
             </Panel>
           ))}
         </PanelGroup>
@@ -51,7 +53,8 @@ class Sidebar extends Component {
 const mapStateToProps = state => {
   return {
     routes: state.routes.data,
-    printRoute: state.printRoute
+    printRoute: state.printRoute,
+    currentRoute: state.currentRoute
   }
 }
 

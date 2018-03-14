@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class Snippet extends Component {
     render() {
-        return (<h1> Hello World </h1>)
+        return (<h6> Hello World </h6>)
     }
 }
 
