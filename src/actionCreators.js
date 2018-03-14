@@ -1,4 +1,5 @@
 import axios from 'axios';
+// import { watcher, fire } from './firebase-client'
 
 const fetchRoutes = () => {
   return async dispatch => {
@@ -17,7 +18,7 @@ const printRoute = (route) => {
       mapProps: route.mapProps,
       currentRoute: route.id
     })
-    dispatch(liveRoadmap(route.id))
+    // dispatch(liveRoadmap(route.id))
   };
 }
 

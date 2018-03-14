@@ -8,6 +8,7 @@
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "express": "^4.16.2",
+    "firebase": "^4.11.0",
     "firebase-admin": "^5.10.0",
     "json-server": "^0.12.1",
     "react": "^16.2.0",

@@ -17,7 +17,8 @@ exports.addCollection = (collection, object) => {
 
 exports.query = async (route, limit, cb) => {
   let routeObject = {};
-  admin.database().ref(route).limitToLast(limit).on('child_added', async (snapshot) => {
+  admin.database().ref(route).limitToLast(limit).on('value', async (snapshot) => {
+    console.log('***** snapshot-> ', snapshot.val());
     routeObject[snapshot.val().id] = snapshot.val().mapProps;
     const historic = Object.keys(routeObject).length;
     if (historic >= limit) { // make sure that the historic amount of point is higher than requested limit

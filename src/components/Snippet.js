@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 
 class Snippet extends Component {
     render() {
-        return (<h6> Hello World </h6>)
+        return (
+            <div>
+                <b>Coordenadas</b><br/>
+                Latitud: {this.props.point.latitude}<br/>
+                Longitud: {this.props.point.longitude}
+            </div>
+        )
     }
 }
 

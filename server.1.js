@@ -2,42 +2,6 @@ var socket = require('socket.io-client')('http://localhost:8000');
 
 const v_position = [
   {
-    "id": 1,
-    "title": "Point 1",
-    "mapProps": {
-      "latitude": 11.0182277,
-      "longitude": -74.941609,
-      "zoom": 13
-    },
-  },
-  {
-    "id": 2,
-    "title": "Point 2",
-    "mapProps": {
-      "latitude": 11.017637959751099,
-      "longitude": -74.94108328703305,
-      "zoom": 13
-    },
-  },
-  {
-    "id": 3,
-    "title": "Point 3",
-    "mapProps": {
-      "latitude": 11.017406275758542,
-      "longitude": -74.94087943914792,
-      "zoom": 13
-    }
-  },
-  {
-    "id": 4,
-    "title": "Point 4",
-    "mapProps": {
-      "latitude": 11.017153529376804,
-      "longitude": -74.94067559126279,
-      "zoom": 13
-    }
-  },
-  {
     "id": 5,
     "title": "Point 5",
     "mapProps": {
@@ -76,7 +40,7 @@ function signalEmit() {
     if (i < v_position.length) {
       signalEmit();
     }
-  }, 2000)
+  }, 3000)
 }
 
 console.log('EXECUTING ...')
