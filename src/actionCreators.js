@@ -18,7 +18,6 @@ const printRoute = (route) => {
       mapProps: route.mapProps,
       currentRoute: route.id
     })
-    // dispatch(liveRoadmap(route.id))
   };
 }
 

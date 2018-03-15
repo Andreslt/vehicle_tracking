@@ -16,7 +16,7 @@ class Content extends Component {
     cuRef.limitToLast(5).on('value', snap => {
       const points = snap.val()
       this.setState({
-        roadmap: points // Object.keys(points).map(key => points[key])
+        roadmap: points
       })
     })
   }
@@ -25,9 +25,7 @@ class Content extends Component {
   render() {
     return (
       <div className="content">
-        <p>Hello Content</p>
         <MapComponent {...this.props} roadmap={this.state.roadmap} />
-        <div>HELLOUU</div>
       </div>
     )
   }
