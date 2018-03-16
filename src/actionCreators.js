@@ -1,4 +1,3 @@
-import axios from 'axios';
 import fB from './firebase-client';
 
 export const fetchRoutes = () => {

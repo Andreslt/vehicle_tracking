@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Sidebar from './components/Sidebar';
 import Content from './components/Content';
-import * as firebase from 'firebase';
 
 class App extends Component {
   render() {

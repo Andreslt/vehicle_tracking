@@ -54,5 +54,45 @@
         "latitude": 11.01679547163112,
         "longitude": -74.93982801321408,
         "timestamp": 1521145318473
-    }
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.017041773990762,
+        "longitude": -74.93950393754409,
+        "timestamp": 1521145318473
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.01731558266517,
+        "longitude": -74.9390747841017,
+        "timestamp": 1521145318473
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.017631515434443,
+        "longitude": -74.9385705288069,
+        "timestamp": 1521145318473
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.017831606012889,
+        "longitude": -74.93796971398757,
+        "timestamp": 1521145318473
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.01802116538275,
+        "longitude": -74.93747618752883,
+        "timestamp": 1521145318473
+    }                    
 ]

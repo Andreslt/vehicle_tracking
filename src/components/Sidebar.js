@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { PanelGroup, Panel } from 'react-bootstrap';
 import { fetchRoutes, printRoute, printRouteTrail } from '../actionCreators';
 import { connect } from 'react-redux';
-import fB from '../firebase-client';
-
-const state = {}
 
 class Sidebar extends Component {
   constructor(props, context) {
