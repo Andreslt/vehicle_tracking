@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "type": "truck",
+    "active": true,
+    "created_at": "15/03/2018",
+    "updated_at": "15/03/2018"
+  },
+  {
+    "id": 2,
+    "type": "truck",
+    "active": true,
+    "created_at": "15/03/2018",
+    "updated_at": "15/03/2018"
+  },
+  {
+    "id": 3,
+    "type": "train",
+    "active": true,
+    "created_at": "15/03/2018",
+    "updated_at": "15/03/2018"
+  }
+]

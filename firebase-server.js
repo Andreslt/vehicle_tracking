@@ -3,16 +3,20 @@ const serviceAccount = require("./firebase.json");
 
 require('dotenv').load();
 
+const dbURL = "https://ss-smtracking.firebaseio.com"
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: process.env.databaseURL
+  databaseURL: dbURL
 });
 
-const dbRef = admin.database().refFromURL(process.env.databaseURL);
+const dbRef = admin.database().refFromURL(dbURL);
 
-exports.addCollection = (collection, object) => {
+exports.addCollection = (collection, data) => {
   const colRef = dbRef.child(collection);
-  return colRef.push().set(object);
+  data.forEach(chunk => {
+    return colRef.push().set(chunk);
+  });
 }
 
 exports.query = async (route, limit, cb) => {

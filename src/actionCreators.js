@@ -1,35 +1,36 @@
 import axios from 'axios';
-// import { watcher, fire } from './firebase-client'
+import fB from './firebase-client';
 
-const fetchRoutes = () => {
+export const fetchRoutes = () => {
   return async dispatch => {
-    const response = await(axios.get('http://localhost:3001/routes'));
-    dispatch({
-      type: "FETCH_ROUTES",
-      routes: response.data
+    fB.child('routes').on('value', snap => {
+      dispatch({
+        type: "FETCH_ROUTES",
+        payload: snap.val()
+      })
     })
   };
 }
 
-const printRoute = (route) => {
+export const printRoute = (route) => {
   return async dispatch => {
     dispatch({
       type: "PRINT_ROUTE",
-      mapProps: route.mapProps,
-      currentRoute: route.id
+      payload: {
+        map: route.mapProps,
+        currentRoute: route.id
+      }
     })
   };
 }
 
-const liveRoadmap = (route) => {
-  return async dispatch => {
-    const response = await(axios.get(`http://localhost:8000/roadmap/${route}`));
-    dispatch({
-      type: "LIVE_ROADMAP",
-      roadmap: response.data
+export const printRouteTrail = () => {
+  return dispatch => {
+    fB.child('trails').on('value', snap => {
+      dispatch({
+        type: "PRINT_ROUTE_TRAIL",
+        payload: snap.val()
+      })
     })
-  };
+  }
 }
-
-
-export { fetchRoutes, printRoute, liveRoadmap };

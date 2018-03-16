@@ -1,0 +1,58 @@
+[
+    {
+        "id": "abc1",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.0182277,
+        "longitude": -74.941609,
+        "timestamp": 1521145268972
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.017637959751099,
+        "longitude": -74.94108328703305,
+        "timestamp": 1521145280353
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.017406275758542,
+        "longitude": -74.94087943914792,
+        "timestamp": 1521145288389
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.017153529376804,
+        "longitude": -74.94067559126279,
+        "timestamp": 1521145295758
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.016837596094382,
+        "longitude": -74.94045028570554,
+        "timestamp": 1521145303614
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.01654272472481,
+        "longitude": -74.94026789549252,
+        "timestamp": 1521145311162
+    },
+    {
+        "id": "abc2",
+        "vehicle_id": 1,
+        "route_id": "route_01",
+        "latitude": 11.01679547163112,
+        "longitude": -74.93982801321408,
+        "timestamp": 1521145318473
+    }
+]

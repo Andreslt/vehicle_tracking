@@ -27,15 +27,15 @@ const MapComponent =
     withGoogleMap,
   )(props =>
     <GoogleMap
-      zoom={17}
+      zoom={props.map.zoom}
       center={{ lat: props.map.latitude, lng: props.map.longitude }}
     >
-      {props.roadmap &&
-        Object.keys(props.roadmap).map((point, key) => {
-          const mapProps = props.roadmap[point].mapProps;
+      {!!props.trail &&
+        Object.keys(props.trail).map((point, key) => {
+          const trail = props.trail[point];
           return <Marker
             id={point}
-            position={{ lat: mapProps.latitude, lng: mapProps.longitude }}
+            position={{ lat: trail.latitude, lng: trail.longitude }}
             key={point}
             icon={{
               path: 'M 100 100 L 300 100 L 200 300 z',
@@ -50,10 +50,10 @@ const MapComponent =
           >
             {props.isOpen && props.selectedKey === key && <InfoWindow
               id={key}
-              position={{ lat: mapProps.latitude, lng: mapProps.longitude }}
+              position={{ lat: trail.latitude, lng: trail.longitude }}
               onCloseClick={props.onToggleOpen}
             >
-              <Snippet point={mapProps}/>
+              <Snippet point={trail}/>
             </InfoWindow>}
           </Marker>
         })}
