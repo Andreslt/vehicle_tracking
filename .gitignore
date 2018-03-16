@@ -5,6 +5,7 @@
 
 #Firebase
 firebase.json
+firebase-client.js
 
 # dependencies
 /node_modules
