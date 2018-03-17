@@ -4,13 +4,6 @@
   flex-direction: column;
 }
 
-.App-header {
-  background-color: #222; /*#3ab7aa*/
-  height: 60px;
-  /* padding: 20px; */
-  color: white;
-}
-
 .App-title {
   font-size: 1em;
   margin: 0px;
@@ -19,6 +12,24 @@
 .App-main {
   display: flex;
   flex-direction: row;
+}
+
+html, body, #root, .App {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.App-main {
+  flex: 1;
+}
+
+.content {
+  flex: 1;
 }
 
 @keyframes App-logo-spin {

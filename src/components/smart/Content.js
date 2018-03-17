@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import MapComponent from '../dump/Map';
+import Content from '../dump/Content';
 
-class Content extends Component {
+class ContentContainer extends Component {
 
   render() {
-    return (
-      <div className="content">
-        <MapComponent {...this.props}/>
-      </div>
-    )
+    return ( <Content {...this.props}/>)
   }
 };
 
@@ -21,4 +17,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(Content);
+export default connect(mapStateToProps)(ContentContainer);

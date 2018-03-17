@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import './App.css';
-// import Sidebar from './components/Sidebar';
-// import Content from './components/Content';
-import { Header, Sidebar, Content } from './components/smart';
+import './styles.css';
+
+import { Header, Sidebar, Content } from '../components/smart';
 
 class App extends Component {
   render() {

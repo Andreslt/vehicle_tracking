@@ -1,4 +1,4 @@
-import fB from './firebase-client';
+import fB from './firebase';
 
 export const fetchRoutes = () => {
   return async dispatch => {
