@@ -1,8 +1,7 @@
 import React from "react";
 import { compose, withProps, withStateHandlers } from "recompose";
 import { withScriptjs, withGoogleMap, GoogleMap, KmlLayer, Marker, InfoWindow } from "react-google-maps";
-import Snippet from './Snippet';
-// const FaAnchor = require("react-icons/lib/fa/anchor");
+import Snippet from '../Snippet';
 
 const MapComponent =
   compose(

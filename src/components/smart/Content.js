@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import MapComponent from './Map';
+import MapComponent from '../dump/Map';
 
 class Content extends Component {
 

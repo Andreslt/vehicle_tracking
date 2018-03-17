@@ -4,15 +4,10 @@
   flex-direction: column;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 50px;
-}
-
 .App-header {
-  background-color: #222;
+  background-color: #222; /*#3ab7aa*/
   height: 60px;
-  padding: 20px;
+  /* padding: 20px; */
   color: white;
 }
 
