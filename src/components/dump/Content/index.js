@@ -1,5 +1,6 @@
 import React from 'react';
-import { compose, withProps, withStateHandlers } from "recompose";
+import { compose } from "recompose";
+
 import './styles.css';
 import MapComponent from '../Map';
 

@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
-// import CssBaseline from 'material-ui/CssBaseline';
-
 import './styles.css';
-
 import { Header, Sidebar, Content } from '../components/smart';
+import { compose } from "recompose";
 
-class App extends Component {
-  render() {
+const Main = compose(
+  props => {
     return (
       <div className="App">
-        {/* <CssBaseline /> */}
-        <Header/>
+        <Header />
         <div className="App-main">
           <Sidebar />
           <Content />
         </div>
       </div>
-    );
-  }
-}
+    )
+  })
 
-export default App;
+export default Main
