@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Sidebar from '../dump/Sidebar'
 
 class SidebarContainer extends Component {
-  constructor(props, context) {
+/*   constructor(props, context) {
     super(props, context);
     this.handleSelect = this.handleSelect.bind(this);
 
@@ -20,29 +20,34 @@ class SidebarContainer extends Component {
 
   handleSelect(activeKey) {
     this.setState({ activeKey });
-  }
+  } */
 
   render() {
     return (
-      <div>
-        <Sidebar {...this.props} handleSelect={this.handleSelect} />
-        <button onClick={() => {
-          console.log('1_this.props.realtime-> ', this.state.realtime) // POR QUE NO CAMBIA EL VALOR DE REALTIME
-          this.setState({ realtime: !this.state.realtime })
-          console.log('2_this.props.realtime-> ', this.state.realtime) // <- AQUI ??
-          this.props.printRouteTrail(this.state.realtime)
-        }}>Realtime</button>
-      </div>
+      <Sidebar />
     )
   }
 };
+
+{/* <div>
+{console.log('LISTOOOOOO')}
+<h1>hello</h1>
+{/* <Sidebar {...this.props}/> */}
+{/* <button onClick={() => {
+  console.log('1_this.props.realtime-> ', this.state.realtime) // POR QUE NO CAMBIA EL VALOR DE REALTIME
+  this.setState({ realtime: !this.state.realtime })
+  console.log('2_this.props.realtime-> ', this.state.realtime) // <- AQUI ??
+  this.props.printRouteTrail(this.state.realtime)
+}}>Realtime</button>
+</div> */}
 
 const mapStateToProps = state => {
   return {
     routes: state.routes.data,
     trails: state.trails,
     activeKey: state.activeKey,
-    realtime: state.realtime
+    realtime: state.realtime,
+    selectedTab: 0
   }
 }
 

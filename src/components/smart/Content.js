@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Content from '../dump/Content';
+import Map from '../dump/Map';
 
 class ContentContainer extends Component {
 
   render() {
-    return ( <Content {...this.props}/>)
+    return (
+      <Map {...this.props} />
+    )
   }
 };
 

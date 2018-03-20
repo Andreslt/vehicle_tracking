@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-// import CssBaseline from 'material-ui/CssBaseline';
-
 import './styles.css';
 
-import { Header, Sidebar, Content } from '../components/smart';
+import { Layout, Content, Sidebar } from '../components/smart';
+import dump from '../components/dump';
+const { Header } = dump
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        {/* <CssBaseline /> */}
-        <Header/>
-        <div className="App-main">
-          <Sidebar />
-          <Content />
-        </div>
+        <Layout
+        Header = {"Header"}
+        Sidebar = {Sidebar}
+        Content = {Content}
+        />
       </div>
     );
   }

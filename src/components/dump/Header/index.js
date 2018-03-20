@@ -1,84 +1,121 @@
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import { AppBar, Toolbar, Typography, IconButton, Switch } from 'material-ui';
-import MenuIcon from 'material-ui-icons/Menu';
-import AccountCircle from 'material-ui-icons/AccountCircle';
-import { FormControlLabel, FormGroup } from 'material-ui/Form';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import { compose, withProps, withStateHandlers } from "recompose";
+import classNames from 'classnames';
+import { AppBar, Toolbar, List, Typography, TextField, Divider, Menu, IconButton } from 'material-ui';
+import { MenuIcon, ChevronLeft, ChevronRight } from 'material-ui-icons';
+import { compose, withStateHandlers } from "recompose";
+import Drawer from '../Drawer';
 
-const styles = {
+
+const drawerWidth = 240;
+
+const styles = theme => ({
   root: {
-    background: 'linear-gradient(45deg, rgb(33, 150, 243) 30%, #3ab7aa 90%)', //'#282828'
-    border: 0,
-    color: 'white',
-    // height: 60,
-    // padding: '0 30px',
-    boxShadow: '0 3px 5px 2px rgba(33, 150, 243) 80%',
+    flexGrow: 1,
   },
-  flex: {
-    flex: 1,
+  appFrame: {
+    height: 430,
+    zIndex: 1,
+    overflow: 'hidden',
+    position: 'relative',
+    display: 'flex',
+    width: '100%',
+  },
+  appBar: {
+    position: 'absolute',
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  'appBarShift-left': {
+    marginLeft: drawerWidth,
+  },
+  'appBarShift-right': {
+    marginRight: drawerWidth,
   },
   menuButton: {
-    marginLeft: -12,
+    marginLeft: 12,
     marginRight: 20,
   },
-};
+  hide: {
+    display: 'none',
+  },
+  drawerPaper: {
+    position: 'relative',
+    width: drawerWidth,
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing.unit * 3,
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  'content-left': {
+    marginLeft: -drawerWidth,
+  },
+  'content-right': {
+    marginRight: -drawerWidth,
+  },
+  contentShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  'contentShift-left': {
+    marginLeft: 0,
+  },
+  'contentShift-right': {
+    marginRight: 0,
+  },
+});
 
 const Header = compose(
   withStateHandlers(() => ({
-    auth: true,
-    anchorEl: null
-  }), {
-      handleChange: ({ auth }) => (event, checked) => {
-        return { auth: checked }
-      },
-      handleMenu: ({ anchorEll }) => event =>{
-        console.log('Llamado a _____ handleMenu-> ', event.currentTarget)
-        return { anchorEl: event.currentTarget }
-      },
-      handleClose: ({ anchorEl }) => () => {
-        return { anchorEl: null }
-      }
-    })
+    open: false,
+  }), { })
 )(props => {
-  const { classes, auth, anchorEl  } = props;
-  console.log('anchorEl-> ', anchorEl)
-  const open = Boolean(anchorEl);
-  console.log('open ', open)
+  const { classes, theme, open } = props;
   return (
-      <AppBar 
-      position="static"
-      className={classes.root}
-      >
-        <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="title" color="inherit" className={classes.flex}>
-            SMART TRACKING
-            </Typography>
-          {auth && (
-            <div>
-              <IconButton
-                aria-owns={open ? 'menu-appbar' : null}
-                aria-haspopup="true"
-                onClick={props.handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
+    <div className={classes.root}>
+      <div className={classes.appFrame}>
+        <AppBar
+          className={classNames(classes.appBar, {
+            [classes.appBarShift]: open,
+            [classes['appBarShift-left']]: open,
+          })}
+        >
+          <Toolbar>
+
+          </Toolbar>
+        </AppBar>
+      </div>
+    </div>
   )
-})
+});
 
 Header.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Header);
+export default withStyles(styles, { withTheme: true })(Header);

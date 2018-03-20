@@ -4,7 +4,8 @@ import Header from '../dump/Header'
 class HeaderContainer extends Component {
   render() {
     return (
-      <Header />
+      // <Header />
+      <h1>Header</h1>
     )
   }
 }
