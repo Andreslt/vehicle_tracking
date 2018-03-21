@@ -7,29 +7,17 @@ import MenuIcon from 'material-ui-icons/Menu';
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
 
+import theme from '../../app/theme';
+const layout = theme.layout;
+const themeSelector = 0 // 0: Light, 1: Dark
+
 const drawerWidth = 280;
-
-const LayoutTheme = [
-  {
-      background: "linear-gradient(45deg, rgb(33, 150, 243) 100%, #3ab7aa 90%)",
-      fontColor: "#f50057"
-  },
-  {
-      background: "#282828",
-      fontColor: "#1394ff",
-      tabs: "#eaedf0"
-  },
-
-]
-
-const themeSelector = 1 // 0: Light, 1: Dark
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
+    flex: 1
   },
   appFrame: {
-    // height: 430,    
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
@@ -37,7 +25,7 @@ const styles = theme => ({
     width: '100%',
   },
   appBar: {
-    background: LayoutTheme[themeSelector].background,
+    background: layout[themeSelector].background,
     position: 'absolute',
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
@@ -68,13 +56,15 @@ const styles = theme => ({
     position: 'relative',
     border: 'transparent',
     width: drawerWidth,
+    display: 'flex',
+    flexDirection: 'column',
   },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: '0 8px',
-    backgroundColor: LayoutTheme[themeSelector].background,
+    backgroundColor: layout[themeSelector].cardHeader,
     ...theme.mixins.toolbar,
   },
   content: {
@@ -120,12 +110,6 @@ class Layout extends React.Component {
     this.setState({ open: false });
   };
 
-  handleChangeAnchor = event => {
-    this.setState({
-      anchor: event.target.value,
-    });
-  };
-
   render() {
     const {
       Content,
@@ -153,8 +137,7 @@ class Layout extends React.Component {
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
-        <Divider />
-        <Sidebar/>
+        <Sidebar/>   
       </Drawer>
     );
 
@@ -175,8 +158,8 @@ class Layout extends React.Component {
               [classes.appBarShift]: open,
               [classes[`appBarShift-${anchor}`]]: open,
             })}
-          >
-            <Toolbar disableGutters={!open}>
+          >          
+            <Toolbar disableGutters={!open} style={{position: "relative"}}>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -185,6 +168,7 @@ class Layout extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
+              <Header />
             </Toolbar>
           </AppBar>
           {before}

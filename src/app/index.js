@@ -10,7 +10,7 @@ class App extends Component {
     return (
       <div className="App">
         <Layout
-        Header = {"Header"}
+        Header = {Header}
         Sidebar = {Sidebar}
         Content = {Content}
         />

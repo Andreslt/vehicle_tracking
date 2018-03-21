@@ -1,0 +1,26 @@
+{
+     "layout": [
+        {
+            "background": "rgb(19, 148, 255)",
+            "cardHeader": "rgb(19, 148, 255)",
+            "fontColor": "#f50057",
+            "tabs": "rgb(19, 148, 255)", 
+            "cardBottom": {
+                "background": "rgb(19, 148, 255)",
+                "color": "white",
+                "selected": "#f50057"
+            }
+        },
+        {
+            "background": "#282828",
+            "cardHeader": "#282828",
+            "fontColor": "#1394ff",
+            "tabs": "#eaedf0",
+            "cardBottom": {
+                "background": "#1394ff",
+                "color": "white",
+                "selected": "#f50057"
+            }
+        }
+      ]
+}

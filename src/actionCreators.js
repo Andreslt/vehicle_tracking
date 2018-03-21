@@ -23,9 +23,10 @@ export const printRoute = (route) => {
   };
 }
 
-export const printRouteTrail = () => {
+export const printRouteTrail = (route) => {
   return dispatch => {
-    fB.child('trails').on('value', snap => {
+    fB.child('trails').orderByChild('route_id').equalTo(route.id).on('value', snap => {
+      const rawDataObj = snap.val();
       dispatch({
         type: "PRINT_ROUTE_TRAIL",
         payload: snap.val()
