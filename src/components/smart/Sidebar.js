@@ -11,12 +11,10 @@ import { Restore as RestoreIcon, NearMe, LocationOn } from 'material-ui-icons';
 import List, { ListItem, ListItemText, ListSubheader, ListItemIcon } from "material-ui/List";
 import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from "material-ui/ExpansionPanel";
 import Collapse from 'material-ui/transitions/Collapse';
-import { ExpandLess, ExpandMore, StarBorder, SendIcon, KeyboardArrowRight, Drafts as DraftsIcon, MoveToInbox as InboxIcon } from 'material-ui-icons';
-
+import { ExpandLess, ExpandMore, StarBorder, KeyboardArrowRight, Drafts as DraftsIcon, MoveToInbox as InboxIcon, Save, Refresh, Send as SendIcon } from 'material-ui-icons';
 import theme from '../../app/theme.json';
 const layout = theme.layout;
 const themeSelector = 0 // 0: Light, 1: Dark
-//
 
 const classes = {
   card: {
@@ -79,14 +77,14 @@ class SidebarContainer extends Component {
   }
 
   onItemClick(item, e) {
-    console.log('item -> ', item);    
+    console.log('item -> ', item);
   }
 
-  handleClick = (index, zoneId) => () => {
-    console.log('zoneId-> ', zoneId)
-    console.log('this.props.zones-> ', this.props.zones)
+  handleClick = (zoneId) => () => {
+    // console.log('index-> ', index)
+    // console.log('this.props.zones-> ', this.props.zones)
     this.props.fetchVehicles(this.props.zones[zoneId]);
-    this.setState({ open: !this.state.open, colKey: index });
+    this.setState({ open: !this.state.open, colKey: zoneId });
   };
 
   render() {
@@ -97,10 +95,11 @@ class SidebarContainer extends Component {
         <Card style={classes.card}>
           <Tabs width="auto" value={0} style={classes.tabs}>
             <Tab
+              icon={<Refresh />}
               label={`Zonas`} style={classes.singleTab} />
           </Tabs>
           <CardContent style={classes.cardContent}>
-            <List component="nav" style={classes.list} >
+            {/* <List component="nav" style={classes.list} >
               {zones && (
                 Object.keys(zones).map((zoneId, index) => (
                   <div key={`div${index}`}>
@@ -136,6 +135,30 @@ class SidebarContainer extends Component {
                     </Collapse>
                   </div>
                 )))}
+            </List> */}
+            <List component="nav" style={classes.list}>
+              {zones && (
+                Object.keys(zones).map((zoneId, index) => (
+                <div>
+                <ListItem button onClick={this.handleClick(index)}>
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText inset primary="Inbox" />
+                  {(this.state.open && this.state.colKey == index) ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={this.state.open && this.state.colKey == index} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder />
+                      </ListItemIcon>
+                      <ListItemText inset primary="Starred" />
+                    </ListItem>
+                  </List>
+                </Collapse>
+                </div>
+               )))}
             </List>
           </CardContent>
         </Card>
