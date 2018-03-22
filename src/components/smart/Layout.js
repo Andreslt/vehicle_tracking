@@ -54,7 +54,8 @@ const styles = theme => ({
   },
   drawerPaper: {
     position: 'relative',
-    border: 'transparent',
+    // border: 'transparent',
+    borderRightColor: "rgb(19, 148, 255)",
     width: drawerWidth,
     display: 'flex',
     flexDirection: 'column',

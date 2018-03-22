@@ -1,7 +1,7 @@
 {
      "layout": [
         {
-            "background": "rgb(19, 148, 255)",
+            "background": "linear-gradient(45deg, rgb(33, 150, 243) 30%, #3ab7aa 90%)",
             "cardHeader": "rgb(19, 148, 255)",
             "fontColor": "#f50057",
             "tabs": "rgb(19, 148, 255)", 

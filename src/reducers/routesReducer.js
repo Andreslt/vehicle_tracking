@@ -2,11 +2,16 @@ import initialState from './initState';
 
 export default (state = initialState.routesReducer, action) => {
   switch (action.type) {
-    case 'FETCH_ROUTES':
+    case 'FETCH_ZONES':
       return {
         ...state,
-        data: action.payload
+        zones: action.payload
       };
+      case 'FETCH_ZONE_VEHICLES':
+      return {
+        ...state,
+        vehicles: action.payload
+      };      
     case 'PRINT_ROUTE':
       return {
         ...state,

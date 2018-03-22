@@ -1,10 +1,10 @@
 import fB from './firebase';
 
-export const fetchRoutes = () => {
+export const fetchZones = () => {
   return async dispatch => {
-    fB.child('routes').on('value', snap => {
+    fB.child('zones').on('value', snap => {
       dispatch({
-        type: "FETCH_ROUTES",
+        type: "FETCH_ZONES",
         payload: snap.val()
       })
     })
@@ -19,6 +19,17 @@ export const printRoute = (route) => {
         map: route.mapProps,
         currentRoute: route.id
       }
+    })
+  };
+}
+
+export const fetchVehicles = (zone) => {
+  return async dispatch => {
+    fB.child('vehicles').orderByChild('zone_id').equalTo(zone.id).on('value', snap => {
+      dispatch({
+        type: "FETCH_ZONES",
+        payload: snap.val()
+      })
     })
   };
 }
