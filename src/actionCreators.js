@@ -1,5 +1,6 @@
 import fB from './firebase';
 
+/* >>>> ZONES <<<< */
 export const fetchZones = () => {
   return async dispatch => {
     fB.child('zones').on('value', snap => {
@@ -11,37 +12,60 @@ export const fetchZones = () => {
   };
 }
 
-export const printRoute = (route) => {
+export const printZoneKml = (zone)=> {
   return async dispatch => {
     dispatch({
-      type: "PRINT_ROUTE",
-      payload: {
-        map: route.mapProps,
-        currentRoute: route.id
-      }
+      type: 'PRINT_ZONE_KML',
+      payload: zone
     })
-  };
+  }
 }
 
+export const clearZoneKml = (zone) => {
+  return async dispatch => {
+    dispatch({
+      type: 'CLEAR_ZONE_KML',
+      payload: {
+        mapProps: {
+          latitude: zone.mapProps.latitude,
+          longitude: zone.mapProps.longitude,
+          zoom: zone.mapProps.zoom,
+          kml: ''
+        }
+      }
+    })
+  }
+}
+
+/* >>>> VEHICLES <<<< */
 export const fetchVehicles = (zone) => {
   return async dispatch => {
     fB.child('vehicles').orderByChild('zone_id').equalTo(zone.id).on('value', snap => {
       dispatch({
-        type: "FETCH_ZONES",
+        type: "FETCH_VEHICLES",
         payload: snap.val()
       })
     })
   };
 }
 
-export const printRouteTrail = (route) => {
+/* >>>> TRAILS <<<< */
+export const printTrail = (zoneId, vehicleId) => {
+  const zone_vehicle = `${zoneId}_${vehicleId}`
   return dispatch => {
-    fB.child('trails').orderByChild('route_id').equalTo(route.id).on('value', snap => {
-      const rawDataObj = snap.val();
+    fB.child('trails').orderByChild('zone_vehicle').equalTo(zone_vehicle).on('value', snap => {
       dispatch({
-        type: "PRINT_ROUTE_TRAIL",
+        type: "PRINT_VEHICLE_TRAIL",
         payload: snap.val()
       })
+    })
+  }
+}
+
+export const clearTrail = () => {
+  return dispatch => {
+    dispatch({
+      type: "CLEAR_VEHICLE_TRAIL"
     })
   }
 }

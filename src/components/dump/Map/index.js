@@ -6,9 +6,9 @@ import Snippet from '../Snippet';
 const MapComponent =
   compose(
     withProps({
-      googleMapURL: "https://maps.googleapis.com/maps/api/js?v3",
+      googleMapURL: "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCniTt6A56xPK-x24erdQzoniv2yYV2NSM",
       loadingElement: <div style={{ height: `100%` }} />,
-      containerElement: <div style={{ height: `100%` }} />,
+      containerElement: <div style={{ height: `100%`, marginBottom: '66px' }} />,
       mapElement: <div style={{ height: `100%` }} />,
     }),
     withStateHandlers(() => ({

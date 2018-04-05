@@ -3,9 +3,15 @@
 #Static
 /static
 
-#Firebase
+# firebase
 firebase.json
 firebase-client.js
+
+# lambda
+/lambda
+
+# server
+/server
 
 # dependencies
 /node_modules

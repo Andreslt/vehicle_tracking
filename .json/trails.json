@@ -2,97 +2,109 @@
     {
         "id": "abc1",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.0182277,
         "longitude": -74.941609,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145268972
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.017637959751099,
         "longitude": -74.94108328703305,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145280353
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.017406275758542,
         "longitude": -74.94087943914792,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145288389
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.017153529376804,
         "longitude": -74.94067559126279,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145295758
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.016837596094382,
         "longitude": -74.94045028570554,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145303614
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.01654272472481,
         "longitude": -74.94026789549252,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145311162
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.01679547163112,
         "longitude": -74.93982801321408,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145318473
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.017041773990762,
         "longitude": -74.93950393754409,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145318473
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.01731558266517,
         "longitude": -74.9390747841017,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145318473
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.017631515434443,
         "longitude": -74.9385705288069,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145318473
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.017831606012889,
         "longitude": -74.93796971398757,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145318473
     },
     {
         "id": "abc2",
         "vehicle_id": 1,
-        "route_id": "route_01",
         "latitude": 11.01802116538275,
         "longitude": -74.93747618752883,
+        "velocity": 10,
+        "elevation": 5,
         "timestamp": 1521145318473
     }                    
 ]

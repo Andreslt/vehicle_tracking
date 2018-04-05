@@ -1,22 +1,39 @@
 import React, { Component } from 'react';
-import { fetchZones, fetchVehicles, printRoute, printRouteTrail } from '../../actionCreators';
+import {
+  fetchZones,
+  printZoneKml,
+  clearZoneKml,
+  fetchVehicles,
+  printTrail,
+  clearTrail
+} from '../../actionCreators';
 import { connect } from 'react-redux';
-// import Sidebar from '../dump/Sidebar'
 
-// 
 import Tabs, { Tab } from 'material-ui/Tabs';
-import Card, { CardContent, CardHeader } from 'material-ui/Card';
-import { Typography, BottomNavigation, BottomNavigationAction, Divider } from 'material-ui';
+import Card, { CardContent } from 'material-ui/Card';
+import { BottomNavigation, BottomNavigationAction, Divider, Switch, Checkbox, Select, InputLabel } from 'material-ui';
 import { Restore as RestoreIcon, NearMe, LocationOn } from 'material-ui-icons';
 import List, { ListItem, ListItemText, ListSubheader, ListItemIcon } from "material-ui/List";
-import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from "material-ui/ExpansionPanel";
+import { MenuItem } from 'material-ui/Menu';
 import Collapse from 'material-ui/transitions/Collapse';
-import { ExpandLess, ExpandMore, StarBorder, KeyboardArrowRight, Drafts as DraftsIcon, MoveToInbox as InboxIcon, Save, Refresh, Send as SendIcon } from 'material-ui-icons';
+import { ExpandLess, ExpandMore, MoveToInbox as InboxIcon } from 'material-ui-icons';
 import theme from '../../app/theme.json';
+import { withStyles } from 'material-ui/styles';
+import { compose } from "recompose";
+
 const layout = theme.layout;
 const themeSelector = 0 // 0: Light, 1: Dark
 
-const classes = {
+export const styles = theme => ({
+  tabWrapper: {
+    'nav': {
+      display: 'flex',
+      flexDirection: 'row'
+    }
+  }
+})
+
+const cssStyles = {
   card: {
     maxWidth: 345,
     display: "flex",
@@ -40,7 +57,8 @@ const classes = {
     maxWidth: '-webkit-fill-available',
     flexGrow: 1,
     color: "#515253",
-    boxShadow: "0 1px 0 0 rgba(0,0,0,.1), 2px 5px 5px 0 rgba(0,0,0,.05)"
+    boxShadow: "0 1px 0 0 rgba(0,0,0,.1), 2px 5px 5px 0 rgba(0,0,0,.05)",
+    height: '47px'
   },
   list: {
     padding: 0,
@@ -68,106 +86,138 @@ const classes = {
 }
 
 class SidebarContainer extends Component {
-  constructor(props, context) {
-    super(props, context);
-  }
-  state = { open: false, colKey: 0 };
+  state = {
+    open: false,
+    colKey: 0,
+    vehicles: {},
+    switch: false,
+    checked: false,
+    zonePicked: null,
+    selectedSubzone: ''
+  };
   componentDidMount() {
     this.props.fetchZones();
   }
 
-  onItemClick(item, e) {
-    console.log('item -> ', item);
-  }
-
   handleClick = (zoneId) => () => {
-    // console.log('index-> ', index)
-    // console.log('this.props.zones-> ', this.props.zones)
-    this.props.fetchVehicles(this.props.zones[zoneId]);
-    this.setState({ open: !this.state.open, colKey: zoneId });
+    if (!this.state.open) {
+      this.props.fetchVehicles(this.props.zones[zoneId]);
+      this.props.clearZoneKml(this.props.zones[zoneId]);
+      this.setState({ open: true, colKey: zoneId, switch: false, zonePicked: this.props.zones[zoneId] });
+    } else this.setState({ open: false });
   };
 
+  handleCheck = (zoneId, vehicleId) => () => {
+    if (!this.state.checked) {
+      this.props.printTrail(zoneId, vehicleId);
+    } else {
+      this.props.clearTrail();
+    }
+    this.setState({ checked: !this.state.checked })
+  }
+
+  handleSelect = event => {
+    console.log('event.target.value -> ', event.target.value);
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleSwitch = zone => () => {
+    console.log('zone -> ', zone);
+    console.log('this.state.selectedSubzone -> ', this.state.selectedSubzone);
+    const subzone = zone.subzones[this.state.selectedSubzone];
+    (!this.state.switch) ?
+      this.props.printZoneKml(subzone) :
+      this.props.clearZoneKml(zone);
+    this.setState({ switch: !this.state.switch })
+  }
+
   render() {
-    const { zones, vehicles } = this.props;
-    let boundItemClick;
+    const { zones, vehicles, classes } = this.props;
     return (
       <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-        <Card style={classes.card}>
-          <Tabs width="auto" value={0} style={classes.tabs}>
+        <Card style={cssStyles.card}>
+          <Tabs width="auto" value={0} style={cssStyles.tabs}>
             <Tab
-              icon={<Refresh />}
-              label={`Zonas`} style={classes.singleTab} />
+              label={`Zonas`}
+              style={cssStyles.singleTab}
+              className={classes.tabWrapper}
+            />
           </Tabs>
-          <CardContent style={classes.cardContent}>
-            {/* <List component="nav" style={classes.list} >
+          <CardContent style={cssStyles.cardContent}>
+            <List component="nav" style={cssStyles.list}>
               {zones && (
                 Object.keys(zones).map((zoneId, index) => (
                   <div key={`div${index}`}>
-                    <ListItem button
+                    <ListItem
+                      button
+                      onClick={this.handleClick(zoneId)}
                       key={`ListItem${zoneId}`}
                       value={zoneId}
-                      onClick={this.handleClick(index, zoneId)}
-                      style={{ height: "80px", border: "1px solid rgba(0,0,0,.14)" }}>
-
-                      <ListItemIcon key={`ListItemIcon_${zoneId}`}  >
+                    >
+                      <ListItemIcon key={`ListItemIcon_${zoneId}`}>
                         <InboxIcon key={`InboxIcon${zoneId}`} />
                       </ListItemIcon>
-                      <ListItemText key={`ListItemText${zoneId}`} inset primary={zones[zoneId].title}>
-                        <ExpandLess />
-                      </ListItemText>
+                      <ListItemText key={`ListItemText${zoneId}`} inset primary={zones[zoneId].title} />
+                      {(this.state.open && this.state.colKey === zoneId) ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                      <ListItem>
-                      <ListItemText inset primary="test" />
-                      </ListItem>
-                        {vehicles && (
-                          Object.keys(vehicles).map((vehicleId) => (
-                            <ListItem button onClick={this.onItemClick.bind(this, vehicleId)} >
-                            {console.log('vehicleId-> ', vehicleId)}
-                              <ListItemIcon>
-                                <StarBorder />
-                              </ListItemIcon>
-                              <ListItemText inset primary={vehicles[vehicleId].title} />
-                            </ListItem>
-                          )))}
+                    <Collapse in={this.state.open && this.state.colKey === zoneId} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding
+                      >
+                        {!!vehicles && (Object.keys(vehicles).map(vehicleId => (
+                          <ListItem key={`ListItemIcon_${vehicleId}`} button style={{ padding: 0, paddingLeft: 25 }}>
+                            <Checkbox
+                              tabIndex={-1}
+                              onClick={this.handleCheck(zoneId, vehicleId)}
+                              disableRipple
+                            />
+                            <ListItemText key={`ListItemText${vehicles[vehicleId].id}`} inset primary={vehicles[vehicleId].id} />
+                          </ListItem>
+                        )))}
                       </List>
+                      <Divider />
+                      <div>
+                        <div>
+                          <InputLabel style={{ margin: "20px 10px 0 0" }} htmlFor={`select_${zoneId}`}>Seleccionar Subzona </InputLabel>
+                          <Select
+                            value={this.state.selectedSubzone}
+                            style={{ width: '150px' }}
+                            onChange={this.handleSelect}
+                            inputProps={{
+                              name: 'selectedSubzone',
+                              id: `select_${zoneId}`,
+                            }}
+                          >
+                            {!!this.state.zonePicked && this.state.zonePicked.id === zones[zoneId].id && Object.keys(this.state.zonePicked.subzones).map((subzone, subzoneIndex) => {
+                              return (
+                                <MenuItem key={`kml_${subzoneIndex}`}
+                                  value={subzone}>
+                                  {this.state.zonePicked.subzones[subzone].title}
+                                </MenuItem>)
+                            })}
+                          </Select>
+                        </div>
+                        <ListSubheader style={{ display: 'flex', flexDirection: 'row', marginRight: '55px' }}>
+                          <div style={{ flex: 1, fontWeight: 'bold', marginRight: '45px' }}>Mostrar en Mapa</div>
+                          <div>
+                            <Switch
+                              onChange={this.handleSwitch(zones[zoneId])}
+                            />
+                          </div>
+                        </ListSubheader>
+                        <Divider />
+                      </div>
                     </Collapse>
                   </div>
                 )))}
-            </List> */}
-            <List component="nav" style={classes.list}>
-              {zones && (
-                Object.keys(zones).map((zoneId, index) => (
-                <div>
-                <ListItem button onClick={this.handleClick(index)}>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText inset primary="Inbox" />
-                  {(this.state.open && this.state.colKey == index) ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={this.state.open && this.state.colKey == index} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    <ListItem button className={classes.nested}>
-                      <ListItemIcon>
-                        <StarBorder />
-                      </ListItemIcon>
-                      <ListItemText inset primary="Starred" />
-                    </ListItem>
-                  </List>
-                </Collapse>
-                </div>
-               )))}
             </List>
           </CardContent>
         </Card>
         <div>
           <Divider />
-          <BottomNavigation value={1} style={classes.cardBottom}>
-            <BottomNavigationAction label="Recents" value="recents" icon={<NearMe style={{ color: classes.iconColor["selected"] }} />} />
-            <BottomNavigationAction label="Favorites" value="favorites" icon={<LocationOn style={{ color: classes.iconColor["default"] }} />} />
-            <BottomNavigationAction label="Nearby" value="nearby" icon={<RestoreIcon style={{ color: classes.iconColor["default"] }} />} />
+          <BottomNavigation value={1} style={cssStyles.cardBottom}>
+            <BottomNavigationAction label="Recents" value="recents" icon={<NearMe style={{ color: cssStyles.iconColor["selected"] }} />} />
+            <BottomNavigationAction label="Favorites" value="favorites" icon={<LocationOn style={{ color: cssStyles.iconColor["default"] }} />} />
+            <BottomNavigationAction label="Nearby" value="nearby" icon={<RestoreIcon style={{ color: cssStyles.iconColor["default"] }} />} />
           </BottomNavigation>
         </div>
       </div>
@@ -177,12 +227,9 @@ class SidebarContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    zones: state.routes.zones,
-    vehicles: state.routes.vehicles,
-    trails: state.trails,
-    activeKey: state.activeKey,
-    realtime: state.realtime,
-    selectedTab: 0
+    zones: state.zones.data,
+    vehicles: state.vehicles.data,
+    trails: state.trails.data,
   }
 }
 
@@ -194,16 +241,23 @@ const mapDispatchToProps = dispatch => {
     fetchVehicles(zone) {
       dispatch(fetchVehicles(zone));
     },
-    printRoute(route) {
-      dispatch({ type: "PRINT_ROUTE_TRAIL", payload: '' })
-      dispatch(printRoute(route));
-      dispatch(printRouteTrail(route))
+    printZoneKml(zone) {
+      dispatch(clearZoneKml(zone));
+      dispatch(printZoneKml(zone));
     },
-    // printRouteTrail(realtime) {
-    //   if (realtime) dispatch(printRouteTrail());
-    //   else dispatch({ type: "PRINT_ROUTE_TRAIL", payload: '' })
-    // }
+    clearZoneKml(zone) {
+      dispatch(clearZoneKml(zone));
+    },
+    printTrail(zoneId, vehicleId) {
+      dispatch(printTrail(zoneId, vehicleId));
+    },
+    clearTrail(zoneId, vehicleId) {
+      dispatch(clearTrail(zoneId, vehicleId));
+    }
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SidebarContainer);
+export default compose(
+  withStyles(styles),
+  connect(mapStateToProps, mapDispatchToProps)
+)(SidebarContainer)

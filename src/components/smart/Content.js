@@ -13,9 +13,8 @@ class ContentContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    map: state.routes.map,
-    routes: state.routes.data,
-    trail: state.trails,
+    map: state.zones.currentZone.mapProps,
+    trail: state.trails.data,
   }
 }
 
