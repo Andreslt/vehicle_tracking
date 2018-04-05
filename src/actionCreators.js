@@ -4,6 +4,7 @@ import fB from './firebase';
 export const fetchZones = () => {
   return async dispatch => {
     fB.child('zones').on('value', snap => {
+      console.log('snap.val() -> ', snap.val())
       dispatch({
         type: "FETCH_ZONES",
         payload: snap.val()
@@ -40,7 +41,7 @@ export const clearZoneKml = (zone) => {
 /* >>>> VEHICLES <<<< */
 export const fetchVehicles = (zone) => {
   return async dispatch => {
-    fB.child('vehicles').orderByChild('zone_id').equalTo(zone.id).on('value', snap => {
+    fB.child('vehicles').orderByChild('zone_id').equalTo(zone).on('value', snap => {
       dispatch({
         type: "FETCH_VEHICLES",
         payload: snap.val()
