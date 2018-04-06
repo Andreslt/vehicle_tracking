@@ -101,8 +101,6 @@ class SidebarContainer extends Component {
 
   handleClick = (zoneId) => () => {
     if (!this.state.open) {
-      console.log('this.props.zones[zoneId] -> ', this.props.zones[zoneId])
-      console.log('zoneId -> ', zoneId)
       this.props.fetchVehicles(zoneId);
       this.props.clearZoneKml(this.props.zones[zoneId]);
       this.setState({ open: true, colKey: zoneId, switch: false, zonePicked: this.props.zones[zoneId] });
@@ -110,10 +108,8 @@ class SidebarContainer extends Component {
   };
 
   handleCheck = (zoneId, vehicleId) => () => {
-    console.log('zoneId -> ', zoneId);
-    console.log('vehicleId -> ', vehicleId);
     if (!this.state.checked) {
-      this.props.printTrail(zoneId, vehicleId);
+      this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id);
     } else {
       this.props.clearTrail();
     }

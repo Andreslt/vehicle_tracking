@@ -4,7 +4,6 @@ import fB from './firebase';
 export const fetchZones = () => {
   return async dispatch => {
     fB.child('zones').on('value', snap => {
-      console.log('snap.val() -> ', snap.val())
       dispatch({
         type: "FETCH_ZONES",
         payload: snap.val()
@@ -52,7 +51,7 @@ export const fetchVehicles = (zone) => {
 
 /* >>>> TRAILS <<<< */
 export const printTrail = (zoneId, vehicleId) => {
-  const zone_vehicle = `${zoneId}_${vehicleId}`
+  const zone_vehicle = `${zoneId}_${vehicleId}`;
   return dispatch => {
     fB.child('trails').orderByChild('zone_vehicle').equalTo(zone_vehicle).on('value', snap => {
       dispatch({
