@@ -2,5 +2,6 @@ import { combineReducers } from 'redux';
 import trails from './trails';
 import vehicles from './vehicles';
 import zones from './zones';
+import clients from './clients';
 
-export default combineReducers({ trails, vehicles, zones });
+export default combineReducers({ clients, trails, vehicles, zones });

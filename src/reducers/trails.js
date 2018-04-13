@@ -10,8 +10,13 @@ export default (state = initialState.trails, action) => {
       case 'CLEAR_VEHICLE_TRAIL':
       return {
         ...state,
-        data: ''
-      };      
+        data: action.payload
+      };     
+      case 'MULTI_TRACKING':
+      return {
+        ...state,
+        multiTrackingMode: action.payload
+      };           
     default: return state;
   }
 }

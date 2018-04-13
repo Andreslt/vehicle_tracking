@@ -8,7 +8,6 @@ export default (state = initialState.zones, action) => {
         data: action.payload
       };
     case 'PRINT_ZONE_KML':
-    console.log('action.payload -- ', action.payload)
       return {
         ...state,
         currentZone: action.payload

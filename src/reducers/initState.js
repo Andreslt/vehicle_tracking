@@ -1,4 +1,5 @@
 export default {
+  clients: '',
   routesReducer: {
     map: {
       kml: "http://drive.google.com/file/d/0B5QeQuhUHrubdUV0RmJJT2s1ZnBoRzJueHZ4eDdyY2lxRVFR/view",

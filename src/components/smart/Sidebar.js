@@ -5,7 +5,8 @@ import {
   clearZoneKml,
   fetchVehicles,
   printTrail,
-  clearTrail
+  clearTrail,
+  multiTrackingMode
 } from '../../actionCreators';
 import { connect } from 'react-redux';
 
@@ -23,6 +24,7 @@ import { compose } from "recompose";
 
 const layout = theme.layout;
 const themeSelector = 0 // 0: Light, 1: Dark
+let checkArray = {};
 
 export const styles = theme => ({
   tabWrapper: {
@@ -93,8 +95,10 @@ class SidebarContainer extends Component {
     switch: false,
     checked: false,
     zonePicked: null,
-    selectedSubzone: ''
+    selectedSubzone: '',
+    multiTrackingMode: false
   };
+
   componentDidMount() {
     this.props.fetchZones();
   }
@@ -107,13 +111,32 @@ class SidebarContainer extends Component {
     } else this.setState({ open: false });
   };
 
-  handleCheck = (zoneId, vehicleId) => () => {
-    if (!this.state.checked) {
+  handleCheck = (zoneId, vehicleId, index) => () => {
+    if (Object.keys(checkArray).length === 0) {
+      // SINGLE MODE - FIRST TIME CHECKING
+      console.log('>>> SINGLE MODE - FIRST TIME CHECKING <<<');
       this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id);
+      checkArray[index] = true
+      this.props.multiTrackingOrInitMode(false);
     } else {
-      this.props.clearTrail();
+      if (checkArray[index]) {
+        // UNCHECKING
+        console.log('>>> UNCHECKING <<<');
+        let allowBlank;
+        if (Object.keys(checkArray).length == 1) {
+          this.props.multiTrackingOrInitMode(true);
+          allowBlank = true;
+        } else allowBlank = false;
+        this.props.clearTrail(zoneId, this.props.vehicles[vehicleId].id, allowBlank);
+        delete checkArray[index];
+      } else {
+        // MULTI TRACKING MODE
+        console.log('>>> MULTI TRACKING MODE <<<');
+        checkArray[index] = true
+        this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id);
+        this.props.multiTrackingOrInitMode(true);
+      }
     }
-    this.setState({ checked: !this.state.checked })
   }
 
   handleSelect = event => {
@@ -160,11 +183,11 @@ class SidebarContainer extends Component {
                     <Collapse in={this.state.open && this.state.colKey === zoneId} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding
                       >
-                        {!!vehicles && (Object.keys(vehicles).map(vehicleId => (
+                        {!!vehicles && (Object.keys(vehicles).map((vehicleId, vehicleIndex) => (
                           <ListItem key={`ListItemIcon_${vehicleId}`} button style={{ padding: 0, paddingLeft: 25 }}>
                             <Checkbox
                               tabIndex={-1}
-                              onClick={this.handleCheck(zoneId, vehicleId)}
+                              onClick={this.handleCheck(zoneId, vehicleId, vehicleIndex, this.props.trails)}
                               disableRipple
                             />
                             <ListItemText key={`ListItemText${vehicles[vehicleId].id}`} inset primary={vehicles[vehicleId].id} />
@@ -227,6 +250,7 @@ const mapStateToProps = state => {
     zones: state.zones.data,
     vehicles: state.vehicles.data,
     trails: state.trails.data,
+    multiTrackingMode: state.trails.mode
   }
 }
 
@@ -248,8 +272,11 @@ const mapDispatchToProps = dispatch => {
     printTrail(zoneId, vehicleId) {
       dispatch(printTrail(zoneId, vehicleId));
     },
-    clearTrail(zoneId, vehicleId) {
-      dispatch(clearTrail(zoneId, vehicleId));
+    clearTrail(zoneId, vehicleId, blank) {
+      dispatch(clearTrail(zoneId, vehicleId, blank));
+    },
+    multiTrackingOrInitMode(status) {
+      dispatch(multiTrackingMode(status))
     }
   }
 }
