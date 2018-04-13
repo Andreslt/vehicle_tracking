@@ -1,7 +1,6 @@
 import fB from './firebase';
-import store from './store';
 
-const limitToLast = 100; // Control amount of trails
+const limitToLast = 100; // Controlling the amount of trails
 
 /* >>>> CLIENTS <<<< */
 export const fetchClients = () => {
@@ -103,8 +102,6 @@ export const printTrail = (zoneId, vehicleId) => {
   const zone_vehicle = `${zoneId}_${vehicleId}`;
   return (dispatch, getState) => {
     fB.child('trails').orderByChild('zone_vehicle').equalTo(zone_vehicle).limitToLast(limitToLast).on('value', snap => {
-      console.log('*** snap.val() -> ', snap.val());
-      console.log('*** getState PRINT -> ', getState());
       const data = getState().trails.data;
       dispatch({
         type: "PRINT_VEHICLE_TRAIL",
@@ -122,15 +119,8 @@ export const clearTrail = (zoneId, vehicleId, blank) => {
   const ref = fB.child('trails').orderByChild('zone_vehicle').equalTo(zone_vehicle).limitToLast(limitToLast);
   ref.off('value', null);
   return (dispatch, getState) => {
-    console.log('*** getState DELETE -> ', getState());
-    let data;
-    if (blank) {
-      data = null;
-    } else {
-      data = getState().trails.data;
-      data[zone_vehicle] = '';
-    }
-    console.log('** DELETING data -> ', data);
+    let data = getState().trails.data;
+    delete data[zone_vehicle]; // Deleting data of zone_vehicle
     dispatch({
       type: "CLEAR_VEHICLE_TRAIL",
       payload: { ...data }

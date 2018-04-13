@@ -3,18 +3,19 @@ import { compose, withProps, withStateHandlers } from "recompose";
 import { withScriptjs, withGoogleMap, GoogleMap, KmlLayer, Marker, InfoWindow, Polyline } from "react-google-maps";
 import Snippet from '../Snippet';
 
-const compMapCenter = (modeOn, trails, zone) => {
-  let latitude, longitude;
-  console.log('***** modeOn -> ', modeOn)
+const compMapCenter = (type, modeOn, trails, zone) => {
+  let latitude, longitude, zoom;
+  if (type === 'zoom'){
+    zoom = (modeOn)? zone.zoom : 17;
+    return zoom
+  }
+
   if (modeOn || trails == null) { // Multitracking on
-    console.log('** modeOn 1 **');
+    console.log('ENTRO EN MULTITRACKING ON');
     latitude = zone.latitude;
     longitude = zone.longitude;
-  } else {
-    console.log('** modeOn 2 **'); // Multitracking off
-    console.log('** trails -> ', trails);
-    console.log('** index -> ', index);
-    console.log('** lastTrail -> ', lastTrail);
+  } else { // Multitracking off
+    console.log('ENTRO EN MULTITRACKING OFF');
     const index = Object.keys(trails).slice(0)[0]; // Vehicle ID
     const lastTrail = Object.keys(trails[index]).slice(-1);
     latitude = trails[index][lastTrail].latitude;
@@ -55,8 +56,8 @@ const MapComponent =
     withGoogleMap,
   )(props =>
     <GoogleMap
-      zoom={props.map.zoom}
-      center={compMapCenter(props.multiTrackingMode, props.trails, props.map)}
+      zoom={compMapCenter('zoom', props.multiTrackingMode, null, props.map)}
+      center={compMapCenter(null, props.multiTrackingMode, props.trails, props.map)}
     >
       {!!props.trails &&
         Object.keys(props.trails).map((vehicleTrail, vehiKey) => {
@@ -116,11 +117,6 @@ const MapComponent =
             />
           </div>
         })}
-      {/* {!!(props.trails) &&
-        <Polyline
-          {...props.lineProps}
-          path={props.linePath}
-        />} */}
       <KmlLayer
         url={props.map.kml}
         options={{ preserveViewport: true }}

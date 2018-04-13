@@ -112,26 +112,21 @@ class SidebarContainer extends Component {
   };
 
   handleCheck = (zoneId, vehicleId, index) => () => {
-    if (Object.keys(checkArray).length === 0) {
-      // SINGLE MODE - FIRST TIME CHECKING
-      console.log('>>> SINGLE MODE - FIRST TIME CHECKING <<<');
-      this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id);
-      checkArray[index] = true
-      this.props.multiTrackingOrInitMode(false);
+    if (Object.keys(checkArray).length === 0) { // SINGLE MODE - FIRST TIME CHECKING
+      this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id, false);
+      checkArray[index] = true;
     } else {
-      if (checkArray[index]) {
-        // UNCHECKING
-        console.log('>>> UNCHECKING <<<');
+      if (checkArray[index]) { // UNCHECKING
         let allowBlank;
-        if (Object.keys(checkArray).length == 1) {
-          this.props.multiTrackingOrInitMode(true);
-          allowBlank = true;
-        } else allowBlank = false;
-        this.props.clearTrail(zoneId, this.props.vehicles[vehicleId].id, allowBlank);
+
+        if (Object.keys(checkArray).length == 1) allowBlank = true;
+        else allowBlank = false;
+
         delete checkArray[index];
-      } else {
-        // MULTI TRACKING MODE
-        console.log('>>> MULTI TRACKING MODE <<<');
+        this.props.multiTrackingOrInitMode(allowBlank);
+        this.props.clearTrail(zoneId, this.props.vehicles[vehicleId].id, allowBlank);
+      } else { // MULTI TRACKING MODE
+
         checkArray[index] = true
         this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id);
         this.props.multiTrackingOrInitMode(true);
@@ -141,6 +136,12 @@ class SidebarContainer extends Component {
 
   handleSelect = event => {
     this.setState({ [event.target.name]: event.target.value });
+    if (this.state.switch) {
+      const zone = this.state.zonePicked;
+      const subzone = zone.subzones[event.target.value];
+      this.props.clearZoneKml(zone);
+      this.props.printZoneKml(subzone)
+    }
   }
 
   handleSwitch = zone => () => {
@@ -197,7 +198,7 @@ class SidebarContainer extends Component {
                       <Divider />
                       <div>
                         <div>
-                          <InputLabel style={{ margin: "20px 10px 0 0" }} htmlFor={`select_${zoneId}`}>Seleccionar Subzona </InputLabel>
+                          <InputLabel style={{ margin: "20px 10px 0 0" }} htmlFor={`select_${zoneId}`}>Seleccionar Sector </InputLabel>
                           <Select
                             value={this.state.selectedSubzone}
                             style={{ width: '150px' }}
@@ -221,6 +222,7 @@ class SidebarContainer extends Component {
                           <div>
                             <Switch
                               onChange={this.handleSwitch(zones[zoneId])}
+                              disabled={(!!this.state.selectedSubzone) ? false : true}
                             />
                           </div>
                         </ListSubheader>
@@ -250,7 +252,7 @@ const mapStateToProps = state => {
     zones: state.zones.data,
     vehicles: state.vehicles.data,
     trails: state.trails.data,
-    multiTrackingMode: state.trails.mode
+    multiTrackingMode: state.trails.mode,
   }
 }
 
