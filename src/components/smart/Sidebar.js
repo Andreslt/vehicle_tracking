@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Card, { CardContent } from 'material-ui/Card';
 import { BottomNavigation, BottomNavigationAction, Divider, Switch, Checkbox, Select, InputLabel } from 'material-ui';
-import { Restore as RestoreIcon, NearMe, LocationOn } from 'material-ui-icons';
+import { Restore as RestoreIcon, NearMe, LocationOn, Input, ChromeReaderMode } from 'material-ui-icons';
 import List, { ListItem, ListItemText, ListSubheader, ListItemIcon } from "material-ui/List";
 import { MenuItem } from 'material-ui/Menu';
 import Collapse from 'material-ui/transitions/Collapse';
@@ -21,6 +21,7 @@ import { ExpandLess, ExpandMore, MoveToInbox as InboxIcon } from 'material-ui-ic
 import theme from '../../app/theme.json';
 import { withStyles } from 'material-ui/styles';
 import { compose } from "recompose";
+import IconButton from 'material-ui/IconButton';
 
 const layout = theme.layout;
 const themeSelector = 0 // 0: Light, 1: Dark
@@ -96,7 +97,8 @@ class SidebarContainer extends Component {
     checked: false,
     zonePicked: null,
     selectedSubzone: '',
-    multiTrackingMode: false
+    multiTrackingMode: false,
+    hooverVehicle: ''
   };
 
   componentDidMount() {
@@ -152,6 +154,10 @@ class SidebarContainer extends Component {
     this.setState({ switch: !this.state.switch })
   }
 
+  handleMouseHover = (type, vehicle) => () => {
+    this.setState({ hooverVehicle: (type) ? vehicle : '' });
+  }
+
   render() {
     const { zones, vehicles, classes } = this.props;
     return (
@@ -185,13 +191,21 @@ class SidebarContainer extends Component {
                       <List component="div" disablePadding
                       >
                         {!!vehicles && (Object.keys(vehicles).map((vehicleId, vehicleIndex) => (
-                          <ListItem key={`ListItemIcon_${vehicleId}`} button style={{ padding: 0, paddingLeft: 25 }}>
+                          <ListItem
+                            key={`ListItemIcon_${vehicleId}`} button style={{ padding: 0, paddingLeft: 25 }}
+                            onMouseEnter={this.handleMouseHover(true, vehicleId)}
+                            onMouseLeave={this.handleMouseHover(false)}
+                          >
                             <Checkbox
                               tabIndex={-1}
                               onClick={this.handleCheck(zoneId, vehicleId, vehicleIndex, this.props.trails)}
                               disableRipple
                             />
                             <ListItemText key={`ListItemText${vehicles[vehicleId].id}`} inset primary={vehicles[vehicleId].id} />
+                            {this.state.hooverVehicle === vehicleId &&
+                              <IconButton aria-label="Add to favorites" style={{ marginRight: '40px' }}
+                              ><Input /> </IconButton>
+                            }
                           </ListItem>
                         )))}
                       </List>

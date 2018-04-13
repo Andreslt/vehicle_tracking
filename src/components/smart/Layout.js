@@ -6,6 +6,7 @@ import { Typography, IconButton, Toolbar, AppBar, Drawer } from 'material-ui';
 import MenuIcon from 'material-ui-icons/Menu';
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
+import InfoPanel from '../dump/InfoPanel';
 
 import theme from '../../app/theme';
 const layout = theme.layout;
@@ -158,8 +159,7 @@ class Layout extends React.Component {
             className={classNames(classes.appBar, {
               [classes.appBarShift]: open,
               [classes[`appBarShift-${anchor}`]]: open,
-            })}
-          >          
+            })}>
             <Toolbar disableGutters={!open} style={{position: "relative"}}>
               <IconButton
                 color="inherit"
@@ -169,7 +169,7 @@ class Layout extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Header />
+              <Header />              
             </Toolbar>
           </AppBar>
           {before}
@@ -180,6 +180,7 @@ class Layout extends React.Component {
             })}
           >
             <div className={classes.drawerHeader} />
+            {/* <InfoPanel /> */}
             <Content />
           </main>
           {after}

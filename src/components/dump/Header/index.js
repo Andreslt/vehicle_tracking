@@ -45,10 +45,10 @@ const Header = compose(
               horizontal: 'right',
             }}
             open={open}
-            onClose={props.handleClose}
+            onClose={props.handleClose}a
           >
-            <MenuItem onClick={props.handleClose}>Profile</MenuItem>
-            <MenuItem onClick={props.handleClose}>My account</MenuItem>
+            <MenuItem onClick={props.handleClose}>Cuenta</MenuItem>
+            <MenuItem onClick={props.handleClose}>Salir</MenuItem>
           </Menu>
         </div>
   )

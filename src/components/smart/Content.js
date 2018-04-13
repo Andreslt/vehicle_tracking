@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import Map from '../dump/Map';
 
 class ContentContainer extends Component {
-
   render() {
     return (
-      <Map {...this.props} />
+      <Map
+        {...this.props}
+      />
     )
   }
 };

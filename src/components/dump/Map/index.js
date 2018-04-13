@@ -5,8 +5,8 @@ import Snippet from '../Snippet';
 
 const compMapCenter = (type, modeOn, trails, zone) => {
   let latitude, longitude, zoom;
-  if (type === 'zoom'){
-    zoom = (modeOn)? zone.zoom : 17;
+  if (type === 'zoom') {
+    zoom = (modeOn) ? zone.zoom : 17;
     return zoom
   }
 
@@ -54,74 +54,85 @@ const MapComponent =
       }),
     withScriptjs,
     withGoogleMap,
-  )(props =>
-    <GoogleMap
-      zoom={compMapCenter('zoom', props.multiTrackingMode, null, props.map)}
-      center={compMapCenter(null, props.multiTrackingMode, props.trails, props.map)}
-    >
-      {!!props.trails &&
-        Object.keys(props.trails).map((vehicleTrail, vehiKey) => {
-          const linePath = [];
-          return <div key={`vehiKey_${vehiKey}`}>
-            {Object.keys(props.trails[vehicleTrail]).map((point, key) => {
-              const trail = props.trails[vehicleTrail][point];
-              const lastPoint = Object.keys(props.trails[vehicleTrail]).length - 1;
-              linePath.push({ lat: trail.latitude, lng: trail.longitude })
-              let iconProps = {
-                path: 'M 100 100 L 300 100 L 200 300 z',
-                fillColor: 'blue',
-                fillOpacity: 0.8,
-                scale: 0.001,
-                strokeColor: 'blue',
-                strokeWeight: 5
-              }
-              if (key === 0) {
-                iconProps = {
-                  ...iconProps,
-                  fillColor: 'green',
-                  scale: 0.07,
-                  strokeColor: 'white',
-                  strokeWeight: 2
+  )(props => {
+    const {
+      multiTrackingMode,
+      trails,
+      map,
+      onToggleOpen,
+      isOpen,
+      selectedKey,
+      lineProps
+     } = props;
+    return <div>
+      <GoogleMap
+        zoom={compMapCenter('zoom', multiTrackingMode, null, map)}
+        center={compMapCenter(null, multiTrackingMode, trails, map)}
+      >
+        {!!trails &&
+          Object.keys(trails).map((vehicleTrail, vehiKey) => {
+            const linePath = [];
+            return <div key={`vehiKey_${vehiKey}`}>
+              {Object.keys(trails[vehicleTrail]).map((point, key) => {
+                const trail = trails[vehicleTrail][point];
+                const lastPoint = Object.keys(trails[vehicleTrail]).length - 1;
+                linePath.push({ lat: trail.latitude, lng: trail.longitude })
+                let iconProps = {
+                  path: 'M 100 100 L 300 100 L 200 300 z',
+                  fillColor: 'blue',
+                  fillOpacity: 0.8,
+                  scale: 0.001,
+                  strokeColor: 'blue',
+                  strokeWeight: 5
                 }
-              } else if (key === lastPoint) {
-                iconProps = {
-                  ...iconProps,
-                  fillColor: 'red',
-                  scale: 0.07,
-                  strokeColor: 'white',
-                  strokeWeight: 2
+                if (key === 0) {
+                  iconProps = {
+                    ...iconProps,
+                    fillColor: 'green',
+                    scale: 0.07,
+                    strokeColor: 'white',
+                    strokeWeight: 2
+                  }
+                } else if (key === lastPoint) {
+                  iconProps = {
+                    ...iconProps,
+                    fillColor: 'red',
+                    scale: 0.07,
+                    strokeColor: 'white',
+                    strokeWeight: 2
+                  }
                 }
-              }
-              return (
-                <Marker
-                  id={`marker_${point}`}
-                  position={{ lat: trail.latitude, lng: trail.longitude }}
-                  key={point}
-                  icon={iconProps}
-                  onClick={() => {
-                    props.onToggleOpen(key)
-                  }}
-                >
-                  {props.isOpen && props.selectedKey === key && <InfoWindow
-                    id={key}
+                return (
+                  <Marker
+                    id={`marker_${point}`}
                     position={{ lat: trail.latitude, lng: trail.longitude }}
-                    onCloseClick={props.onToggleOpen}
+                    key={point}
+                    icon={iconProps}
+                    onClick={() => {
+                      onToggleOpen(key)
+                    }}
                   >
-                    <Snippet point={trail} />
-                  </InfoWindow>}
-                </Marker>)
-            })}
-            <Polyline
-              {...props.lineProps}
-              path={linePath}
-            />
-          </div>
-        })}
-      <KmlLayer
-        url={props.map.kml}
-        options={{ preserveViewport: true }}
-      />
-    </GoogleMap>
-    )
+                    {isOpen && selectedKey === key && <InfoWindow
+                      id={key}
+                      position={{ lat: trail.latitude, lng: trail.longitude }}
+                      onCloseClick={onToggleOpen}
+                    >
+                      <Snippet point={trail} />
+                    </InfoWindow>}
+                  </Marker>)
+              })}
+              <Polyline
+                {...lineProps}
+                path={linePath}
+              />
+            </div>
+          })}
+        <KmlLayer
+          url={map.kml}
+          options={{ preserveViewport: true }}
+        />
+      </GoogleMap>
+    </div>
+  })
 
 export default MapComponent;
