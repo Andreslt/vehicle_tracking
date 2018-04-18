@@ -29,7 +29,7 @@ const MapComponent =
     withProps({
       googleMapURL: "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCniTt6A56xPK-x24erdQzoniv2yYV2NSM",
       loadingElement: <div style={{ height: `100%` }} />,
-      containerElement: <div style={{ height: `100%`, marginBottom: '66px' }} />,
+      containerElement: <div style={{ height: `91%` }} />,
       mapElement: <div style={{ height: `100%` }} />,
     }),
     withStateHandlers(() => ({
@@ -88,18 +88,18 @@ const MapComponent =
                 if (key === 0) {
                   iconProps = {
                     ...iconProps,
-                    fillColor: 'green',
-                    scale: 0.07,
-                    strokeColor: 'white',
-                    strokeWeight: 2
+                    fillColor: 'red',
+                    scale: 0.01,
+                    strokeColor: 'red',
+                    strokeWeight: 5
                   }
                 } else if (key === lastPoint) {
                   iconProps = {
                     ...iconProps,
-                    fillColor: 'red',
-                    scale: 0.07,
-                    strokeColor: 'white',
-                    strokeWeight: 2
+                    fillColor: 'green',
+                    scale: 0.01,
+                    strokeColor: 'green',
+                    strokeWeight: 5
                   }
                 }
                 return (

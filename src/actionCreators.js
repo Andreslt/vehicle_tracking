@@ -75,24 +75,37 @@ export const fetchVehicles = (zone) => {
   };
 }
 
-export const reqVehicleSnapshot = (clientId) => {
+export const currentVehicle = (vehicleId) => {
+  console.log('Llegó a currentVehicle 2');
   return async dispatch => {
-    fB.child('vehicles').orderByChild('zone_id').equalTo(clientId).on('value', snap => {
+    fB.child('vehicles').on('value', snap => {
       dispatch({
-        type: "REQUEST_VEHICLE_SNAPSHOT",
-        payload: snap.val()
+        type: "CURRENT_VEHICLE",
+        payload: snap.val()[vehicleId]
+      })
+      dispatch({
+        type: "VEHICLE_INFO",
+        payload: true
       })
     })
-  };
+  }
 }
 
-export const reqVehicleVideo = (clientId) => {
+export const vehicleInfo = (state) => {
+  console.log('Llegó a vehicleInfo 2');  
   return async dispatch => {
-    fB.child('vehicles').orderByChild('client').equalTo(clientId).on('value', snap => {
-      dispatch({
-        type: "REQUEST_VEHICLE_VIDEO",
-        payload: snap.val()
-      })
+    dispatch({
+      type: "VEHICLE_INFO",
+      payload: state
+    })
+  }
+}
+
+export const vehicleSnapshot = (state) => {
+  return async dispatch => {
+    dispatch({
+      type: "VEHICLE_SNAP_VIDEO",
+      payload: state
     })
   };
 }

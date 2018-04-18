@@ -16,7 +16,8 @@ const mapStateToProps = state => {
   return {
     map: state.zones.currentZone.mapProps,
     trails: state.trails.data,
-    multiTrackingMode: state.trails.multiTrackingMode
+    multiTrackingMode: state.trails.multiTrackingMode,
+    currentVehicle: state.vehicles.currentVehicle    
   }
 }
 

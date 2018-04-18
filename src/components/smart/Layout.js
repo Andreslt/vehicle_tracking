@@ -6,7 +6,9 @@ import { Typography, IconButton, Toolbar, AppBar, Drawer } from 'material-ui';
 import MenuIcon from 'material-ui-icons/Menu';
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
-import InfoPanel from '../dump/InfoPanel';
+import InfoPanel from './InfoPanel';
+import SnapModal from './SnapModal';
+import Slide from 'material-ui/transitions/Slide';
 
 import theme from '../../app/theme';
 const layout = theme.layout;
@@ -71,8 +73,8 @@ const styles = theme => ({
   },
   content: {
     flexGrow: 1,
+    // paddingBottom: '66px',
     backgroundColor: theme.palette.background.default,
-    marginBottom: '50px',
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -118,6 +120,9 @@ class Layout extends React.Component {
       Header,
       Sidebar,
       classes,
+      currentVehicle,
+      vehicleInfo,
+      liveRecording,
       theme
     } = this.props;
     const { anchor, open } = this.state;
@@ -131,15 +136,15 @@ class Layout extends React.Component {
         }}
       >
         <div className={classes.drawerHeader}>
-        <Typography variant="title" color="inherit" style={{color: "white"}}> SMART TRACKING SYSTEM</Typography>
-          <IconButton 
-          style={{color: "white"}}
-          onClick={this.handleDrawerClose}
+          <Typography variant="title" color="inherit" style={{ color: "white" }}> SMART TRACKING SYSTEM</Typography>
+          <IconButton
+            style={{ color: "white" }}
+            onClick={this.handleDrawerClose}
           >
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
-        <Sidebar/>   
+        <Sidebar />
       </Drawer>
     );
 
@@ -160,7 +165,7 @@ class Layout extends React.Component {
               [classes.appBarShift]: open,
               [classes[`appBarShift-${anchor}`]]: open,
             })}>
-            <Toolbar disableGutters={!open} style={{position: "relative"}}>
+            <Toolbar disableGutters={!open} style={{ position: "relative" }}>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -169,7 +174,7 @@ class Layout extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Header />              
+              <Header />
             </Toolbar>
           </AppBar>
           {before}
@@ -180,7 +185,11 @@ class Layout extends React.Component {
             })}
           >
             <div className={classes.drawerHeader} />
-            {/* <InfoPanel /> */}
+            <Slide direction="left" in={vehicleInfo} mountOnEnter unmountOnExit>
+              <InfoPanel {...this.props} />
+            </Slide>
+            {console.log('*** liveRecording -> ', liveRecording)}
+            <SnapModal {...this.props} />
             <Content />
           </main>
           {after}

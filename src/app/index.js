@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import './styles.css';
 
 import { Layout, Content, Sidebar } from '../components/smart';
@@ -10,13 +11,21 @@ class App extends Component {
     return (
       <div className="App">
         <Layout
-        Header = {Header}
-        Sidebar = {Sidebar}
-        Content = {Content}
+          {...this.props}
+          Header={Header}
+          Sidebar={Sidebar}
+          Content={Content}
         />
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    vehicleInfo: state.vehicles.vehicleInfo,
+    liveRecording: state.vehicles.liveRecording,
+  }
+}
+
+export default connect(mapStateToProps)(App);

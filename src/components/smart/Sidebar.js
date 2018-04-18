@@ -6,7 +6,10 @@ import {
   fetchVehicles,
   printTrail,
   clearTrail,
-  multiTrackingMode
+  multiTrackingMode,
+  currentVehicle,
+  vehicleInfo,
+  vehicleSnapshot
 } from '../../actionCreators';
 import { connect } from 'react-redux';
 
@@ -17,7 +20,7 @@ import { Restore as RestoreIcon, NearMe, LocationOn, Input, ChromeReaderMode } f
 import List, { ListItem, ListItemText, ListSubheader, ListItemIcon } from "material-ui/List";
 import { MenuItem } from 'material-ui/Menu';
 import Collapse from 'material-ui/transitions/Collapse';
-import { ExpandLess, ExpandMore, MoveToInbox as InboxIcon } from 'material-ui-icons';
+import { ExpandLess, ExpandMore, MoveToInbox as InboxIcon, PhotoCamera } from 'material-ui-icons';
 import theme from '../../app/theme.json';
 import { withStyles } from 'material-ui/styles';
 import { compose } from "recompose";
@@ -158,6 +161,15 @@ class SidebarContainer extends Component {
     this.setState({ hooverVehicle: (type) ? vehicle : '' });
   }
 
+  handlePanel = vehicleId => () => {
+    this.props.currentVehicle(vehicleId);
+    // this.props.vehicleInfo(true);
+  }
+
+  handleModal = vehicleId => () => {
+    this.props.vehicleSnapshot(true);
+  }
+
   render() {
     const { zones, vehicles, classes } = this.props;
     return (
@@ -203,8 +215,17 @@ class SidebarContainer extends Component {
                             />
                             <ListItemText key={`ListItemText${vehicles[vehicleId].id}`} inset primary={vehicles[vehicleId].id} />
                             {this.state.hooverVehicle === vehicleId &&
-                              <IconButton aria-label="Add to favorites" style={{ marginRight: '40px' }}
-                              ><Input /> </IconButton>
+                              <div>
+                                <IconButton
+                                  aria-label="Open Camera"
+                                  onClick={this.handleModal(vehicleId)}
+                                ><PhotoCamera /> </IconButton>
+                                <IconButton
+                                  aria-label="Open Panel"
+                                  style={{ marginRight: '40px' }}
+                                  onClick={this.handlePanel(vehicleId)}
+                                ><Input /> </IconButton>
+                              </div>
                             }
                           </ListItem>
                         )))}
@@ -267,6 +288,7 @@ const mapStateToProps = state => {
     vehicles: state.vehicles.data,
     trails: state.trails.data,
     multiTrackingMode: state.trails.mode,
+    vehicleInfo: state.vehicles.vehicleInfo,
   }
 }
 
@@ -293,6 +315,17 @@ const mapDispatchToProps = dispatch => {
     },
     multiTrackingOrInitMode(status) {
       dispatch(multiTrackingMode(status))
+    },
+    currentVehicle(vehicleId) {
+      console.log('Llegó a currentVehicle 1');
+      dispatch(currentVehicle(vehicleId))
+    },
+    vehicleInfo(state) {
+      console.log('Llegó a vehicleInfo 1');
+      dispatch(vehicleInfo(state))
+    },
+    vehicleSnapshot(vehicleId){
+      dispatch(vehicleSnapshot(vehicleId))
     }
   }
 }
