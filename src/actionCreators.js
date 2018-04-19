@@ -1,4 +1,7 @@
 import fB from './firebase';
+import axios from 'axios';
+import FileDownload from 'react-file-download';
+import moment from 'moment';
 
 const limitToLast = 100; // Controlling the amount of trails
 
@@ -75,13 +78,15 @@ export const fetchVehicles = (zone) => {
   };
 }
 
-export const currentVehicle = (vehicleId) => {
-  console.log('Llegó a currentVehicle 2');
+export const currentVehicle = (zoneId, vehicleId) => {
   return async dispatch => {
     fB.child('vehicles').on('value', snap => {
       dispatch({
         type: "CURRENT_VEHICLE",
-        payload: snap.val()[vehicleId]
+        payload: {
+          data: snap.val()[vehicleId],
+          zoneId
+        }
       })
       dispatch({
         type: "VEHICLE_INFO",
@@ -92,7 +97,7 @@ export const currentVehicle = (vehicleId) => {
 }
 
 export const vehicleInfo = (state) => {
-  console.log('Llegó a vehicleInfo 2');  
+  console.log('Llegó a vehicleInfo 2');
   return async dispatch => {
     dispatch({
       type: "VEHICLE_INFO",
@@ -138,6 +143,35 @@ export const clearTrail = (zoneId, vehicleId, blank) => {
       type: "CLEAR_VEHICLE_TRAIL",
       payload: { ...data }
     })
+  }
+}
+
+export const exportTrailCSV = (zoneId, vehicleId, startingDate, endingDate) => {
+  const data = {
+    startingDate,
+    endingDate
+  };
+  const serverhost = ['http://ec2-13-58-10-199.us-east-2.compute.amazonaws.com:8080', 'http://localhost:8080'];
+  const env = 0 // 0: prod, 1: local
+  return async dispatch => {
+    const response = await(axios.post(`${serverhost[env]}/api/downloadcsv`, data ));
+    const fileName = `smt_${zoneId}_${vehicleId}-${moment().format()}.csv`
+    FileDownload(response.data, fileName);
+    dispatch({
+      type: "TRAIL_CSV_DATA",
+      payload: response.data
+    })
+  };
+  
+  const zone_vehicle = `${zoneId}_${vehicleId}`;
+  return (dispatch) => {
+    fB.child('trails').orderByChild('sent_tsmp').startAt(startingDate).endAt(endingDate)
+      .on('value', snap => {
+        dispatch({
+          type: "TRAIL_CSV_DATA",
+          payload: snap.val()
+        })
+      })
   }
 }
 

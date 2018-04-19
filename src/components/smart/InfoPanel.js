@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { vehicleInfo, currentVehicle } from '../../actionCreators';
+import { vehicleInfo, currentVehicle, exportTrailCSV } from '../../actionCreators';
 import { compose, withProps, withStateHandlers } from "recompose";
 import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
 import { Typography, IconButton, Avatar, Button, TextField, Divider, Dialog, Toolbar, AppBar } from 'material-ui';
@@ -8,6 +8,8 @@ import Slide from 'material-ui/transitions/Slide';
 import { Clear, DirectionsBus, Close as CloseIcon } from 'material-ui-icons';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { CSVLink, CSVDownload } from 'react-csv';
+import moment from 'moment';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -17,6 +19,9 @@ class InfoPanel extends Component {
 
   state = {
     openDialog: false,
+    csvData: '',
+    startingDate: null,
+    endingDate: null
   };
 
   closePanel = () => () => {
@@ -31,11 +36,24 @@ class InfoPanel extends Component {
     this.setState({ openDialog: false });
   };
 
+  generateCSV = (zoneId, vehicleId) => () => {
+    this.props.exportTrailCSV(zoneId, vehicleId, this.state.startingDate, this.state.endingDate)
+  };
+
+  datePicked = event => {
+    this.setState({ [event.target.id]: event.target.value })
+  }
+  
   render() {
+    const currentDate = moment().format('YYYY-MM-DDThh:mm');
+    const startDate = moment([moment().format('YYYY'), moment().format('MM') - 1]);
+    const endDate = moment(startDate).endOf('month');
+    console.log('** startDate -> ', startDate.toDate());
+    console.log('** endDate -> ', endDate.toDate());
+    
     return (
       <div id="infoPanelID" style={{ float: 'right', width: '300px', height: '535px' }}>
         <Card>
-          {/* {console.log('*** this.props.currentVehicle -> ', this.props.currentVehicle)} */}
           <CardHeader
             title={
               <Typography style={{ marginRight: '20px' }} variant="title" > Vehicle ID {this.props.currentVehicle.id}</Typography>
@@ -70,22 +88,24 @@ class InfoPanel extends Component {
             </Typography><br />
             <form noValidate style={{ marginBottom: '25px', flex: 1 }}>
               <TextField
-                id="datetime-local1"
+                id="startingDate"
                 label="Desde"
                 type="datetime-local"
-                defaultValue="2017-05-24T10:30"
+                defaultValue={currentDate}
+                onChange={this.datePicked}
               />
               <TextField
-                id="datetime-local2"
+                id="endingDate"
                 label="Hasta"
                 type="datetime-local"
-                defaultValue="2017-05-24T10:30"
+                defaultValue={currentDate}
+                onChange={this.datePicked}
               />
             </form>
-            <Button
-              onClick={this.handleClickOpenDialog}
-              variant="raised" color="secondary" style={{ flex: 1 }}
-            > Descargar CSV
+              <Button
+                onClick={this.generateCSV(this.props.vehicleZoneId, this.props.currentVehicle.id)}
+                variant="raised" color="secondary" style={{ flex: 1 }}
+              > Descargar CSV
             </Button>
           </CardContent>
           {/* <Dialog
@@ -98,7 +118,7 @@ class InfoPanel extends Component {
           >
             hello
           </Dialog> */}
-{/*           <Carousel
+          {/*            <Carousel
           >
             <div>
               <img src="http://lorempixel.com/output/cats-q-c-640-480-1.jpg" />
@@ -122,8 +142,8 @@ class InfoPanel extends Component {
             <div>
               <img src="http://lorempixel.com/output/cats-q-c-640-480-2.jpg" />
             </div>
-          </Carousel>          
-          <Dialog
+          </Carousel>  */}
+          {/*          <Dialog
             fullScreen
             open={this.state.openDialog}
             onClose={this.closeDialog}
@@ -141,7 +161,7 @@ class InfoPanel extends Component {
               </Typography>
             </Toolbar>
           </AppBar>
-          </Dialog>*/} 
+          </Dialog>*/}
         </Card>
       </div>
     )
@@ -152,7 +172,9 @@ const mapStateToProps = state => {
   return {
     vehicleInfo: state.vehicles.vehicleInfo,
     currentVehicle: state.vehicles.currentVehicle,
-    liveRecording: state.vehicles.liveRecording
+    vehicleZoneId: state.vehicles.vehicleZoneId,
+    liveRecording: state.vehicles.liveRecording,
+    trailCSVData: state.vehicles.trailCSVData,
   }
 }
 
@@ -160,6 +182,9 @@ const mapDispatchToProps = dispatch => {
   return {
     vehicleInfo(state) {
       dispatch(vehicleInfo(state));
+    },
+    exportTrailCSV(zoneId, vehicleId, startingDate, endingDate) {
+      dispatch(exportTrailCSV(zoneId, vehicleId, startingDate, endingDate));
     }
   }
 }

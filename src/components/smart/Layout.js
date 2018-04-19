@@ -188,7 +188,6 @@ class Layout extends React.Component {
             <Slide direction="left" in={vehicleInfo} mountOnEnter unmountOnExit>
               <InfoPanel {...this.props} />
             </Slide>
-            {console.log('*** liveRecording -> ', liveRecording)}
             <SnapModal {...this.props} />
             <Content />
           </main>

@@ -10,10 +10,10 @@ export default (state = initialState.vehicles, action) => {
     case 'CURRENT_VEHICLE':
       return {
         ...state,
-        currentVehicle: action.payload,
+        currentVehicle: action.payload.data,
+        vehicleZoneId: action.payload.zoneId
       };
     case 'VEHICLE_INFO':
-    console.log('*** state -> ', state);
       return {
         ...state,
         vehicleInfo: action.payload,

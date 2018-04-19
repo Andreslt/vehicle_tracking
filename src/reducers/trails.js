@@ -17,6 +17,11 @@ export default (state = initialState.trails, action) => {
         ...state,
         multiTrackingMode: action.payload
       };           
+      case 'TRAIL_CSV_DATA':
+      return {
+        ...state,
+        trailCSVData: action.payload
+      };           
     default: return state;
   }
 }

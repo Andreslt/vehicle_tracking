@@ -5609,6 +5609,10 @@ modelo@^4.2.0:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/modelo/-/modelo-4.2.3.tgz#b278588a4db87fc1e5107ae3a277c0876f38d894"
 
+moment@^2.22.1:
+  version "2.22.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.1.tgz#529a2e9bf973f259c9643d237fda84de3a26e8ad"
+
 morgan@^1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.9.0.tgz#d01fa6c65859b76fcf31b3cb53a3821a311d8051"
@@ -6849,6 +6853,10 @@ react-bootstrap@^0.32.1:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
+react-csv@^1.0.14:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/react-csv/-/react-csv-1.0.14.tgz#7c9e444fc4c3ca1e1cf73a81129b1ec032838a71"
+
 react-dev-utils@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-5.0.0.tgz#425ac7c9c40c2603bc4f7ab8836c1406e96bb473"
@@ -6899,6 +6907,10 @@ react-event-listener@^0.5.1:
     fbjs "^0.8.16"
     prop-types "^15.6.0"
     warning "^3.0.0"
+
+react-file-download@^0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/react-file-download/-/react-file-download-0.3.5.tgz#7a4e75874528806bfa53ddddd98b4da427d3a897"
 
 react-google-maps@^9.4.5:
   version "9.4.5"

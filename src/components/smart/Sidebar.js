@@ -161,9 +161,8 @@ class SidebarContainer extends Component {
     this.setState({ hooverVehicle: (type) ? vehicle : '' });
   }
 
-  handlePanel = vehicleId => () => {
-    this.props.currentVehicle(vehicleId);
-    // this.props.vehicleInfo(true);
+  handlePanel = (zoneId, vehicleId) => () => {
+    this.props.currentVehicle(zoneId, vehicleId);
   }
 
   handleModal = vehicleId => () => {
@@ -223,7 +222,7 @@ class SidebarContainer extends Component {
                                 <IconButton
                                   aria-label="Open Panel"
                                   style={{ marginRight: '40px' }}
-                                  onClick={this.handlePanel(vehicleId)}
+                                  onClick={this.handlePanel(zoneId, vehicleId)}
                                 ><Input /> </IconButton>
                               </div>
                             }
@@ -316,9 +315,8 @@ const mapDispatchToProps = dispatch => {
     multiTrackingOrInitMode(status) {
       dispatch(multiTrackingMode(status))
     },
-    currentVehicle(vehicleId) {
-      console.log('Llegó a currentVehicle 1');
-      dispatch(currentVehicle(vehicleId))
+    currentVehicle(zoneId, vehicleId) {
+      dispatch(currentVehicle(zoneId, vehicleId))
     },
     vehicleInfo(state) {
       console.log('Llegó a vehicleInfo 1');

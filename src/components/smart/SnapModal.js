@@ -68,7 +68,7 @@ class SnapModal extends Component {
               </Tabs>
             </AppBar>          
             <div>
-              <img src={camLinks[this.state.tabValue]}/>
+              <img src={camLinks[this.state.tabValue]} style={{maxWidth: '100%'}}/>
             </div>
           </div>
         </Dialog>
