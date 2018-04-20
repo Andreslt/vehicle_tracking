@@ -25,7 +25,7 @@ function TabContainer(props) {
   );
 }
 
-const camLinks = ['http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=3$scale=100&maxfps=6&user=admin&pass=admin123', 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=3$scale=100&maxfps=6&user=admin&pass=admin123'] // 0: Video, 1: Image
+const camLinks = ['http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123', 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123'] // 0: Video, 1: Image
 
 class SnapModal extends Component {
   state = {
@@ -49,6 +49,7 @@ class SnapModal extends Component {
     return (
       <div>
         <Dialog
+          fullScreen
           open={this.props.liveRecording || false}
           transition={Transition}
           onClose={this.handleClose}
@@ -58,17 +59,17 @@ class SnapModal extends Component {
           <div>
             <AppBar position="static">
               <Tabs value={this.state.tabValue}>
-                <Tab label="VIDEO" onClick={this.selectTab(0)}/>
-                <Tab label="INSTANTANEA" onClick={this.selectTab(1)}/>
-                <Tab 
-                style={{marginLeft: '25%'}}
-                icon={<CloseIcon/>}
-                onClick={this.closeModal}
+                <Tab label="VIDEO" onClick={this.selectTab(0)} />
+                <Tab label="INSTANTANEA" onClick={this.selectTab(1)} />
+                <Tab
+                  style={{ position: 'absolute', right: '1%' }}
+                  icon={<CloseIcon />}
+                  onClick={this.closeModal}
                 />
               </Tabs>
-            </AppBar>          
+            </AppBar>
             <div>
-              <img src={camLinks[this.state.tabValue]} style={{maxWidth: '100%'}}/>
+              <img src={camLinks[this.state.tabValue]} style={{ maxWidth: '100%' }} />
             </div>
           </div>
         </Dialog>
