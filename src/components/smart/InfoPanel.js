@@ -10,6 +10,9 @@ import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { CSVLink, CSVDownload } from 'react-csv';
 import moment from 'moment';
+import { CircularProgress } from 'material-ui/Progress';
+import Fade from 'material-ui/transitions/Fade';
+import Snackbar from 'material-ui/Snackbar';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -19,9 +22,11 @@ class InfoPanel extends Component {
 
   state = {
     openDialog: false,
-    csvData: '',
     startingDate: null,
-    endingDate: null
+    endingDate: null,
+    invalidDates: false,
+    csvData: false,
+    csvDataError: false
   };
 
   closePanel = () => () => {
@@ -37,29 +42,54 @@ class InfoPanel extends Component {
   };
 
   generateCSV = (zoneId, vehicleId) => () => {
-    this.props.exportTrailCSV(zoneId, vehicleId, this.state.startingDate, this.state.endingDate)
+    const startingDate = this.state.startingDate;
+    const endingDate = this.state.endingDate;
+    let check = false;
+
+    if (startingDate && endingDate) {
+      const startingDateUnix = moment(startingDate).unix();
+      const endingDateUnix = moment(endingDate).unix();
+      if (startingDateUnix < endingDateUnix) {
+        check = true
+        this.setState({ csvData: true, csvDataError: false })
+        this.props.exportTrailCSV(zoneId, vehicleId, startingDate, endingDate)
+      }
+    }
+    if (!check) this.setState({ invalidDates: true })
   };
 
   datePicked = event => {
+    this.setState({ invalidDates: false })
     this.setState({ [event.target.id]: event.target.value })
   }
-  
+
+  handleCloseSnackbar = () => {
+    this.setState({ csvData: false })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.csvData) this.setState({ csvData: true});
+    if (nextProps.csvDataError) this.setState({ csvDataError: true});
+    this.setState({ csvLoading: nextProps.csvLoading });
+  }
+
   render() {
     const currentDate = moment().format('YYYY-MM-DDThh:mm');
-    const startDate = moment([moment().format('YYYY'), moment().format('MM') - 1]);
-    const endDate = moment(startDate).endOf('month');
-    console.log('** startDate -> ', startDate.toDate());
-    console.log('** endDate -> ', endDate.toDate());
-    
+    const {
+      currentVehicle,
+      vehicleZoneId,
+      csvLoading,
+      csvData
+    } = this.props;
     return (
       <div id="infoPanelID" style={{ float: 'right', width: '300px', height: '535px' }}>
         <Card>
           <CardHeader
             title={
-              <Typography style={{ marginRight: '20px' }} variant="title" > Vehicle ID {this.props.currentVehicle.id}</Typography>
+              <Typography style={{ marginRight: '20px' }} variant="title" > Vehicle ID {currentVehicle.id}</Typography>
             }
             style={{ margin: 0 }}
-            subheader="September 14, 2016"
+            subheader={moment().format('Do MMMM YYYY')}
             avatar={
               <div>
                 <Avatar aria-label="Recipe" style={{ backgroundColor: 'rgb(19, 148, 255)', marginRight: 0 }}>
@@ -76,10 +106,6 @@ class InfoPanel extends Component {
             }
           />
           <Divider />
-          <CardMedia
-            image="/static/images/cards/paella.jpg"
-            title="Contemplative Reptile"
-          />
           <CardContent
             style={{ display: 'flex', flexDirection: 'column' }}
           >
@@ -102,67 +128,45 @@ class InfoPanel extends Component {
                 onChange={this.datePicked}
               />
             </form>
-              <Button
-                onClick={this.generateCSV(this.props.vehicleZoneId, this.props.currentVehicle.id)}
-                variant="raised" color="secondary" style={{ flex: 1 }}
-              > Descargar CSV
+            {this.state.invalidDates &&
+              <Typography 
+              >
+                Verificar rango de fechas.
+              </Typography>}
+              {this.state.csvDataError  &&
+              <Typography 
+              >
+                Los resultados no contienen registros. Verifique los parámetros de búsqueda.
+              </Typography>}              
+            <div style={{ marginBottom: '20px' }}>
+              <Fade
+                in={this.state.csvLoading}
+                style={{ transitionDelay: this.state.csvLoading ? '800ms' : '0ms' }}
+                unmountOnExit
+              >
+                <CircularProgress />
+              </Fade>
+              {this.state.csvLoading ?
+                <Typography >
+                  Descargando archivo CSV. Esta operación puede tardar unos minutos.
+              </Typography> : ''}
+            </div>
+            <Button
+              onClick={this.generateCSV(vehicleZoneId, currentVehicle.id)}
+              variant="raised" color="secondary" style={{ flex: 1 }}
+            > Descargar CSV
             </Button>
           </CardContent>
-          {/* <Dialog
-          open={this.props.liveRecording}
-          transition={Transition}
-          keepMounted
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-slide-title"
-          aria-describedby="alert-dialog-slide-description"                    
-          >
-            hello
-          </Dialog> */}
-          {/*            <Carousel
-          >
-            <div>
-              <img src="http://lorempixel.com/output/cats-q-c-640-480-1.jpg" />
-              <p className="legend">Legend 1</p>
-            </div>
-            <div>
-              <img src="http://lorempixel.com/output/cats-q-c-640-480-2.jpg" />
-            </div>
-            <div>
-              <img src="http://lorempixel.com/output/cats-q-c-640-480-2.jpg" />
-            </div>
-            <div>
-              <img src="http://lorempixel.com/output/cats-q-c-640-480-2.jpg" />
-            </div>
-            <div>
-              <img src="http://lorempixel.com/output/cats-q-c-640-480-2.jpg" />
-            </div>
-            <div>
-              <img src="http://lorempixel.com/output/cats-q-c-640-480-2.jpg" />
-            </div>
-            <div>
-              <img src="http://lorempixel.com/output/cats-q-c-640-480-2.jpg" />
-            </div>
-          </Carousel>  */}
-          {/*          <Dialog
-            fullScreen
-            open={this.state.openDialog}
-            onClose={this.closeDialog}
-            transition={Transition}
-          >
-          <AppBar
-          color='primary'
-          >
-            <Toolbar color='blue'>
-              <IconButton color="inherit" onClick={this.handleCloseDialog} aria-label="Close">
-                <CloseIcon />
-              </IconButton>
-              <Typography variant="title" color="inherit">
-                Sound
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          </Dialog>*/}
         </Card>
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={this.state.csvData && !this.state.csvLoading && !this.state.csvDataError}
+          onClose={this.handleCloseSnackbar}
+          SnackbarContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">Archivo descargado.</span>}
+        />
       </div>
     )
   }
@@ -174,7 +178,9 @@ const mapStateToProps = state => {
     currentVehicle: state.vehicles.currentVehicle,
     vehicleZoneId: state.vehicles.vehicleZoneId,
     liveRecording: state.vehicles.liveRecording,
-    trailCSVData: state.vehicles.trailCSVData,
+    csvData: state.trails.csvData,
+    csvDataError: state.trails.csvDataError,
+    csvLoading: state.trails.csvLoading,
   }
 }
 

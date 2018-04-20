@@ -17,10 +17,23 @@ export default (state = initialState.trails, action) => {
         ...state,
         multiTrackingMode: action.payload
       };           
-      case 'TRAIL_CSV_DATA':
+      case 'TRAIL_CSV_DATA_LOADING':
       return {
         ...state,
-        trailCSVData: action.payload
+        csvLoading: action.payload,
+        csvData: false,
+        csvDataError: false
+      };           
+      case 'TRAIL_CSV_DATA_SUCCESS':
+      return {
+        ...state,
+        csvData: true
+      };           
+      case 'TRAIL_CSV_DATA_FAIL':
+      return {
+        ...state,
+        csvData: false,
+        csvDataError: true
       };           
     default: return state;
   }

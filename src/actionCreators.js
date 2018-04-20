@@ -92,12 +92,15 @@ export const currentVehicle = (zoneId, vehicleId) => {
         type: "VEHICLE_INFO",
         payload: true
       })
+      dispatch({
+        type: "TRAIL_CSV_DATA_LOADING",
+        payload: false
+      })
     })
   }
 }
 
 export const vehicleInfo = (state) => {
-  console.log('Llegó a vehicleInfo 2');
   return async dispatch => {
     dispatch({
       type: "VEHICLE_INFO",
@@ -154,15 +157,28 @@ export const exportTrailCSV = (zoneId, vehicleId, startingDate, endingDate) => {
   const serverhost = ['http://ec2-13-58-10-199.us-east-2.compute.amazonaws.com:8080', 'http://localhost:8080'];
   const env = 0 // 0: prod, 1: local
   return async dispatch => {
-    const response = await(axios.post(`${serverhost[env]}/api/downloadcsv`, data ));
-    const fileName = `smt_${zoneId}_${vehicleId}-${moment().format()}.csv`
-    FileDownload(response.data, fileName);
     dispatch({
-      type: "TRAIL_CSV_DATA",
-      payload: response.data
+      type: "TRAIL_CSV_DATA_LOADING",
+      payload: true
+    })
+    try {
+      const response = await (axios.post(`${serverhost[env]}/api/downloadcsv`, data));
+      const fileName = `smt_${zoneId}_${vehicleId}-${moment().format()}.csv`
+      FileDownload(response.data, fileName);
+      dispatch({
+        type: "TRAIL_CSV_DATA_SUCCESS",
+      })
+    } catch (error) {
+      dispatch({
+        type: "TRAIL_CSV_DATA_FAIL",
+      })
+    }
+    dispatch({
+      type: "TRAIL_CSV_DATA_LOADING",
+      payload: false
     })
   };
-  
+
   const zone_vehicle = `${zoneId}_${vehicleId}`;
   return (dispatch) => {
     fB.child('trails').orderByChild('sent_tsmp').startAt(startingDate).endAt(endingDate)

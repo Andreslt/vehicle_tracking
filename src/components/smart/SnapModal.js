@@ -25,7 +25,7 @@ function TabContainer(props) {
   );
 }
 
-const camLinks = ['http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123', 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123'] // 0: Video, 1: Image
+const camLinks = ['http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=3$scale=100&maxfps=6&user=admin&pass=admin123', 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=3$scale=100&maxfps=6&user=admin&pass=admin123'] // 0: Video, 1: Image
 
 class SnapModal extends Component {
   state = {
