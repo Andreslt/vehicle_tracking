@@ -6,7 +6,7 @@ import Snippet from '../Snippet';
 const compMapCenter = (type, modeOn, trails, zone) => {
   let latitude, longitude, zoom;
   if (type === 'zoom') {
-    zoom = (modeOn) ? zone.zoom : 17;
+    zoom = (modeOn) ? zone.zoom : 12;
     return zoom
   }
 

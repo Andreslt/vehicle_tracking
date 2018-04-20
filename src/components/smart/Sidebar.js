@@ -12,7 +12,7 @@ import {
   vehicleSnapshot
 } from '../../actionCreators';
 import { connect } from 'react-redux';
-
+import { Typography } from 'material-ui';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Card, { CardContent } from 'material-ui/Card';
 import { BottomNavigation, BottomNavigationAction, Divider, Switch, Checkbox, Select, InputLabel } from 'material-ui';
@@ -101,7 +101,8 @@ class SidebarContainer extends Component {
     zonePicked: null,
     selectedSubzone: '',
     multiTrackingMode: false,
-    hooverVehicle: ''
+    hooverVehicle: '',
+    kmlEmptyError: false
   };
 
   componentDidMount() {
@@ -112,7 +113,7 @@ class SidebarContainer extends Component {
     if (!this.state.open) {
       this.props.fetchVehicles(zoneId);
       this.props.clearZoneKml(this.props.zones[zoneId]);
-      this.setState({ open: true, colKey: zoneId, switch: false, zonePicked: this.props.zones[zoneId] });
+      this.setState({ open: true, colKey: zoneId, switch: false, zonePicked: this.props.zones[zoneId], kmlEmptyError: false });
     } else this.setState({ open: false });
   };
 
@@ -151,10 +152,17 @@ class SidebarContainer extends Component {
 
   handleSwitch = zone => () => {
     const subzone = zone.subzones[this.state.selectedSubzone];
-    (!this.state.switch) ?
-      this.props.printZoneKml(subzone) :
+    if (!this.state.switch) {
+      if (subzone.mapProps) {
+        this.props.printZoneKml(subzone)
+        this.setState({ switch: !this.state.switch, kmlEmptyError: false })
+      } else {
+        this.setState({ switch: !this.state.switch, kmlEmptyError: true })
+      }
+    } else {
       this.props.clearZoneKml(zone);
-    this.setState({ switch: !this.state.switch })
+      this.setState({ switch: !this.state.switch, kmlEmptyError: false })
+    }
   }
 
   handleMouseHover = (type, vehicle) => () => {
@@ -260,6 +268,7 @@ class SidebarContainer extends Component {
                             />
                           </div>
                         </ListSubheader>
+                        <Typography>{this.state.kmlEmptyError && 'El sector no contiene un archivo KML asignado.'}</Typography>
                         <Divider />
                       </div>
                     </Collapse>
@@ -322,7 +331,7 @@ const mapDispatchToProps = dispatch => {
       console.log('Llegó a vehicleInfo 1');
       dispatch(vehicleInfo(state))
     },
-    vehicleSnapshot(vehicleId){
+    vehicleSnapshot(vehicleId) {
       dispatch(vehicleSnapshot(vehicleId))
     }
   }

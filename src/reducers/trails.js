@@ -5,7 +5,8 @@ export default (state = initialState.trails, action) => {
     case 'PRINT_VEHICLE_TRAIL':
       return {
         ...state,
-        data: action.payload
+        data: action.payload,
+        followTrail: true
       };
       case 'CLEAR_VEHICLE_TRAIL':
       return {
@@ -15,7 +16,8 @@ export default (state = initialState.trails, action) => {
       case 'MULTI_TRACKING':
       return {
         ...state,
-        multiTrackingMode: action.payload
+        multiTrackingMode: action.payload,
+        followTrail: false
       };           
       case 'TRAIL_CSV_DATA_LOADING':
       return {
