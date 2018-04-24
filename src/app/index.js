@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom';
+import { CircularProgress } from 'material-ui/Progress';
 
 import './styles.css';
 import { LANDING, SIGN_IN } from '../routes';
@@ -9,13 +10,13 @@ import { Layout, Content, Sidebar, SignIn } from '../components/smart';
 import { Header, Route } from '../components/dump';
 
 const Landing = props => {
-  console.log("Landing.props =>", props);
   return (
     <Layout
       {...props}
       Header={Header}
       Sidebar={Sidebar}
       Content={Content}
+      onLogout={() => auth.signOut()}
     />
   );
 };
@@ -38,9 +39,12 @@ class App extends Component {
   render() {
     const { authUser, validatedAuth } = this.state;
     if (!validatedAuth) {
-
+      return (
+        <div className="App" style={{ alignItems: "center" }}>
+          <CircularProgress/>
+        </div>
+      );
     }
-    console.log("App.props =>", this.props);
     return (
       <Router>
         <div className="App">

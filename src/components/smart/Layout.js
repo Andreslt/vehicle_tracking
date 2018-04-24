@@ -123,7 +123,8 @@ class Layout extends React.Component {
       currentVehicle,
       vehicleInfo,
       liveRecording,
-      theme
+      theme,
+      onLogout
     } = this.props;
     const { anchor, open } = this.state;
     const drawer = (
@@ -174,7 +175,7 @@ class Layout extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Header />
+              <Header onLogout={onLogout} />
             </Toolbar>
           </AppBar>
           {before}
