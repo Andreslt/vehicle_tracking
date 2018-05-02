@@ -15,8 +15,8 @@ import { connect } from 'react-redux';
 import { Typography } from 'material-ui';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Card, { CardContent } from 'material-ui/Card';
-import { BottomNavigation, BottomNavigationAction, Divider, Switch, Checkbox, Select, InputLabel } from 'material-ui';
-import { Restore as RestoreIcon, NearMe, LocationOn, Input, ChromeReaderMode } from 'material-ui-icons';
+import { Divider, Switch, Checkbox, Select, InputLabel } from 'material-ui';
+import { Input } from 'material-ui-icons';
 import List, { ListItem, ListItemText, ListSubheader, ListItemIcon } from "material-ui/List";
 import { MenuItem } from 'material-ui/Menu';
 import Collapse from 'material-ui/transitions/Collapse';
@@ -26,18 +26,20 @@ import { withStyles } from 'material-ui/styles';
 import { compose } from "recompose";
 import IconButton from 'material-ui/IconButton';
 
+import SidebarBottomNavigation from '../dump/SidebarBottomNavigation';
+
 const layout = theme.layout;
-const themeSelector = 0 // 0: Light, 1: Dark
+const themeSelector = 0; // 0: Light, 1: Dark
 let checkArray = {};
 
-export const styles = theme => ({
+export const styles = () => ({
   tabWrapper: {
     'nav': {
       display: 'flex',
       flexDirection: 'row'
     }
-  }
-})
+  },
+});
 
 const cssStyles = {
   card: {
@@ -89,7 +91,7 @@ const cssStyles = {
     default: layout[themeSelector].cardBottom.color,
     selected: layout[themeSelector].cardBottom.selected
   }
-}
+};
 
 class SidebarContainer extends Component {
   state = {
@@ -102,7 +104,8 @@ class SidebarContainer extends Component {
     selectedSubzone: '',
     multiTrackingMode: false,
     hooverVehicle: '',
-    kmlEmptyError: false
+    kmlEmptyError: false,
+    selectedTab: "recent",
   };
 
   componentDidMount() {
@@ -125,20 +128,19 @@ class SidebarContainer extends Component {
       if (checkArray[index]) { // UNCHECKING
         let allowBlank;
 
-        if (Object.keys(checkArray).length == 1) allowBlank = true;
-        else allowBlank = false;
+        allowBlank = Object.keys(checkArray).length === 1;
 
         delete checkArray[index];
         this.props.multiTrackingOrInitMode(allowBlank);
         this.props.clearTrail(zoneId, this.props.vehicles[vehicleId].id, allowBlank);
       } else { // MULTI TRACKING MODE
 
-        checkArray[index] = true
+        checkArray[index] = true;
         this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id);
         this.props.multiTrackingOrInitMode(true);
       }
     }
-  }
+  };
 
   handleSelect = event => {
     this.setState({ [event.target.name]: event.target.value });
@@ -148,13 +150,13 @@ class SidebarContainer extends Component {
       this.props.clearZoneKml(zone);
       this.props.printZoneKml(subzone)
     }
-  }
+  };
 
   handleSwitch = zone => () => {
     const subzone = zone.subzones[this.state.selectedSubzone];
     if (!this.state.switch) {
       if (subzone.mapProps) {
-        this.props.printZoneKml(subzone)
+        this.props.printZoneKml(subzone);
         this.setState({ switch: !this.state.switch, kmlEmptyError: false })
       } else {
         this.setState({ switch: !this.state.switch, kmlEmptyError: true })
@@ -163,19 +165,23 @@ class SidebarContainer extends Component {
       this.props.clearZoneKml(zone);
       this.setState({ switch: !this.state.switch, kmlEmptyError: false })
     }
-  }
+  };
 
   handleMouseHover = (type, vehicle) => () => {
     this.setState({ hooverVehicle: (type) ? vehicle : '' });
-  }
+  };
 
   handlePanel = (zoneId, vehicleId) => () => {
     this.props.currentVehicle(zoneId, vehicleId);
-  }
+  };
 
   handleModal = vehicleId => () => {
     this.props.vehicleSnapshot(true);
-  }
+  };
+
+  handleTabChange = (event, value) => {
+    this.setState({ selectedTab: value });
+  };
 
   render() {
     const { zones, vehicles, classes } = this.props;
@@ -264,7 +270,7 @@ class SidebarContainer extends Component {
                           <div>
                             <Switch
                               onChange={this.handleSwitch(zones[zoneId])}
-                              disabled={(!!this.state.selectedSubzone) ? false : true}
+                              disabled={!this.state.selectedSubzone}
                             />
                           </div>
                         </ListSubheader>
@@ -279,16 +285,16 @@ class SidebarContainer extends Component {
         </Card>
         <div>
           <Divider />
-          <BottomNavigation value={1} style={cssStyles.cardBottom}>
-            <BottomNavigationAction label="Recents" value="recents" icon={<NearMe style={{ color: cssStyles.iconColor["selected"] }} />} />
-            <BottomNavigationAction label="Favorites" value="favorites" icon={<LocationOn style={{ color: cssStyles.iconColor["default"] }} />} />
-            <BottomNavigationAction label="Nearby" value="nearby" icon={<RestoreIcon style={{ color: cssStyles.iconColor["default"] }} />} />
-          </BottomNavigation>
+          <SidebarBottomNavigation
+            onChange={this.handleTabChange}
+            selectedTab={this.state.selectedTab}
+            rootStyle={cssStyles.cardBottom}
+            iconColors={cssStyles.iconColor}/>
         </div>
       </div>
     )
   }
-};
+}
 
 const mapStateToProps = state => {
   return {
@@ -298,7 +304,7 @@ const mapStateToProps = state => {
     multiTrackingMode: state.trails.mode,
     vehicleInfo: state.vehicles.vehicleInfo,
   }
-}
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -335,7 +341,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(vehicleSnapshot(vehicleId))
     }
   }
-}
+};
 
 export default compose(
   withStyles(styles),
