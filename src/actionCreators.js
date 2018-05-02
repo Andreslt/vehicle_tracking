@@ -162,12 +162,19 @@ export const exportTrailCSV = (zoneId, vehicleId, startingDate, endingDate) => {
       payload: true
     })
     try {
+      const time1 = moment(new Date());
+      // console.log('*** time 1 -> ', time1.format('DD/MM HH:mm:ss'));
       const response = await (axios.post(`${serverhost[env]}/api/downloadcsv`, data));
+      const time2 = moment(new Date());
+      // console.log('*** time 2 -> ', time2.format('DD/MM HH:mm:ss'), '.:. Diff ->', moment(time2.diff(time1)).format("m[m] s[s]"));
+      
       const fileName = `smt_${zoneId}_${vehicleId}-${moment().format()}.csv`
       FileDownload(response.data, fileName);
       dispatch({
         type: "TRAIL_CSV_DATA_SUCCESS",
       })
+      const time3 = moment(new Date());
+      // console.log('*** time 3 -> ', time3.format('DD/MM HH:mm:ss'), '.:. Diff ->', moment(time3.diff(time2)).format("m[m] s[s]"));
     } catch (error) {
       dispatch({
         type: "TRAIL_CSV_DATA_FAIL",

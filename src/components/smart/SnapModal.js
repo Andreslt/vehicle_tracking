@@ -33,17 +33,18 @@ class SnapModal extends Component {
     tabValue: 0
   };
 
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
   selectTab = tab => () => {
     this.setState({ tabValue: tab });
   }
 
-  closeModal = () => {
+  handleClose = () => {
+    this.setState({ open: false });
     this.props.closeModal();
   }
+
+  imgUrl = () => {
+    return this.state.open ? camLinks[this.state.tabValue] : '';
+  };
 
   render() {
     return (
@@ -52,7 +53,6 @@ class SnapModal extends Component {
           fullScreen
           open={this.props.liveRecording || false}
           transition={Transition}
-          onClose={this.handleClose}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
@@ -64,12 +64,12 @@ class SnapModal extends Component {
                 <Tab
                   style={{ position: 'absolute', right: '1%' }}
                   icon={<CloseIcon />}
-                  onClick={this.closeModal}
+                  onClick={this.handleClose}
                 />
               </Tabs>
             </AppBar>
             <div>
-              <img src={camLinks[this.state.tabValue]} style={{ maxWidth: '100%' }} />
+              <img src={this.imgUrl()} style={{ maxWidth: '100%' }} />
             </div>
           </div>
         </Dialog>
