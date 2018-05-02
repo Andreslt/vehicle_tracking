@@ -118,11 +118,13 @@ class SidebarContainer extends Component {
   };
 
   handleCheck = (zoneId, vehicleId, index) => () => {
-    if (Object.keys(checkArray).length === 0) { // SINGLE MODE - FIRST TIME CHECKING
+    if (Object.keys(checkArray).length === 0) {
+      // SINGLE MODE - FIRST TIME CHECKING
       this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id, false);
       checkArray[index] = true;
     } else {
-      if (checkArray[index]) { // UNCHECKING
+      if (checkArray[index]) {
+        // UNCHECKING
         let allowBlank;
 
         if (Object.keys(checkArray).length == 1) allowBlank = true;
@@ -131,7 +133,8 @@ class SidebarContainer extends Component {
         delete checkArray[index];
         this.props.multiTrackingOrInitMode(allowBlank);
         this.props.clearTrail(zoneId, this.props.vehicles[vehicleId].id, allowBlank);
-      } else { // MULTI TRACKING MODE
+      } else {
+        // MULTI TRACKING MODE
 
         checkArray[index] = true
         this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id);
