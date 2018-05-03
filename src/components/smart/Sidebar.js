@@ -26,7 +26,7 @@ import { withStyles } from 'material-ui/styles';
 import { compose } from "recompose";
 import IconButton from 'material-ui/IconButton';
 
-import SidebarBottomNavigation from '../dump/SidebarBottomNavigation';
+import BottomNavigation from '../dump/Sidebar/BottomNavigation';
 
 const layout = theme.layout;
 const themeSelector = 0; // 0: Light, 1: Dark
@@ -285,7 +285,7 @@ class SidebarContainer extends Component {
         </Card>
         <div>
           <Divider />
-          <SidebarBottomNavigation
+          <BottomNavigation
             onChange={this.handleTabChange}
             selectedTab={this.state.selectedTab}
             rootStyle={cssStyles.cardBottom}
