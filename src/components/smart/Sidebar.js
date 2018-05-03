@@ -15,18 +15,17 @@ import { connect } from 'react-redux';
 import { Typography } from 'material-ui';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Card, { CardContent } from 'material-ui/Card';
-import { Divider, Switch, Checkbox, Select, InputLabel } from 'material-ui';
-import { Input } from 'material-ui-icons';
+import { Divider, Switch, Select, InputLabel } from 'material-ui';
 import List, { ListItem, ListItemText, ListSubheader, ListItemIcon } from "material-ui/List";
 import { MenuItem } from 'material-ui/Menu';
 import Collapse from 'material-ui/transitions/Collapse';
-import { ExpandLess, ExpandMore, MoveToInbox as InboxIcon, PhotoCamera } from 'material-ui-icons';
+import { ExpandLess, ExpandMore, MoveToInbox as InboxIcon } from 'material-ui-icons';
 import theme from '../../app/theme.json';
 import { withStyles } from 'material-ui/styles';
 import { compose } from "recompose";
-import IconButton from 'material-ui/IconButton';
 
 import BottomNavigation from '../dump/Sidebar/BottomNavigation';
+import VehicleItem from '../dump/Sidebar/VehicleItem';
 
 const layout = theme.layout;
 const themeSelector = 0; // 0: Light, 1: Dark
@@ -216,31 +215,16 @@ class SidebarContainer extends Component {
                       <List component="div" disablePadding
                       >
                         {!!vehicles && (Object.keys(vehicles).map((vehicleId, vehicleIndex) => (
-                          <ListItem
-                            key={`ListItemIcon_${vehicleId}`} button style={{ padding: 0, paddingLeft: 25 }}
+                          <VehicleItem
+                            hooverVehicle={this.state.hooverVehicle}
+                            vehicleKey={vehicleId}
+                            vehicle={vehicles[vehicleId]}
                             onMouseEnter={this.handleMouseHover(true, vehicleId)}
                             onMouseLeave={this.handleMouseHover(false)}
-                          >
-                            <Checkbox
-                              tabIndex={-1}
-                              onClick={this.handleCheck(zoneId, vehicleId, vehicleIndex, this.props.trails)}
-                              disableRipple
-                            />
-                            <ListItemText key={`ListItemText${vehicles[vehicleId].id}`} inset primary={vehicles[vehicleId].id} />
-                            {this.state.hooverVehicle === vehicleId &&
-                              <div>
-                                <IconButton
-                                  aria-label="Open Camera"
-                                  onClick={this.handleModal(vehicleId)}
-                                ><PhotoCamera /> </IconButton>
-                                <IconButton
-                                  aria-label="Open Panel"
-                                  style={{ marginRight: '40px' }}
-                                  onClick={this.handlePanel(zoneId, vehicleId)}
-                                ><Input /> </IconButton>
-                              </div>
-                            }
-                          </ListItem>
+                            onCheck={this.handleCheck(zoneId, vehicleId, vehicleIndex, this.props.trails)}
+                            onOpenModal={this.handleModal(vehicleId)}
+                            onOpenPanel={this.handlePanel(zoneId, vehicleId)}
+                          />
                         )))}
                       </List>
                       <Divider />
