@@ -25,7 +25,7 @@ import { withStyles } from 'material-ui/styles';
 import { compose } from "recompose";
 
 import BottomNavigation from '../dump/Sidebar/BottomNavigation';
-import VehicleItem from '../dump/Sidebar/VehicleItem';
+import VehicleList from '../dump/Sidebar/VehicleList';
 
 const layout = theme.layout;
 const themeSelector = 0; // 0: Light, 1: Dark
@@ -212,21 +212,16 @@ class SidebarContainer extends Component {
                       {(this.state.open && this.state.colKey === zoneId) ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={this.state.open && this.state.colKey === zoneId} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding
-                      >
-                        {!!vehicles && (Object.keys(vehicles).map((vehicleId, vehicleIndex) => (
-                          <VehicleItem
-                            hooverVehicle={this.state.hooverVehicle}
-                            vehicleKey={vehicleId}
-                            vehicle={vehicles[vehicleId]}
-                            onMouseEnter={this.handleMouseHover(true, vehicleId)}
-                            onMouseLeave={this.handleMouseHover(false)}
-                            onCheck={this.handleCheck(zoneId, vehicleId, vehicleIndex, this.props.trails)}
-                            onOpenModal={this.handleModal(vehicleId)}
-                            onOpenPanel={this.handlePanel(zoneId, vehicleId)}
-                          />
-                        )))}
-                      </List>
+                      <VehicleList
+                        vehicles={vehicles}
+                        zoneKey={zoneId}
+                        hooverVehicle={this.state.hooverVehicle}
+                        trails={this.props.trails}
+                        onMouseHoverItem={this.handleMouseHover}
+                        onCheckItem={this.handleCheck}
+                        onOpenModal={this.handleModal}
+                        onOpenPanel={this.handlePanel}
+                      />
                       <Divider />
                       <div>
                         <div>
