@@ -12,20 +12,17 @@ import {
   vehicleSnapshot
 } from '../../actionCreators';
 import { connect } from 'react-redux';
-import { Typography } from 'material-ui';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Card, { CardContent } from 'material-ui/Card';
-import { Divider, Switch, Select, InputLabel } from 'material-ui';
-import List, { ListItem, ListItemText, ListSubheader, ListItemIcon } from "material-ui/List";
-import { MenuItem } from 'material-ui/Menu';
-import Collapse from 'material-ui/transitions/Collapse';
-import { ExpandLess, ExpandMore, MoveToInbox as InboxIcon } from 'material-ui-icons';
+import { Divider  } from 'material-ui';
+import List from "material-ui/List";
 import theme from '../../app/theme.json';
 import { withStyles } from 'material-ui/styles';
 import { compose } from "recompose";
 
 import BottomNavigation from '../dump/Sidebar/BottomNavigation';
 import VehicleList from '../dump/Sidebar/VehicleList';
+import ZoneItem from '../dump/Sidebar/ZoneItem';
 
 const layout = theme.layout;
 const themeSelector = 0; // 0: Light, 1: Dark
@@ -197,24 +194,19 @@ class SidebarContainer extends Component {
           <CardContent style={cssStyles.cardContent}>
             <List component="nav" style={cssStyles.list}>
               {zones && (
-                Object.keys(zones).map((zoneId, index) => (
-                  <div key={`div${index}`}>
-                    <ListItem
-                      button
-                      onClick={this.handleClick(zoneId)}
-                      key={`ListItem${zoneId}`}
-                      value={zoneId}
-                    >
-                      <ListItemIcon key={`ListItemIcon_${zoneId}`}>
-                        <InboxIcon key={`InboxIcon${zoneId}`} />
-                      </ListItemIcon>
-                      <ListItemText key={`ListItemText${zoneId}`} inset primary={zones[zoneId].title} />
-                      {(this.state.open && this.state.colKey === zoneId) ? <ExpandLess /> : <ExpandMore />}
-                    </ListItem>
-                    <Collapse in={this.state.open && this.state.colKey === zoneId} timeout="auto" unmountOnExit>
+                Object.keys(zones).map((zoneKey, index) => (
+                  <ZoneItem
+                    key={`div${index}`}
+                    zoneKey={zoneKey}
+                    zone={zones[zoneKey]}
+                    isExpanded={this.state.open && this.state.colKey === zoneKey}
+                    zonePicked={this.state.zonePicked}
+                    selectedSubZone={this.state.selectedSubzone}
+                    kmlEmptyError={this.state.kmlEmptyError}
+                    vehicleList={
                       <VehicleList
                         vehicles={vehicles}
-                        zoneKey={zoneId}
+                        zoneKey={zoneKey}
                         hooverVehicle={this.state.hooverVehicle}
                         trails={this.props.trails}
                         onMouseHoverItem={this.handleMouseHover}
@@ -222,42 +214,11 @@ class SidebarContainer extends Component {
                         onOpenModal={this.handleModal}
                         onOpenPanel={this.handlePanel}
                       />
-                      <Divider />
-                      <div>
-                        <div>
-                          <InputLabel style={{ margin: "20px 10px 0 0" }} htmlFor={`select_${zoneId}`}>Seleccionar Sector </InputLabel>
-                          <Select
-                            value={this.state.selectedSubzone}
-                            style={{ width: '150px' }}
-                            onChange={this.handleSelect}
-                            inputProps={{
-                              name: 'selectedSubzone',
-                              id: `select_${zoneId}`,
-                            }}
-                          >
-                            {!!this.state.zonePicked && this.state.zonePicked.id === zones[zoneId].id && Object.keys(this.state.zonePicked.subzones).map((subzone, subzoneIndex) => {
-                              return (
-                                <MenuItem key={`kml_${subzoneIndex}`}
-                                  value={subzone}>
-                                  {this.state.zonePicked.subzones[subzone].title}
-                                </MenuItem>)
-                            })}
-                          </Select>
-                        </div>
-                        <ListSubheader style={{ display: 'flex', flexDirection: 'row', marginRight: '55px' }}>
-                          <div style={{ flex: 1, fontWeight: 'bold', marginRight: '45px' }}>Mostrar en Mapa</div>
-                          <div>
-                            <Switch
-                              onChange={this.handleSwitch(zones[zoneId])}
-                              disabled={!this.state.selectedSubzone}
-                            />
-                          </div>
-                        </ListSubheader>
-                        <Typography>{this.state.kmlEmptyError && 'El sector no contiene un archivo KML asignado.'}</Typography>
-                        <Divider />
-                      </div>
-                    </Collapse>
-                  </div>
+                    }
+                    onZoneClick={this.handleClick(zoneKey)}
+                    onSubZoneSelect={this.handleSelect}
+                    onToggleSwitch={this.handleSwitch(zones[zoneKey])}
+                  />
                 )))}
             </List>
           </CardContent>
@@ -268,7 +229,8 @@ class SidebarContainer extends Component {
             onChange={this.handleTabChange}
             selectedTab={this.state.selectedTab}
             rootStyle={cssStyles.cardBottom}
-            iconColors={cssStyles.iconColor}/>
+            iconColors={cssStyles.iconColor}
+          />
         </div>
       </div>
     )
