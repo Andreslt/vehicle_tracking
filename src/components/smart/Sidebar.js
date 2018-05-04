@@ -193,7 +193,7 @@ class SidebarContainer extends Component {
           </Tabs>
           <CardContent style={cssStyles.cardContent}>
             <List component="nav" style={cssStyles.list}>
-              {zones && (
+              {zones &&
                 Object.keys(zones).map((zoneKey, index) => (
                   <ZoneItem
                     key={`div${index}`}
@@ -219,7 +219,7 @@ class SidebarContainer extends Component {
                     onSubZoneSelect={this.handleSelect}
                     onToggleSwitch={this.handleSwitch(zones[zoneKey])}
                   />
-                )))}
+                ))}
             </List>
           </CardContent>
         </Card>
