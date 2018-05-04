@@ -43,7 +43,7 @@ class SnapModal extends Component {
   }
 
   imgUrl = () => {
-    return this.state.open ? camLinks[this.state.tabValue] : '';
+    return this.props.liveRecording ? camLinks[this.state.tabValue] : '';
   };
 
   render() {
