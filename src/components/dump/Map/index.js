@@ -63,8 +63,13 @@ const MapComponent = props => {
     handleNewGeoFenceCreate,
   } = props;
   const children = [];
+  const zoom = compMapCenter('zoom', multiTrackingMode, null, map);
+  const center = compMapCenter(null, multiTrackingMode, trails, map);
+  const mapProps = {};
   switch (mapMode) {
     case "geoFences":
+      mapProps.defaultZoom = zoom;
+      mapProps.defaultCenter = center;
       if (newGeoFence) {
         children.push(<Marker
           key="marker_new"
@@ -83,21 +88,24 @@ const MapComponent = props => {
           />
         </Marker>);
       }
-      children.push(...geoFences.map((geoFence, index) => (
+      children.push(...geoFences.ids.map(geoFenceId => (
         <Marker
-          key={`marker_${index}`}
-          label={geoFence.name}
-          position={{lat: geoFence.latitude, lng: geoFence.longitude}}
+          key={`marker_${geoFenceId}`}
+          label={geoFences.byId[geoFenceId].name}
+          position={{lat: geoFences.byId[geoFenceId].latitude, lng: geoFences.byId[geoFenceId].longitude}}
         >
           <Circle
-            center={{lat: geoFence.latitude, lng: geoFence.longitude}}
-            radius={geoFence.radius}
+            center={{lat: geoFences.byId[geoFenceId].latitude, lng: geoFences.byId[geoFenceId].longitude}}
+            radius={geoFences.byId[geoFenceId].radius}
+            visible={geoFences.byId[geoFenceId].visible}
           />
         </Marker>
       )));
       break;
     case "recent":
     default:
+      mapProps.zoom = zoom;
+      mapProps.center = center;
       if (!!trails) {
         children.push(...Object.keys(trails).map((vehicleTrail, vehiKey) => {
           const linePath = [];
@@ -144,8 +152,7 @@ const MapComponent = props => {
   }
   return (
     <GoogleMap
-      zoom={compMapCenter('zoom', multiTrackingMode, null, map)}
-      center={compMapCenter(null, multiTrackingMode, trails, map)}
+      {...mapProps}
       onClick={handleMapClick}
     >
       {children}
@@ -172,7 +179,6 @@ export default compose(
         strokeWeight: 10
       }
     },
-    geoFences: [],
     newGeoFence: null,
   }), {
     onToggleOpen: ({isOpen, selectedKey}) => key => {
@@ -189,6 +195,7 @@ export default compose(
             latitude: latLng.lat(),
             longitude: latLng.lng(),
             radius: 30,
+            visible: true,
           },
         };
       }
@@ -196,13 +203,10 @@ export default compose(
     handleNewGeoFenceInfoWindowClose: () => () => ({
       newGeoFence: null,
     }),
-    handleNewGeoFenceCreate: state => geoFence => ({
-      geoFences: [
-        ...state.geoFences,
-        geoFence,
-      ],
-      newGeoFence: null,
-    })
+    handleNewGeoFenceCreate: (state, { addGeoFence }) => geoFence => {
+      addGeoFence(geoFence);
+      return { newGeoFence: null };
+    }
   }),
   withScriptjs,
   withGoogleMap,

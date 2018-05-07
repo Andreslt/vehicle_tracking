@@ -11,6 +11,7 @@ import {
   vehicleInfo,
   vehicleSnapshot,
   changeMapMode,
+  changeGeoFenceVisibility,
 } from '../../actionCreators';
 import { connect } from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
@@ -24,6 +25,7 @@ import { compose } from "recompose";
 import BottomNavigation from '../dump/Sidebar/BottomNavigation';
 import VehicleList from '../dump/Sidebar/VehicleList';
 import ZoneItem from '../dump/Sidebar/ZoneItem';
+import GeoFenceItem from '../dump/Sidebar/GeoFenceItem';
 
 const layout = theme.layout;
 const themeSelector = 0; // 0: Light, 1: Dark
@@ -180,47 +182,80 @@ class SidebarContainer extends Component {
     this.props.changeMapMode(value);
   };
 
+  handleGeoFenceVisibilityChange = geoFenceId => ({ target: { checked } }) => this.props.changeGeoFenceVisibility(geoFenceId, checked);
+
+  getTabTitle = mode => {
+    switch (mode) {
+      case "geoFences":
+        return "Geo-Fences";
+      case "recent":
+      default:
+        return "Zonas";
+    }
+  };
+
+  getCardContent = mode => {
+    switch (mode) {
+      case "geoFences":
+        if (this.props.geoFences) {
+          return this.props.geoFences.ids.map(geoFenceId => (
+            <GeoFenceItem
+              key={geoFenceId}
+              geoFence={this.props.geoFences.byId[geoFenceId]}
+              onChange={this.handleGeoFenceVisibilityChange(geoFenceId)}
+            />
+          ));
+        }
+        return [];
+      case "recent":
+      default:
+        if (this.props.zones) {
+          return Object.keys(this.props.zones).map((zoneKey, index) => (
+            <ZoneItem
+              key={`div${index}`}
+              zoneKey={zoneKey}
+              zone={this.props.zones[zoneKey]}
+              isExpanded={this.state.open && this.state.colKey === zoneKey}
+              zonePicked={this.state.zonePicked}
+              selectedSubZone={this.state.selectedSubzone}
+              kmlEmptyError={this.state.kmlEmptyError}
+              vehicleList={
+                <VehicleList
+                  vehicles={this.props.vehicles}
+                  zoneKey={zoneKey}
+                  hooverVehicle={this.state.hooverVehicle}
+                  trails={this.props.trails}
+                  onMouseHoverItem={this.handleMouseHover}
+                  onCheckItem={this.handleCheck}
+                  onOpenModal={this.handleModal}
+                  onOpenPanel={this.handlePanel}
+                />
+              }
+              onZoneClick={this.handleClick(zoneKey)}
+              onSubZoneSelect={this.handleSelect}
+              onToggleSwitch={this.handleSwitch(this.props.zones[zoneKey])}
+            />
+          ))
+        }
+        return [];
+    }
+  };
+
   render() {
-    const { zones, vehicles, classes, mapMode } = this.props;
+    const { classes, mapMode } = this.props;
     return (
       <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
         <Card style={cssStyles.card}>
           <Tabs width="auto" value={0} style={cssStyles.tabs}>
             <Tab
-              label="Zonas"
+              label={this.getTabTitle(mapMode)}
               style={cssStyles.singleTab}
               className={classes.tabWrapper}
             />
           </Tabs>
           <CardContent style={cssStyles.cardContent}>
             <List component="nav" style={cssStyles.list}>
-              {zones &&
-                Object.keys(zones).map((zoneKey, index) => (
-                  <ZoneItem
-                    key={`div${index}`}
-                    zoneKey={zoneKey}
-                    zone={zones[zoneKey]}
-                    isExpanded={this.state.open && this.state.colKey === zoneKey}
-                    zonePicked={this.state.zonePicked}
-                    selectedSubZone={this.state.selectedSubzone}
-                    kmlEmptyError={this.state.kmlEmptyError}
-                    vehicleList={
-                      <VehicleList
-                        vehicles={vehicles}
-                        zoneKey={zoneKey}
-                        hooverVehicle={this.state.hooverVehicle}
-                        trails={this.props.trails}
-                        onMouseHoverItem={this.handleMouseHover}
-                        onCheckItem={this.handleCheck}
-                        onOpenModal={this.handleModal}
-                        onOpenPanel={this.handlePanel}
-                      />
-                    }
-                    onZoneClick={this.handleClick(zoneKey)}
-                    onSubZoneSelect={this.handleSelect}
-                    onToggleSwitch={this.handleSwitch(zones[zoneKey])}
-                  />
-                ))}
+              {this.getCardContent(mapMode)}
             </List>
           </CardContent>
         </Card>
@@ -246,6 +281,7 @@ const mapStateToProps = state => {
     multiTrackingMode: state.trails.mode,
     vehicleInfo: state.vehicles.vehicleInfo,
     mapMode: state.map.mode,
+    geoFences: state.geoFences,
   }
 };
 
@@ -284,7 +320,10 @@ const mapDispatchToProps = dispatch => ({
   },
   changeMapMode(mode) {
     dispatch(changeMapMode(mode))
-  }
+  },
+  changeGeoFenceVisibility(id, visible) {
+    dispatch(changeGeoFenceVisibility(id, visible));
+  },
 });
 
 export default compose(

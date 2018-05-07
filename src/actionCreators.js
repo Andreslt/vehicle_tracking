@@ -204,3 +204,16 @@ export const changeMapMode = mode => ({
   type: "CHANGE_MAP_MODE",
   payload: mode
 });
+
+export const addGeoFence = geoFence => ({
+  type: "ADD_GEO_FENCE",
+  payload: geoFence,
+});
+
+export const changeGeoFenceVisibility = (geoFenceId, visible) => ({
+  type: "CHANGE_GEO_FENCE_VISIBILITY",
+  payload: {
+    id: geoFenceId,
+    visible,
+  },
+});
