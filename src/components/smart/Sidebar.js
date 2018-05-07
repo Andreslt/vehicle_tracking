@@ -16,7 +16,8 @@ import {
 import { connect } from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Card, { CardContent } from 'material-ui/Card';
-import { Divider  } from 'material-ui';
+import Divider from 'material-ui/Divider';
+import TextField from 'material-ui/TextField';
 import List from "material-ui/List";
 import theme from '../../app/theme.json';
 import { withStyles } from 'material-ui/styles';
@@ -31,12 +32,16 @@ const layout = theme.layout;
 const themeSelector = 0; // 0: Light, 1: Dark
 let checkArray = {};
 
-export const styles = () => ({
+export const styles = theme => ({
   tabWrapper: {
     'nav': {
       display: 'flex',
       flexDirection: 'row'
     }
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
   },
 });
 
@@ -89,7 +94,7 @@ const cssStyles = {
   iconColor: {
     default: layout[themeSelector].cardBottom.color,
     selected: layout[themeSelector].cardBottom.selected
-  }
+  },
 };
 
 class SidebarContainer extends Component {
@@ -105,6 +110,7 @@ class SidebarContainer extends Component {
     hooverVehicle: '',
     kmlEmptyError: false,
     selectedTab: "recent",
+    geoFenceFilter: "",
   };
 
   componentDidMount() {
@@ -184,6 +190,8 @@ class SidebarContainer extends Component {
 
   handleGeoFenceVisibilityChange = geoFenceId => ({ target: { checked } }) => this.props.changeGeoFenceVisibility(geoFenceId, checked);
 
+  handleGeoFenceFilter = ({ target: { value } }) => this.setState({ geoFenceFilter: value });
+
   getTabTitle = mode => {
     switch (mode) {
       case "geoFences":
@@ -198,10 +206,14 @@ class SidebarContainer extends Component {
     switch (mode) {
       case "geoFences":
         if (this.props.geoFences) {
-          return this.props.geoFences.ids.map(geoFenceId => (
+          let {ids, byId} = this.props.geoFences;
+          if (this.state.geoFenceFilter) {
+            ids = ids.filter(id => byId[id].name.toLowerCase().includes(this.state.geoFenceFilter.toLowerCase()));
+          }
+          return ids.map(geoFenceId => (
             <GeoFenceItem
               key={geoFenceId}
-              geoFence={this.props.geoFences.byId[geoFenceId]}
+              geoFence={byId[geoFenceId]}
               onChange={this.handleGeoFenceVisibilityChange(geoFenceId)}
             />
           ));
@@ -254,6 +266,15 @@ class SidebarContainer extends Component {
             />
           </Tabs>
           <CardContent style={cssStyles.cardContent}>
+            {mapMode === "geoFences" && (
+              <TextField
+                margin="normal"
+                className={classes.textField}
+                label="Filtrar"
+                value={this.state.geoFenceFilter}
+                onChange={this.handleGeoFenceFilter}
+              />
+            )}
             <List component="nav" style={cssStyles.list}>
               {this.getCardContent(mapMode)}
             </List>
