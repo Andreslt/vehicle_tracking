@@ -11,5 +11,8 @@ export default {
         zoom: 10
       }
     }
-  }
+  },
+  map: {
+    mode: "recent",
+  },
 }

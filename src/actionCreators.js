@@ -199,3 +199,8 @@ export const multiTrackingMode = (status) => {
     })
   }
 }
+
+export const changeMapMode = mode => ({
+  type: "CHANGE_MAP_MODE",
+  payload: mode
+});
