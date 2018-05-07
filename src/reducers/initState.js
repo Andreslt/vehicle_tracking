@@ -15,4 +15,9 @@ export default {
   map: {
     mode: "recent",
   },
+  geoFences: {
+    ids: [],
+    byId: {},
+    length: 0,
+  },
 }
