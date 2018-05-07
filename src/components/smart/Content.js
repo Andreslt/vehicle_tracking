@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import Map from '../dump/Map';
 
 class ContentContainer extends Component {
@@ -10,7 +10,7 @@ class ContentContainer extends Component {
       />
     )
   }
-};
+}
 
 const mapStateToProps = state => {
   return {
@@ -18,8 +18,9 @@ const mapStateToProps = state => {
     trails: state.trails.data,
     multiTrackingMode: state.trails.multiTrackingMode,
     followTrail: state.trails.followTrail,
-    currentVehicle: state.vehicles.currentVehicle    
+    currentVehicle: state.vehicles.currentVehicle,
+    mapMode: state.map.mode,
   }
-}
+};
 
 export default connect(mapStateToProps)(ContentContainer);

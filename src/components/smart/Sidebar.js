@@ -9,7 +9,8 @@ import {
   multiTrackingMode,
   currentVehicle,
   vehicleInfo,
-  vehicleSnapshot
+  vehicleSnapshot,
+  changeMapMode,
 } from '../../actionCreators';
 import { connect } from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
@@ -176,17 +177,17 @@ class SidebarContainer extends Component {
   };
 
   handleTabChange = (event, value) => {
-    this.setState({ selectedTab: value });
+    this.props.changeMapMode(value);
   };
 
   render() {
-    const { zones, vehicles, classes } = this.props;
+    const { zones, vehicles, classes, mapMode } = this.props;
     return (
       <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
         <Card style={cssStyles.card}>
           <Tabs width="auto" value={0} style={cssStyles.tabs}>
             <Tab
-              label={`Zonas`}
+              label="Zonas"
               style={cssStyles.singleTab}
               className={classes.tabWrapper}
             />
@@ -227,7 +228,7 @@ class SidebarContainer extends Component {
           <Divider />
           <BottomNavigation
             onChange={this.handleTabChange}
-            selectedTab={this.state.selectedTab}
+            selectedTab={mapMode}
             rootStyle={cssStyles.cardBottom}
             iconColors={cssStyles.iconColor}
           />
@@ -244,45 +245,47 @@ const mapStateToProps = state => {
     trails: state.trails.data,
     multiTrackingMode: state.trails.mode,
     vehicleInfo: state.vehicles.vehicleInfo,
+    mapMode: state.map.mode,
   }
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchZones() {
-      dispatch(fetchZones());
-    },
-    fetchVehicles(zone) {
-      dispatch(fetchVehicles(zone));
-    },
-    printZoneKml(zone) {
-      dispatch(clearZoneKml(zone));
-      dispatch(printZoneKml(zone));
-    },
-    clearZoneKml(zone) {
-      dispatch(clearZoneKml(zone));
-    },
-    printTrail(zoneId, vehicleId) {
-      dispatch(printTrail(zoneId, vehicleId));
-    },
-    clearTrail(zoneId, vehicleId, blank) {
-      dispatch(clearTrail(zoneId, vehicleId, blank));
-    },
-    multiTrackingOrInitMode(status) {
-      dispatch(multiTrackingMode(status))
-    },
-    currentVehicle(zoneId, vehicleId) {
-      dispatch(currentVehicle(zoneId, vehicleId))
-    },
-    vehicleInfo(state) {
-      console.log('Llegó a vehicleInfo 1');
-      dispatch(vehicleInfo(state))
-    },
-    vehicleSnapshot(vehicleId) {
-      dispatch(vehicleSnapshot(vehicleId))
-    }
+const mapDispatchToProps = dispatch => ({
+  fetchZones() {
+    dispatch(fetchZones());
+  },
+  fetchVehicles(zone) {
+    dispatch(fetchVehicles(zone));
+  },
+  printZoneKml(zone) {
+    dispatch(clearZoneKml(zone));
+    dispatch(printZoneKml(zone));
+  },
+  clearZoneKml(zone) {
+    dispatch(clearZoneKml(zone));
+  },
+  printTrail(zoneId, vehicleId) {
+    dispatch(printTrail(zoneId, vehicleId));
+  },
+  clearTrail(zoneId, vehicleId, blank) {
+    dispatch(clearTrail(zoneId, vehicleId, blank));
+  },
+  multiTrackingOrInitMode(status) {
+    dispatch(multiTrackingMode(status))
+  },
+  currentVehicle(zoneId, vehicleId) {
+    dispatch(currentVehicle(zoneId, vehicleId))
+  },
+  vehicleInfo(state) {
+    console.log('Llegó a vehicleInfo 1');
+    dispatch(vehicleInfo(state))
+  },
+  vehicleSnapshot(vehicleId) {
+    dispatch(vehicleSnapshot(vehicleId))
+  },
+  changeMapMode(mode) {
+    dispatch(changeMapMode(mode))
   }
-};
+});
 
 export default compose(
   withStyles(styles),

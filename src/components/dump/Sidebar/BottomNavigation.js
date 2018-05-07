@@ -10,8 +10,8 @@ const actions = {
     label: "Recent",
     icon: NearMeIcon,
   },
-  favorite: {
-    label: "Favorites",
+  geoFences: {
+    label: "Geo-fences",
     icon: LocationOnIcon,
   },
   nearby: {
