@@ -5,7 +5,7 @@ import { CircularProgress } from 'material-ui/Progress';
 
 import './styles.css';
 import { LANDING, SIGN_IN } from '../routes';
-import { firebaseAuth as auth } from '../firebase';
+import { firebaseAuth as auth, getUserProfile } from '../firebase';
 import { Layout, Content, Sidebar, SignIn } from '../components/smart';
 import { Header, Route } from '../components/dump';
 
@@ -31,8 +31,12 @@ class App extends Component {
   componentDidMount() {
     auth.onAuthStateChanged(authUser => {
       const user = authUser || null;
-      console.log("firebase user ->", user);
       this.setState({ authUser: user, validatedAuth: true });
+      if (user) {
+        getUserProfile(user.uid, userProfile => {
+          this.setState({ userProfile });
+        })
+      }
     })
   }
 
@@ -41,7 +45,7 @@ class App extends Component {
     if (!validatedAuth) {
       return (
         <div className="App" style={{ alignItems: "center" }}>
-          <CircularProgress/>
+          <CircularProgress />
         </div>
       );
     }

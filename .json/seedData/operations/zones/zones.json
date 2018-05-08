@@ -1,0 +1,22 @@
+[
+  {
+    "name": "BARRANQUILLA",
+    "mapProps": {
+      "latitude": 11.0041072,
+      "longitude": -74.80698129999996,
+      "zoom": 11
+    },
+    "created_at": "07/04/2018",
+    "updated_at": "07/04/2018"
+  },
+  {
+    "name": "CARTAGENA",
+    "mapProps": {
+      "latitude": 10.3910485,
+      "longitude": -75.47942569999998,
+      "zoom": 11
+    },
+    "created_at": "07/04/2018",
+    "updated_at": "07/04/2018"
+  }
+]

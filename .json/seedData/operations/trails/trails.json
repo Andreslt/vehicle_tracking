@@ -6,9 +6,7 @@
         "track": 77.5,
         "speed": 0,
         "sent_tsmp": 1521145268972,
-        "altitude": 121.528,
-        "vehicle_id": "JSK310",
-        "zone_vehicle": "abcd_JSK310"
+        "altitude": 121.528
     },
     {
         "id": 200,
@@ -17,9 +15,7 @@
         "track": 77.5,
         "speed": 0,
         "sent_tsmp": 1521145268972,
-        "altitude": 121.528,
-        "vehicle_id": "JSK310",
-        "zone_vehicle": "abcd_JSK310"
+        "altitude": 121.528
     },
     {
         "id": 200,
@@ -28,8 +24,6 @@
         "track": 77.5,
         "speed": 0,
         "sent_tsmp": 1521145268972,
-        "altitude": 121.528,
-        "vehicle_id": "JSK310",
-        "zone_vehicle": "abcd_JSK310"
-    }
+        "altitude": 121.528
+    }    
 ]
