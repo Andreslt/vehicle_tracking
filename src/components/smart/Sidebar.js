@@ -331,7 +331,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(currentVehicle(zoneId, vehicleId))
     },
     vehicleInfo(state) {
-      console.log('Llegó a vehicleInfo 1');
       dispatch(vehicleInfo(state))
     },
     vehicleSnapshot(vehicleId) {

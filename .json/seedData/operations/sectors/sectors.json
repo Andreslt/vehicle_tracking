@@ -1,0 +1,65 @@
+[
+  {
+    "mapProps": {
+      "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/ELECT/GRANADILLO.kml",
+      "latitude": 11.003292805745557,
+      "longitude": -74.81348270325566,
+      "zoom": 15
+    },
+    "title": "GRANADILLO"
+  },
+  {
+    "mapProps": {
+      "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/ELECT/JARDIN.kml",
+      "latitude": 10.99288723064588,
+      "longitude": -74.8097276687622,
+      "zoom": 15
+    },
+    "title": "JARDIN"
+  },
+  {
+    "mapProps": {
+      "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/ELECT/PORVENIR.kml",
+      "latitude": 11.004093035041118,
+      "longitude": -74.80706691741943,
+      "zoom": 15
+    },
+    "title": "PORVENIR"
+  },
+  {
+    "mapProps": {
+      "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/ELECT/PUERTA+DE+ORO+1.kml",
+      "latitude": 11.012265420658702,
+      "longitude": -74.93066310882568,
+      "zoom": 15
+    },
+    "title": "PUERTA DE ORO 1"
+  },
+  {
+    "mapProps": {
+      "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/ELECT/PUERTA+DE+ORO+2.kml",
+      "latitude": 11.024102339818922,
+      "longitude": -74.88435745239258,
+      "zoom": 14
+    },
+    "title": "PUERTA DE ORO 2"
+  },
+  {
+    "mapProps": {
+      "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/ELECT/PUERTA+DE+ORO+4.kml",
+      "latitude": 10.989255508158426,
+      "longitude": -74.94427197786251,
+      "zoom": 14
+    },
+    "title": "PUERTA DE ORO 4"
+  },
+  {
+    "mapProps": {
+      "kml": "https://s3.us-east-2.amazonaws.com/smart-tracking/ELECT/ROSARIO.kml",
+      "latitude": 10.98020383176695,
+      "longitude": -74.78803396224976,
+      "zoom": 15
+    },
+    "title": "ROSARIO"
+  }
+]

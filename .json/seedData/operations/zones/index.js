@@ -1,13 +1,13 @@
 const chalk = require('chalk');
-const firebase = require('../../firebase-server');
+const firebase = require('../../../../firebase-server');
 // Init
 console.log(chalk.blue('Initializing...'));
 const fs = require('fs');
 const argv = process.argv[2];
-const company = process.argv[3];
-const dir = `${__dirname}/seedData/operations`;
+const root = `OPERATIONS/ENTITIES/${process.argv[2]}/ZONES`;
+// process.argv[2]: Company
 
-fs.readdir(dir, (err, files) => {
+fs.readdir(__dirname, (err, files) => {
   // STEP 1: Looping through folder files
   console.log(chalk.yellow('1. Looping through folder files...'));
   let found = false;
@@ -15,17 +15,15 @@ fs.readdir(dir, (err, files) => {
     const filename = file.split('.')[0];
     const extension = file.split('.')[1];
     if (extension === 'json') {
-      // if (filename === argv.split('.')[0]) {
         // STEP 2: Reading seek File
         console.log(chalk.yellow('2. Reading seek file ...'));
-        const data = JSON.parse(fs.readFileSync(argv, 'utf8'));
+        const data = JSON.parse(fs.readFileSync(`${__dirname}/${file}`, 'utf8'));
 
         // STEP 3: Uploading to Firebase
         console.log(chalk.yellow('3. Uploading to Firebase ...'));
-        const root = `CONTROL/${company}/${filename.toUpperCase()}`;
-        firebase.addCollection(root, filename, data);
+        const path = `${root}/${filename.toLowerCase()}`;
+        firebase.addCollection(path, data);
         found = true
-      // }
     }
   });
   if (!found) console.log(chalk.red('Terminated. Inconsistant entry'));

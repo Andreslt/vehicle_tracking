@@ -1,0 +1,26 @@
+[
+  {
+    "id": "OGV379",
+    "active": true,
+    "zone_id": "",
+    "type": "truck",
+    "created_at": "07/04/2018",
+    "updated_at": "07/04/2018"
+  },
+  {
+    "id": "ERP123",
+    "active": true,
+    "zone_id": "",
+    "type": "truck",
+    "created_at": "07/04/2018",
+    "updated_at": "07/04/2018"
+  },
+  {
+    "id": "JSK315",
+    "active": true,
+    "zone_id": "",
+    "type": "train",
+    "created_at": "07/04/2018",
+    "updated_at": "07/04/2018"
+  }
+]

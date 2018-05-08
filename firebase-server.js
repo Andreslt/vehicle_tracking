@@ -10,10 +10,8 @@ admin.initializeApp({
   databaseURL: dbURL
 });
 
-const dbRef = admin.database().refFromURL(dbURL);
-
 exports.addCollection = (collection, data) => {
-  const colRef = dbRef.child(collection);
+  const colRef = admin.database().refFromURL(dbURL).child(collection);
   data.forEach(chunk => {
     return colRef.push().set(chunk);
   });
