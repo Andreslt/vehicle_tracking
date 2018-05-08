@@ -33,14 +33,17 @@ class App extends Component {
   };
 
   componentDidMount() {
-    auth.onAuthStateChanged(authUser => {
+    auth.onAuthStateChanged(async authUser => {
       const user = authUser || null;
-      this.setState({ authUser: user, validatedAuth: true });
       if (user) {
-        getUserProfile(user.uid, userProfile => {
-          this.props.setUserInfo(userProfile)
-        })
+        try {
+          const userProfile = await getUserProfile(user.uid);
+          this.props.setUserInfo(userProfile);
+        } catch (e) {
+          console.error(e);
+        }
       }
+      this.setState({ authUser: user, validatedAuth: true });
     })
   }
 
