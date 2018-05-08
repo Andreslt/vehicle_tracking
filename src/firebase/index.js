@@ -15,11 +15,15 @@ const auth = {
   signIn: (email, password) => firebaseAuth.signInWithEmailAndPassword(email, password),
 };
 
-function getUserProfile (userId, done) {
+function getUserProfile (userId) {
   const db = `${dbURL}/CONTROL/USERS`;
-  firebase.database().refFromURL(db).child(userId).on('value', snap => {
-    return done(snap.val())
-  })
+  return new Promise((resolve, reject) => {
+    try {
+      firebase.database().refFromURL(db).child(userId).on('value', snap => resolve(snap.val()));
+    } catch (e) {
+      reject(e);
+    }
+  });
 }
 
 export {
