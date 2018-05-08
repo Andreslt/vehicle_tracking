@@ -5,25 +5,12 @@ import moment from 'moment';
 
 const limitToLast = 100; // Controlling the amount of trails
 
-/* >>>> CLIENTS <<<< */
-export const fetchClients = () => {
+/* >>>> USERS <<<< */
+export const setUserInfo = userInfo => {
   return async dispatch => {
-    fB.child('clients').on('value', snap => {
-      dispatch({
-        type: "FETCH_CLIENTS",
-        payload: snap.val()
-      })
-    })
-  };
-}
-
-export const getClientInfo = (clientId) => {
-  return async dispatch => {
-    fB.child('clients').orderByChild('client_id').equalTo(clientId).on('value', snap => {
-      dispatch({
-        type: "GET_CLIENT_INFO",
-        payload: snap.val()
-      })
+    dispatch({
+      type: "SET_USER_INFO",
+      payload: userInfo
     })
   };
 }
@@ -167,7 +154,7 @@ export const exportTrailCSV = (zoneId, vehicleId, startingDate, endingDate) => {
       const response = await (axios.post(`${serverhost[env]}/api/downloadcsv`, data));
       const time2 = moment(new Date());
       // console.log('*** time 2 -> ', time2.format('DD/MM HH:mm:ss'), '.:. Diff ->', moment(time2.diff(time1)).format("m[m] s[s]"));
-      
+
       const fileName = `smt_${zoneId}_${vehicleId}-${moment().format()}.csv`
       FileDownload(response.data, fileName);
       dispatch({

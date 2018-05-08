@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  setUserInfo,
   fetchZones,
   printZoneKml,
   clearZoneKml,
@@ -113,7 +114,12 @@ class SidebarContainer extends Component {
     geoFenceFilter: "",
   };
 
+  componentWillReceiveProps(nextProps){
+    console.log('**componentWillReceiveProps -> ', nextProps)
+  }
+  
   componentDidMount() {
+    console.log('***props -> ', this.props)
     this.props.fetchZones();
   }
 
@@ -299,6 +305,7 @@ class SidebarContainer extends Component {
 
 const mapStateToProps = state => {
   return {
+    userInfo: state.users,
     zones: state.zones.data,
     vehicles: state.vehicles.data,
     trails: state.trails.data,
@@ -310,6 +317,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
+  setUserInfo(){
+    dispatch(setUserInfo());
+  },
   fetchZones() {
     dispatch(fetchZones());
   },
@@ -336,7 +346,6 @@ const mapDispatchToProps = dispatch => ({
     dispatch(currentVehicle(zoneId, vehicleId))
   },
   vehicleInfo(state) {
-    console.log('Llegó a vehicleInfo 1');
     dispatch(vehicleInfo(state))
   },
   vehicleSnapshot(vehicleId) {

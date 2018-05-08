@@ -9,6 +9,10 @@ import { firebaseAuth as auth, getUserProfile } from '../firebase';
 import { Layout, Content, Sidebar, SignIn } from '../components/smart';
 import { Header, Route } from '../components/dump';
 
+import {
+  setUserInfo
+} from '../actionCreators';
+
 const Landing = props => {
   return (
     <Layout
@@ -34,7 +38,7 @@ class App extends Component {
       this.setState({ authUser: user, validatedAuth: true });
       if (user) {
         getUserProfile(user.uid, userProfile => {
-          this.setState({ userProfile });
+          this.props.setUserInfo(userProfile)
         })
       }
     })
@@ -77,4 +81,10 @@ const mapStateToProps = state => {
   }
 };
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => ({
+  setUserInfo(userInfo) {
+    dispatch(setUserInfo(userInfo));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

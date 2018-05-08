@@ -1,5 +1,5 @@
 export default {
-  clients: '',
+  userInfo: null,
   trails: '',
   vehicles: '',
   zones: {
