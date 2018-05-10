@@ -13,11 +13,13 @@ class ContentContainer extends Component {
 }
 
 const mapStateToProps = state => ({
-  map: state.zones.currentZone.mapProps,
-  trails: state.trails.data,
-  multiTrackingMode: state.trails.multiTrackingMode,
-  followTrail: state.trails.followTrail,
-  currentVehicle: state.vehicles.currentVehicle,
+  // map: state.zones.currentZone.mapProps,
+  // multiTrackingMode: state.trails.multiTrackingMode,
+  // followTrail: state.trails.followTrail,
+  // currentVehicle: state.vehicles.currentVehicle,
+  currentZone: state.zones.currentZone,
+  trails: state.trails,
+  drawnKML: state.zones.drawnKML,
   mapMode: state.map.mode,
   geoFences: state.geoFences,
 });

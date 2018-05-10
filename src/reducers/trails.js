@@ -2,41 +2,45 @@ import initialState from './initState';
 
 export default (state = initialState.trails, action) => {
   switch (action.type) {
+    case 'SET_TRACKING_MODE':
+      return {
+        ...state,
+        mode: action.payload,
+      };
     case 'PRINT_VEHICLE_TRAIL':
       return {
         ...state,
-        data: action.payload,
-        followTrail: true
+        data: action.payload
       };
-      case 'CLEAR_VEHICLE_TRAIL':
+    case 'CLEAR_VEHICLE_TRAIL':
       return {
         ...state,
         data: action.payload
-      };     
-      case 'MULTI_TRACKING':
+      };
+    case 'MULTI_TRACKING':
       return {
         ...state,
         multiTrackingMode: action.payload,
         followTrail: false
-      };           
-      case 'TRAIL_CSV_DATA_LOADING':
+      };
+    case 'TRAIL_CSV_DATA_LOADING':
       return {
         ...state,
         csvLoading: action.payload,
         csvData: false,
         csvDataError: false
-      };           
-      case 'TRAIL_CSV_DATA_SUCCESS':
+      };
+    case 'TRAIL_CSV_DATA_SUCCESS':
       return {
         ...state,
         csvData: true
-      };           
-      case 'TRAIL_CSV_DATA_FAIL':
+      };
+    case 'TRAIL_CSV_DATA_FAIL':
       return {
         ...state,
         csvData: false,
         csvDataError: true
-      };           
+      };
     default: return state;
   }
 }

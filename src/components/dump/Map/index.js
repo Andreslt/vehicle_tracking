@@ -1,29 +1,33 @@
 import React from "react";
-import {compose, withProps, withStateHandlers} from "recompose";
-import {withScriptjs, withGoogleMap, GoogleMap, KmlLayer, Marker, InfoWindow, Polyline, Circle} from "react-google-maps";
+import { compose, withProps, withStateHandlers } from "recompose";
+import { withScriptjs, withGoogleMap, GoogleMap, KmlLayer, Marker, InfoWindow, Polyline, Circle } from "react-google-maps";
 import Snippet from '../Snippet';
 import GeoFenceForm from './GeoFenceForm';
 
-const compMapCenter = (type, modeOn, trails, zone) => {
-  let latitude, longitude, zoom;
-  if (type === 'zoom') {
-    zoom = (modeOn) ? zone.zoom : 12;
-    return zoom
+const mapProperties = props => {
+  const { trails, currentZone, drawnKML } = props;
+  let lat, lng, zoom, map, mapProps;
+  switch (trails.mode) {
+    case 'none':
+    case 'multi':
+      mapProps = currentZone.mapProps;
+      break;
+    case 'single':
+      if (!trails.data) {
+        mapProps = currentZone.mapProps;
+      } else {
+        const index = Object.keys(trails.data).slice(0)[0]; // Vehicle ID
+        const lastTrail = Object.keys(trails.data[index]).slice(-1);
+        const { lat, lng } = trails.data[index][lastTrail];
+        mapProps = {
+          lat,
+          lng,
+          zoom: 16,
+        }
+      }
   }
-
-  if (modeOn || trails == null) { // Multitracking on
-    console.log('ENTRO EN MULTITRACKING ON');
-    latitude = zone.latitude;
-    longitude = zone.longitude;
-  } else { // Multitracking off
-    console.log('ENTRO EN MULTITRACKING OFF');
-    const index = Object.keys(trails).slice(0)[0]; // Vehicle ID
-    const lastTrail = Object.keys(trails[index]).slice(-1);
-    latitude = trails[index][lastTrail].latitude;
-    longitude = trails[index][lastTrail].longitude;
-  }
-  return {lat: latitude, lng: longitude}
-};
+  return mapProps
+}
 
 const getIconProps = (key, lastPoint) => ({
   path: 'M 100 100 L 300 100 L 200 300 z',
@@ -48,14 +52,14 @@ const getIconProps = (key, lastPoint) => ({
 
 const MapComponent = props => {
   const {
-    multiTrackingMode,
+    currentZone,
     trails,
-    map,
     onToggleOpen,
     isOpen,
     selectedKey,
     lineProps,
     mapMode,
+    drawnKML,
     handleMapClick,
     geoFences,
     newGeoFence,
@@ -63,8 +67,8 @@ const MapComponent = props => {
     handleNewGeoFenceCreate,
   } = props;
   const children = [];
-  const zoom = compMapCenter('zoom', multiTrackingMode, null, map);
-  const center = compMapCenter(null, multiTrackingMode, trails, map);
+  const { zoom, lat, lng } = mapProperties(props);
+  const center = { lat, lng }
   const mapProps = {};
   switch (mapMode) {
     case "geoFences":
@@ -74,16 +78,16 @@ const MapComponent = props => {
         children.push(<Marker
           key="marker_new"
           label={newGeoFence.name}
-          position={{lat: newGeoFence.latitude, lng: newGeoFence.longitude}}
+          position={{ lat: newGeoFence.latitude, lng: newGeoFence.longitude }}
         >
           <InfoWindow
-            position={{lat: newGeoFence.latitude, lng: newGeoFence.longitude}}
+            position={{ lat: newGeoFence.latitude, lng: newGeoFence.longitude }}
             onCloseClick={handleNewGeoFenceInfoWindowClose}
           >
             <GeoFenceForm {...newGeoFence} onSave={handleNewGeoFenceCreate} />
           </InfoWindow>
           <Circle
-            center={{lat: newGeoFence.latitude, lng: newGeoFence.longitude}}
+            center={{ lat: newGeoFence.latitude, lng: newGeoFence.longitude }}
             radius={newGeoFence.radius}
           />
         </Marker>);
@@ -92,10 +96,10 @@ const MapComponent = props => {
         <Marker
           key={`marker_${geoFenceId}`}
           label={geoFences.byId[geoFenceId].name}
-          position={{lat: geoFences.byId[geoFenceId].latitude, lng: geoFences.byId[geoFenceId].longitude}}
+          position={{ lat: geoFences.byId[geoFenceId].latitude, lng: geoFences.byId[geoFenceId].longitude }}
         >
           <Circle
-            center={{lat: geoFences.byId[geoFenceId].latitude, lng: geoFences.byId[geoFenceId].longitude}}
+            center={{ lat: geoFences.byId[geoFenceId].latitude, lng: geoFences.byId[geoFenceId].longitude }}
             radius={geoFences.byId[geoFenceId].radius}
             visible={geoFences.byId[geoFenceId].visible}
           />
@@ -106,19 +110,20 @@ const MapComponent = props => {
     default:
       mapProps.zoom = zoom;
       mapProps.center = center;
-      if (!!trails) {
-        children.push(...Object.keys(trails).map((vehicleTrail, vehiKey) => {
+      const data = trails.data;
+      if (!!data) {
+        children.push(...Object.keys(data).map((vehicleId, vehiKey) => {
           const linePath = [];
           return <div key={`vehiKey_${vehiKey}`}>
-            {Object.keys(trails[vehicleTrail]).map((point, key) => {
-              const trail = trails[vehicleTrail][point];
-              const lastPoint = Object.keys(trails[vehicleTrail]).length - 1;
-              linePath.push({lat: trail.latitude, lng: trail.longitude});
+            {Object.keys(data[vehicleId]).map((point, key) => {
+              const trail = data[vehicleId][point];
+              const lastPoint = Object.keys(data[vehicleId]).length - 1;
+              linePath.push({ lat: trail.lat, lng: trail.lng });
               const iconProps = getIconProps(key, lastPoint);
               return (
                 <Marker
                   id={`marker_${point}`}
-                  position={{lat: trail.latitude, lng: trail.longitude}}
+                  position={{ lat: trail.lat, lng: trail.lng }}
                   key={point}
                   icon={iconProps}
                   onClick={() => {
@@ -127,10 +132,10 @@ const MapComponent = props => {
                 >
                   {isOpen && selectedKey === key && <InfoWindow
                     id={key}
-                    position={{lat: trail.latitude, lng: trail.longitude}}
+                    position={{ lat: trail.latitude, lng: trail.longitude }}
                     onCloseClick={onToggleOpen}
                   >
-                    <Snippet point={trail}/>
+                    <Snippet point={trail} />
                   </InfoWindow>}
                 </Marker>)
             })}
@@ -144,8 +149,8 @@ const MapComponent = props => {
       children.push(
         <KmlLayer
           key="KmlLayer"
-          url={map.kml}
-          options={{preserveViewport: true}}
+          url={drawnKML}
+          options={{ preserveViewport: true }}
         />
       );
       break;
@@ -163,9 +168,9 @@ const MapComponent = props => {
 export default compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCniTt6A56xPK-x24erdQzoniv2yYV2NSM",
-    loadingElement: <div style={{height: `100%`}}/>,
-    containerElement: <div style={{height: `91%`}}/>,
-    mapElement: <div style={{height: `100%`}}/>,
+    loadingElement: <div style={{ height: `100%` }} />,
+    containerElement: <div style={{ height: `91%` }} />,
+    mapElement: <div style={{ height: `100%` }} />,
   }),
   withStateHandlers(() => ({
     isOpen: false,
@@ -181,33 +186,33 @@ export default compose(
     },
     newGeoFence: null,
   }), {
-    onToggleOpen: ({isOpen, selectedKey}) => key => {
-      return {
-        isOpen: !isOpen,
-        selectedKey: key
-      };
-    },
-    handleMapClick: (state, { mapMode }) => ({ latLng }) => {
-      if (mapMode === "geoFences") {
+      onToggleOpen: ({ isOpen, selectedKey }) => key => {
         return {
-          newGeoFence: {
-            name: "",
-            latitude: latLng.lat(),
-            longitude: latLng.lng(),
-            radius: 30,
-            visible: true,
-          },
+          isOpen: !isOpen,
+          selectedKey: key
         };
+      },
+      handleMapClick: (state, { mapMode }) => ({ latLng }) => {
+        if (mapMode === "geoFences") {
+          return {
+            newGeoFence: {
+              name: "",
+              latitude: latLng.lat(),
+              longitude: latLng.lng(),
+              radius: 30,
+              visible: true,
+            },
+          };
+        }
+      },
+      handleNewGeoFenceInfoWindowClose: () => () => ({
+        newGeoFence: null,
+      }),
+      handleNewGeoFenceCreate: (state, { addGeoFence }) => geoFence => {
+        addGeoFence(geoFence);
+        return { newGeoFence: null };
       }
-    },
-    handleNewGeoFenceInfoWindowClose: () => () => ({
-      newGeoFence: null,
     }),
-    handleNewGeoFenceCreate: (state, { addGeoFence }) => geoFence => {
-      addGeoFence(geoFence);
-      return { newGeoFence: null };
-    }
-  }),
   withScriptjs,
   withGoogleMap,
 )(MapComponent);

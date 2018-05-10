@@ -10,7 +10,7 @@ import { Layout, Content, Sidebar, SignIn } from '../components/smart';
 import { Header, Route } from '../components/dump';
 
 import {
-  setUserInfo
+  setCurrentUser
 } from '../actionCreators';
 
 const Landing = props => {
@@ -38,7 +38,7 @@ class App extends Component {
       if (user) {
         try {
           const userProfile = await getUserProfile(user.uid);
-          this.props.setUserInfo(userProfile);
+          this.props.setCurrentUser(userProfile);
         } catch (e) {
           console.error(e);
         }
@@ -85,8 +85,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  setUserInfo(userInfo) {
-    dispatch(setUserInfo(userInfo));
+  setCurrentUser(userInfo) {
+    dispatch(setCurrentUser(userInfo));
   },
 });
 
