@@ -160,7 +160,7 @@ export const exportTrailCSV = (vehicle, startingDate, endingDate) => {
     endingDate
   };
   const serverhost = ['http://ec2-13-58-10-199.us-east-2.compute.amazonaws.com:8080', 'http://localhost:8080'];
-  const env = 1 // 0: prod, 1: local
+  const env = 0 // 0: prod, 1: local
   return async dispatch => {
     dispatch({
       type: "TRAIL_CSV_DATA_LOADING",
