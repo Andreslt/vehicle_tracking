@@ -1,14 +1,17 @@
 export default {
   userInfo: null,
-  trails: '',
-  vehicles: '',
+  company: null,
+  trails: {
+    mode: "none"
+  },
+  vehicles: "",
   zones: {
     currentZone: {
       mapProps: {
         kml: "http://drive.google.com/file/d/0B5QeQuhUHrubdUV0RmJJT2s1ZnBoRzJueHZ4eDdyY2lxRVFR/view",
-        latitude: 10.99901,
-        longitude: -74.80365,
-        zoom: 10
+        lat: 10.99901,
+        lng: -74.80365,
+        zoom: 12
       }
     }
   },

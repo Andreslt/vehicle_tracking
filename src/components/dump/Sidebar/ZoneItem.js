@@ -22,7 +22,7 @@ const ZoneItem = props => {
         value={zoneKey}
       >
         <ListItemIcon><InboxIcon/></ListItemIcon>
-        <ListItemText inset primary={zone.title} />
+        <ListItemText inset primary={zone.name} />
         {isExpanded ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={isExpanded} timeout="auto" unmountOnExit>
@@ -45,7 +45,7 @@ const ZoneItem = props => {
               />
             </div>
           </ListSubheader>
-          <Typography>{kmlEmptyError && 'El sector no contiene un archivo KML asignado.'}</Typography>
+          {/* <Typography>{kmlEmptyError && 'El sector no contiene un archivo KML asignado.'}</Typography> */}
           <Divider />
         </div>
       </Collapse>

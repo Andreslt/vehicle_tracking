@@ -41,18 +41,20 @@ class InfoPanel extends Component {
     this.setState({ openDialog: false });
   };
 
-  generateCSV = (zoneId, vehicleId) => () => {
-    const startingDate = this.state.startingDate;
-    const endingDate = this.state.endingDate;
+  generateCSV = (vehicle) => () => {
+    const currentTime = moment(Date.now()).format();    
+    const startingDate = (this.state.startingDate) ? moment(this.state.startingDate).format() : currentTime;
+    const endingDate = (this.state.endingDate) ? moment(this.state.endingDate).format() : currentTime;
+    
     let check = false;
 
     if (startingDate && endingDate) {
-      const startingDateUnix = moment(startingDate).unix();
-      const endingDateUnix = moment(endingDate).unix();
-      if (startingDateUnix < endingDateUnix) {
+      const startingDateUnix = moment().unix(startingDate);
+      const endingDateUnix = moment().unix(endingDate);
+      if (startingDateUnix <= endingDateUnix) {
         check = true
         this.setState({ csvData: true, csvDataError: false })
-        this.props.exportTrailCSV(zoneId, vehicleId, startingDate, endingDate)
+        this.props.exportTrailCSV(vehicle, startingDate, endingDate)
       }
     }
     if (!check) this.setState({ invalidDates: true })
@@ -68,8 +70,8 @@ class InfoPanel extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.csvData) this.setState({ csvData: true});
-    if (nextProps.csvDataError) this.setState({ csvDataError: true});
+    if (nextProps.csvData) this.setState({ csvData: true });
+    if (nextProps.csvDataError) this.setState({ csvDataError: true });
     this.setState({ csvLoading: nextProps.csvLoading });
   }
 
@@ -77,16 +79,16 @@ class InfoPanel extends Component {
     const currentDate = moment().format('YYYY-MM-DDThh:mm');
     const {
       currentVehicle,
-      vehicleZoneId,
       csvLoading,
       csvData
     } = this.props;
+    const vehicle = currentVehicle[Object.keys(currentVehicle)[0]];
     return (
       <div id="infoPanelID" style={{ float: 'right', width: '300px', height: '535px' }}>
         <Card>
           <CardHeader
             title={
-              <Typography style={{ marginRight: '20px' }} variant="title" > Vehicle ID {currentVehicle.id}</Typography>
+              <Typography style={{ marginRight: '20px' }} variant="title" > Vehicle ID {vehicle.id}</Typography>
             }
             style={{ margin: 0 }}
             subheader={moment().format('Do MMMM YYYY')}
@@ -129,15 +131,15 @@ class InfoPanel extends Component {
               />
             </form>
             {this.state.invalidDates &&
-              <Typography 
+              <Typography
               >
                 Verificar rango de fechas.
               </Typography>}
-              {this.state.csvDataError  &&
-              <Typography 
+            {this.state.csvDataError &&
+              <Typography
               >
                 Los resultados no contienen registros. Verifique los parámetros de búsqueda.
-              </Typography>}              
+              </Typography>}
             <div style={{ marginBottom: '20px' }}>
               <Fade
                 in={this.state.csvLoading}
@@ -152,7 +154,7 @@ class InfoPanel extends Component {
               </Typography> : ''}
             </div>
             <Button
-              onClick={this.generateCSV(vehicleZoneId, currentVehicle.id)}
+              onClick={this.generateCSV(vehicle)}
               variant="raised" color="secondary" style={{ flex: 1 }}
             > Descargar CSV
             </Button>
@@ -176,7 +178,6 @@ const mapStateToProps = state => {
   return {
     vehicleInfo: state.vehicles.vehicleInfo,
     currentVehicle: state.vehicles.currentVehicle,
-    vehicleZoneId: state.vehicles.vehicleZoneId,
     liveRecording: state.vehicles.liveRecording,
     csvData: state.trails.csvData,
     csvDataError: state.trails.csvDataError,
@@ -189,8 +190,10 @@ const mapDispatchToProps = dispatch => {
     vehicleInfo(state) {
       dispatch(vehicleInfo(state));
     },
-    exportTrailCSV(zoneId, vehicleId, startingDate, endingDate) {
-      dispatch(exportTrailCSV(zoneId, vehicleId, startingDate, endingDate));
+    exportTrailCSV(vehicle, startingDate, endingDate) {
+      console.log('*exportTrailCSV * startingDate -> ', startingDate);
+      console.log('*exportTrailCSV * endingDate -> ', endingDate);
+      dispatch(exportTrailCSV(vehicle, startingDate, endingDate));
     }
   }
 }

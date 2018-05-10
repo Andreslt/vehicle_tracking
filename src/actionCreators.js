@@ -6,20 +6,23 @@ import moment from 'moment';
 const limitToLast = 100; // Controlling the amount of trails
 
 /* >>>> USERS <<<< */
-export const setUserInfo = userInfo => {
+export const setCurrentUser = currentUser => {
   return async dispatch => {
     dispatch({
-      type: "SET_USER_INFO",
-      payload: userInfo
+      type: "SET_CURRENT_USER",
+      payload: currentUser
+    })
+    dispatch({
+      type: "SET_CURRENT_COMPANY",
+      payload: currentUser.company
     })
   };
 }
 
 /* >>>> ZONES <<<< */
-export const fetchZones = () => {
+export const fetchZones = currentCompany => {
   return async dispatch => {
-    // fB.child('trails').remove();
-    fB.child('zones').on('value', snap => {
+    fB.child('CONTROL/ZONES').orderByChild('company').equalTo(currentCompany).on('value', snap => {
       dispatch({
         type: "FETCH_ZONES",
         payload: snap.val()
@@ -28,35 +31,37 @@ export const fetchZones = () => {
   };
 }
 
-export const printZoneKml = (zone) => {
+export const setCurrentZone = currentZone => {
+  return async dispatch => {
+    dispatch({
+      type: "SET_CURRENT_ZONE",
+      payload: currentZone
+    })
+  };
+}
+
+export const printZoneKml = (mapProps) => {
   return async dispatch => {
     dispatch({
       type: 'PRINT_ZONE_KML',
-      payload: zone
+      payload: mapProps.kml
     })
   }
 }
 
-export const clearZoneKml = (zone) => {
+export const clearZoneKml = () => {
   return async dispatch => {
     dispatch({
       type: 'CLEAR_ZONE_KML',
-      payload: {
-        mapProps: {
-          latitude: zone.mapProps.latitude,
-          longitude: zone.mapProps.longitude,
-          zoom: zone.mapProps.zoom,
-          kml: ''
-        }
-      }
+      payload: ''
     })
   }
 }
 
 /* >>>> VEHICLES <<<< */
-export const fetchVehicles = (zone) => {
+export const fetchVehicles = currentZone => {
   return async dispatch => {
-    fB.child('vehicles').orderByChild('zone_id').equalTo(zone).on('value', snap => {
+    fB.child('CONTROL/VEHICLES').orderByChild('zone').equalTo(currentZone.id).on('value', snap => {
       dispatch({
         type: "FETCH_VEHICLES",
         payload: snap.val()
@@ -65,14 +70,14 @@ export const fetchVehicles = (zone) => {
   };
 }
 
-export const currentVehicle = (zoneId, vehicleId) => {
+export const currentVehicle = (vehicleId) => {
+  const vehId = vehicleId.slice(-6);
   return async dispatch => {
-    fB.child('vehicles').on('value', snap => {
+    fB.child('CONTROL/VEHICLES').orderByChild('id').equalTo(vehId).on('value', snap => {
       dispatch({
         type: "CURRENT_VEHICLE",
         payload: {
-          data: snap.val()[vehicleId],
-          zoneId
+          data: snap.val(),
         }
       })
       dispatch({
@@ -106,62 +111,68 @@ export const vehicleSnapshot = (state) => {
 }
 
 /* >>>> TRAILS <<<< */
-export const printTrail = (zoneId, vehicleId) => {
-  const zone_vehicle = `${zoneId}_${vehicleId}`;
-  return (dispatch, getState) => {
-    fB.child('trails').orderByChild('zone_vehicle').equalTo(zone_vehicle).limitToLast(limitToLast).on('value', snap => {
+export const setTrackingMode = mode => {
+  return async dispatch => {
+    dispatch({
+      type: "SET_TRACKING_MODE",
+      payload: mode
+    })
+  };
+}
+
+export const printTrail = vehicle => {
+  const company = vehicle.zone.slice(0, 5); // this code should ALWAYS be 5 characters long.
+  const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}/TRAILS`
+  return async (dispatch, getState) => {
+    fB.child(path).limitToLast(limitToLast).on('value', snap => {
       const data = getState().trails.data;
       dispatch({
         type: "PRINT_VEHICLE_TRAIL",
         payload: {
           ...data,
-          [zone_vehicle]: snap.val()
+          [vehicle.id]: snap.val()
         }
       })
     })
   }
 }
 
-export const clearTrail = (zoneId, vehicleId, blank) => {
-  const zone_vehicle = `${zoneId}_${vehicleId}`;
-  const ref = fB.child('trails').orderByChild('zone_vehicle').equalTo(zone_vehicle).limitToLast(limitToLast);
+export const clearTrail = (vehicle, mode) => {
+  const company = vehicle.zone.slice(0, 5); // this code should ALWAYS be 5 characters long.
+  const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}/TRAILS`
+  const ref = fB.child(path).limitToLast(limitToLast);
   ref.off('value', null);
-  return (dispatch, getState) => {
-    let data = getState().trails.data;
-    delete data[zone_vehicle]; // Deleting data of zone_vehicle
+  return async (dispatch, getState) => {
+    let trails = getState().trails;
+    if (mode === 'none') delete trails.data
+    else delete trails.data[vehicle.id]
     dispatch({
       type: "CLEAR_VEHICLE_TRAIL",
-      payload: { ...data }
+      payload: trails.data
     })
   }
 }
 
-export const exportTrailCSV = (zoneId, vehicleId, startingDate, endingDate) => {
+export const exportTrailCSV = (vehicle, startingDate, endingDate) => {
   const data = {
+    vehicle,
     startingDate,
     endingDate
   };
   const serverhost = ['http://ec2-13-58-10-199.us-east-2.compute.amazonaws.com:8080', 'http://localhost:8080'];
-  const env = 0 // 0: prod, 1: local
+  const env = 1 // 0: prod, 1: local
   return async dispatch => {
     dispatch({
       type: "TRAIL_CSV_DATA_LOADING",
       payload: true
     })
     try {
-      const time1 = moment(new Date());
-      // console.log('*** time 1 -> ', time1.format('DD/MM HH:mm:ss'));
       const response = await (axios.post(`${serverhost[env]}/api/downloadcsv`, data));
-      const time2 = moment(new Date());
-      // console.log('*** time 2 -> ', time2.format('DD/MM HH:mm:ss'), '.:. Diff ->', moment(time2.diff(time1)).format("m[m] s[s]"));
-
-      const fileName = `smt_${zoneId}_${vehicleId}-${moment().format()}.csv`
+      const fileName = `smt_${vehicle.zone}_${vehicle.id}-${moment().format()}.csv`
       FileDownload(response.data, fileName);
       dispatch({
         type: "TRAIL_CSV_DATA_SUCCESS",
       })
-      const time3 = moment(new Date());
-      // console.log('*** time 3 -> ', time3.format('DD/MM HH:mm:ss'), '.:. Diff ->', moment(time3.diff(time2)).format("m[m] s[s]"));
     } catch (error) {
       dispatch({
         type: "TRAIL_CSV_DATA_FAIL",
@@ -173,7 +184,6 @@ export const exportTrailCSV = (zoneId, vehicleId, startingDate, endingDate) => {
     })
   };
 
-  const zone_vehicle = `${zoneId}_${vehicleId}`;
   return (dispatch) => {
     fB.child('trails').orderByChild('sent_tsmp').startAt(startingDate).endAt(endingDate)
       .on('value', snap => {
@@ -182,15 +192,6 @@ export const exportTrailCSV = (zoneId, vehicleId, startingDate, endingDate) => {
           payload: snap.val()
         })
       })
-  }
-}
-
-export const multiTrackingMode = (status) => {
-  return dispatch => {
-    dispatch({
-      type: "MULTI_TRACKING",
-      payload: status
-    })
   }
 }
 

@@ -3,8 +3,7 @@ const firebase = require('../../../../firebase-server');
 // Init
 console.log(chalk.blue('Initializing...'));
 const fs = require('fs');
-const root = `OPERATIONS/ENTITIES/${process.argv[2]}/ZONES/${process.argv[3]}/vehicles/${process.argv[4]}`; 
-// process.argv[2]: Company, process.argv[3]: ZoneId, process.argv[4]: VehicleId
+const root = `CONTROL/ZONES/${process.argv[2]}`;
 
 fs.readdir(__dirname, (err, files) => {
   // STEP 1: Looping through folder files

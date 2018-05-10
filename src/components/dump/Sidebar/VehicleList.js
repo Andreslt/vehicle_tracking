@@ -18,9 +18,9 @@ const VehicleList = props => {
           vehicle={vehicles[vehicleKey]}
           onMouseEnter={onMouseHoverItem(true, vehicleKey)}
           onMouseLeave={onMouseHoverItem(false)}
-          onCheck={onCheckItem(zoneKey, vehicleKey, vehicleIndex, trails)}
+          onCheck={onCheckItem(vehicles[vehicleKey], vehicleIndex, trails)}
           onOpenModal={onOpenModal(vehicleKey)}
-          onOpenPanel={onOpenPanel(zoneKey, vehicleKey)}
+          onOpenPanel={onOpenPanel(vehicleKey)}
         />
       ))}
     </List>

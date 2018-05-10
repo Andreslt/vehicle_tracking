@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {
-  setUserInfo,
+  setCurrentUser,
+  setCurrentZone,
   fetchZones,
   printZoneKml,
   clearZoneKml,
   fetchVehicles,
+  setTrackingMode,
   printTrail,
   clearTrail,
-  multiTrackingMode,
   currentVehicle,
   vehicleInfo,
   vehicleSnapshot,
@@ -31,7 +32,8 @@ import GeoFenceItem from '../dump/Sidebar/GeoFenceItem';
 
 const layout = theme.layout;
 const themeSelector = 0; // 0: Light, 1: Dark
-let checkArray = {};
+let checkLength = 0;
+let checkQueue = {};
 
 export const styles = theme => ({
   tabWrapper: {
@@ -98,6 +100,27 @@ const cssStyles = {
   },
 };
 
+function getTrackingMode(index) {
+  let action = 'adding', mode;
+
+  if (checkLength == 0)
+    checkQueue[index] = true
+  else {
+    if (!checkQueue[index]) checkQueue[index] = true;
+    else {
+      delete checkQueue[index];
+      action = 'removing'
+    }
+  }
+  checkLength = Object.keys(checkQueue).length;
+
+  if (checkLength == 0) mode = 'none'
+  else if (checkLength == 1) mode = 'single'
+  else mode = 'multi';
+
+  return { action, mode }
+}
+
 class SidebarContainer extends Component {
   state = {
     open: false,
@@ -109,84 +132,60 @@ class SidebarContainer extends Component {
     selectedSubzone: '',
     multiTrackingMode: false,
     hooverVehicle: '',
-    kmlEmptyError: false,
     selectedTab: "recent",
     geoFenceFilter: "",
   };
 
-  componentWillReceiveProps(nextProps){
-    console.log('**componentWillReceiveProps -> ', nextProps)
-  }
-  
   componentDidMount() {
-    console.log('***props -> ', this.props)
-    this.props.fetchZones();
+    this.props.fetchZones(this.props.currentCompany);
   }
 
   handleClick = (zoneId) => () => {
     if (!this.state.open) {
-      this.props.fetchVehicles(zoneId);
-      this.props.clearZoneKml(this.props.zones[zoneId]);
-      this.setState({ open: true, colKey: zoneId, switch: false, zonePicked: this.props.zones[zoneId], kmlEmptyError: false });
+      const zone = this.props.zones[zoneId];
+      this.props.setCurrentZone(zone);
+      this.props.fetchVehicles(zone);
+      // this.props.clearZoneKml(zone);
+      this.setState({ open: true, colKey: zoneId, switch: false, zonePicked: this.props.zones[zoneId] });
     } else this.setState({ open: false });
   };
 
-  handleCheck = (zoneId, vehicleId, index) => () => {
-    if (Object.keys(checkArray).length === 0) {
-      // SINGLE MODE - FIRST TIME CHECKING
-      this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id, false);
-      checkArray[index] = true;
-    } else {
-      if (checkArray[index]) {
-        // UNCHECKING
-        let allowBlank;
-
-        allowBlank = Object.keys(checkArray).length === 1;
-
-        delete checkArray[index];
-        this.props.multiTrackingOrInitMode(allowBlank);
-        this.props.clearTrail(zoneId, this.props.vehicles[vehicleId].id, allowBlank);
-      } else {
-        // MULTI TRACKING MODE
-
-        checkArray[index] = true;
-        this.props.printTrail(zoneId, this.props.vehicles[vehicleId].id);
-        this.props.multiTrackingOrInitMode(true);
-      }
+  handleCheck = (vehicle, index) => () => {
+    const { action, mode } = getTrackingMode(vehicle.id);
+    this.props.setTrackingMode(mode);
+    switch (action) {
+      case 'adding':
+        this.props.printTrail(vehicle);
+        break;
+      case 'removing':
+        this.props.clearTrail(vehicle, mode);
+        break;
     }
   };
 
   handleSelect = event => {
     this.setState({ [event.target.name]: event.target.value });
     if (this.state.switch) {
-      const zone = this.state.zonePicked;
-      const subzone = zone.subzones[event.target.value];
-      this.props.clearZoneKml(zone);
-      this.props.printZoneKml(subzone)
+      const mapProps = this.state.zonePicked.subzones[event.target.value].mapProps;
+      this.props.clearZoneKml();
+      this.props.printZoneKml(mapProps)
     }
   };
 
   handleSwitch = zone => () => {
-    const subzone = zone.subzones[this.state.selectedSubzone];
-    if (!this.state.switch) {
-      if (subzone.mapProps) {
-        this.props.printZoneKml(subzone);
-        this.setState({ switch: !this.state.switch, kmlEmptyError: false })
-      } else {
-        this.setState({ switch: !this.state.switch, kmlEmptyError: true })
-      }
-    } else {
-      this.props.clearZoneKml(zone);
-      this.setState({ switch: !this.state.switch, kmlEmptyError: false })
-    }
+    const mapProps = zone.subzones[this.state.selectedSubzone].mapProps;
+    (!this.state.switch) ?
+      this.props.printZoneKml(mapProps) :
+      this.props.clearZoneKml();
+    this.setState({ switch: !this.state.switch })
   };
 
   handleMouseHover = (type, vehicle) => () => {
     this.setState({ hooverVehicle: (type) ? vehicle : '' });
   };
 
-  handlePanel = (zoneId, vehicleId) => () => {
-    this.props.currentVehicle(zoneId, vehicleId);
+  handlePanel = (vehicleId) => () => {
+    this.props.currentVehicle(vehicleId);
   };
 
   handleModal = vehicleId => () => {
@@ -215,7 +214,7 @@ class SidebarContainer extends Component {
     switch (mode) {
       case "geoFences":
         if (this.props.geoFences) {
-          let {ids, byId} = this.props.geoFences;
+          let { ids, byId } = this.props.geoFences;
           if (this.state.geoFenceFilter) {
             ids = ids.filter(id => byId[id].name.toLowerCase().includes(this.state.geoFenceFilter.toLowerCase()));
           }
@@ -305,7 +304,9 @@ class SidebarContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    userInfo: state.users,
+    currentUser: state.users.currentUser,
+    currentCompany: state.companies.currentCompany,
+    currentZone: state.zones.currentZone,
     zones: state.zones.data,
     vehicles: state.vehicles.data,
     trails: state.trails.data,
@@ -317,17 +318,22 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  setUserInfo(){
-    dispatch(setUserInfo());
+  setCurrentUser() {
+    dispatch(setCurrentUser());
   },
-  fetchZones() {
-    dispatch(fetchZones());
+  setCurrentZone(zoneId) {
+    dispatch(setCurrentZone(zoneId));
+  },
+  setTrackingMode(mode) {
+    dispatch(setTrackingMode(mode))
+  },
+  fetchZones(userInfo) {
+    dispatch(fetchZones(userInfo));
   },
   fetchVehicles(zone) {
     dispatch(fetchVehicles(zone));
   },
   printZoneKml(zone) {
-    dispatch(clearZoneKml(zone));
     dispatch(printZoneKml(zone));
   },
   clearZoneKml(zone) {
@@ -338,9 +344,6 @@ const mapDispatchToProps = dispatch => ({
   },
   clearTrail(zoneId, vehicleId, blank) {
     dispatch(clearTrail(zoneId, vehicleId, blank));
-  },
-  multiTrackingOrInitMode(status) {
-    dispatch(multiTrackingMode(status))
   },
   currentVehicle(zoneId, vehicleId) {
     dispatch(currentVehicle(zoneId, vehicleId))

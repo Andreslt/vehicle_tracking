@@ -7,15 +7,20 @@ export default (state = initialState.zones, action) => {
         ...state,
         data: action.payload
       };
-    case 'PRINT_ZONE_KML':
+    case 'SET_CURRENT_ZONE':
       return {
         ...state,
         currentZone: action.payload
       }
+    case 'PRINT_ZONE_KML':
+      return {
+        ...state,
+        drawnKML: action.payload
+      }
     case 'CLEAR_ZONE_KML':
       return {
         ...state,
-        currentZone: action.payload
+        drawnKML: action.payload
       }
     default: return state;
   }
