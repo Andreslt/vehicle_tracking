@@ -132,7 +132,7 @@ const MapComponent = props => {
                 >
                   {isOpen && selectedKey === key && <InfoWindow
                     id={key}
-                    position={{ lat: trail.latitude, lng: trail.longitude }}
+                    position={{ lat: trail.lat, lng: trail.lng }}
                     onCloseClick={onToggleOpen}
                   >
                     <Snippet point={trail} />
