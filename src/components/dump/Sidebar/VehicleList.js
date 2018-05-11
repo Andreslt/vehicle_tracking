@@ -5,7 +5,7 @@ import VehicleItem from './VehicleItem';
 
 const VehicleList = props => {
   const {
-    vehicles, zoneKey, hooverVehicle, trails,
+    vehicles, hooverVehicle, trails,
     onMouseHoverItem, onCheckItem, onOpenModal, onOpenPanel
   } = props;
   return (

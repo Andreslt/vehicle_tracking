@@ -2,18 +2,19 @@ import initialState from './initState';
 
 const map = (state = initialState.geoFences, action) => {
   switch (action.type) {
+    case "FETCH_GEO_FENCES":
+      const ids = Object.keys(action.payload);
+      const byId = action.payload;
+      return { ...state, ids, byId };
     case "ADD_GEO_FENCE":
+      const { id, geoFence } = action.payload;
       return {
         ...state,
-        ids: [
-          ...state.ids,
-          state.length
-        ],
+        ids: [...state.ids, id ],
         byId: {
           ...state.byId,
-          [state.length]: action.payload,
+          [id]: { ...geoFence, visible: true },
         },
-        length: state.length + 1,
       };
     case "CHANGE_GEO_FENCE_VISIBILITY":
       return {
