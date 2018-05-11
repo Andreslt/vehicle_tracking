@@ -38,7 +38,7 @@ class App extends Component {
       if (user) {
         try {
           const userProfile = await getUserProfile(user.uid);
-          this.props.setCurrentUser(userProfile);
+          this.props.setCurrentUser({ uid: user.uid , ...userProfile});
         } catch (e) {
           console.error(e);
         }

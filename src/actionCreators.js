@@ -218,8 +218,13 @@ export const fetchGeoFences = () => async (dispatch, getState) => {
 };
 
 export const addGeoFence = geoFence => async (dispatch, getState) => {
-  const { companies: { currentCompany } } = getState();
+  const { companies: { currentCompany }, users: { currentUser } } = getState();
   const newGeoFenceId = fB.child(`CONTROL/GEO_FENCES/${currentCompany}`).push().key;
+  geoFence = {
+    ...geoFence,
+    uid: currentUser.uid,
+    created_at: new Date(),
+  };
   fB.update({
     [`CONTROL/GEO_FENCES/${currentCompany}/${newGeoFenceId}`]: geoFence,
   });

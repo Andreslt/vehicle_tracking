@@ -4,7 +4,13 @@ const map = (state = initialState.geoFences, action) => {
   switch (action.type) {
     case "FETCH_GEO_FENCES":
       const ids = Object.keys(action.payload);
-      const byId = action.payload;
+      const byId = ids.reduce((data, geoFenceId) => {
+        data[geoFenceId] = {
+          ...action.payload[geoFenceId],
+          visible: true,
+        };
+        return data;
+      }, {});
       return { ...state, ids, byId };
     case "ADD_GEO_FENCE":
       const { id, geoFence } = action.payload;
