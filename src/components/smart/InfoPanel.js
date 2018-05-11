@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { vehicleInfo, currentVehicle, exportTrailCSV } from '../../actionCreators';
-import { compose, withProps, withStateHandlers } from "recompose";
+// import { compose, withProps, withStateHandlers } from "recompose";
 import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
-import { Typography, IconButton, Avatar, Button, TextField, Divider, Dialog, Toolbar, AppBar } from 'material-ui';
-import Slide from 'material-ui/transitions/Slide';
+import { Typography, IconButton, Avatar, Button, TextField, Divider/*, Dialog, Toolbar, AppBar*/ } from 'material-ui';
+// import Slide from 'material-ui/transitions/Slide';
 import { Clear, DirectionsBus, Close as CloseIcon } from 'material-ui-icons';
-import { Carousel } from 'react-responsive-carousel';
+// import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { CSVLink, CSVDownload } from 'react-csv';
+// import { CSVLink, CSVDownload } from 'react-csv';
 import moment from 'moment';
 import { CircularProgress } from 'material-ui/Progress';
 import Fade from 'material-ui/transitions/Fade';
 import Snackbar from 'material-ui/Snackbar';
-
+/*
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
-
+*/
 class InfoPanel extends Component {
 
   state = {
@@ -79,8 +79,8 @@ class InfoPanel extends Component {
     const currentDate = moment().format('YYYY-MM-DDThh:mm');
     const {
       currentVehicle,
-      csvLoading,
-      csvData
+      /*csvLoading,
+      csvData*/
     } = this.props;
     const vehicle = currentVehicle[Object.keys(currentVehicle)[0]];
     return (

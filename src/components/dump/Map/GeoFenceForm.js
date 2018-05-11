@@ -36,7 +36,7 @@ class GeoFenceForm extends Component{
       return;
     }
     console.log("newMaker", { name, radius, latitude, longitude });
-    this.props.onSave({ name, radius: radiusNumber, latitude, longitude, visible: true });
+    this.props.onSave({ name, radius: radiusNumber, latitude, longitude });
   };
 
   render() {

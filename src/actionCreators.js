@@ -195,15 +195,42 @@ export const exportTrailCSV = (vehicle, startingDate, endingDate) => {
   }
 }
 
-export const changeMapMode = mode => ({
-  type: "CHANGE_MAP_MODE",
-  payload: mode
-});
+export const changeMapMode = mode => dispatch => {
+  if (mode === "geoFences") {
+    dispatch(fetchGeoFences());
+  }
+  return dispatch({
+    type: "CHANGE_MAP_MODE",
+    payload: mode
+  });
+};
 
-export const addGeoFence = geoFence => ({
-  type: "ADD_GEO_FENCE",
-  payload: geoFence,
-});
+/* >>>> GEO FENCES <<<< */
+export const fetchGeoFences = () => async (dispatch, getState) => {
+  const { companies: { currentCompany } } = getState();
+  // TODO change once to on but fix adding to avoid duplicate error
+  fB.child(`CONTROL/GEO_FENCES/${currentCompany}`).once('value', snap => {
+    dispatch({
+      type: "FETCH_GEO_FENCES",
+      payload: snap.val()
+    })
+  });
+};
+
+export const addGeoFence = geoFence => async (dispatch, getState) => {
+  const { companies: { currentCompany } } = getState();
+  const newGeoFenceId = fB.child(`CONTROL/GEO_FENCES/${currentCompany}`).push().key;
+  fB.update({
+    [`CONTROL/GEO_FENCES/${currentCompany}/${newGeoFenceId}`]: geoFence,
+  });
+  return dispatch({
+    type: "ADD_GEO_FENCE",
+    payload: {
+      id: newGeoFenceId,
+      geoFence,
+    },
+  });
+};
 
 export const changeGeoFenceVisibility = (geoFenceId, visible) => ({
   type: "CHANGE_GEO_FENCE_VISIBILITY",

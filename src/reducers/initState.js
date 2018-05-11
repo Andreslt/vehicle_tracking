@@ -1,6 +1,8 @@
 export default {
   userInfo: null,
-  company: null,
+  company: {
+    currentCompany: null,
+  },
   trails: {
     mode: "none"
   },
@@ -21,6 +23,5 @@ export default {
   geoFences: {
     ids: [],
     byId: {},
-    length: 0,
   },
 }

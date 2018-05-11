@@ -12,7 +12,7 @@ import Slide from 'material-ui/transitions/Slide';
 
 import theme from '../../app/theme';
 const layout = theme.layout;
-const themeSelector = 0 // 0: Light, 1: Dark
+const themeSelector = 0; // 0: Light, 1: Dark
 
 const drawerWidth = 280;
 
@@ -72,6 +72,8 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   content: {
+    display: 'flex',
+    flexDirection: 'column',
     flexGrow: 1,
     // paddingBottom: '66px',
     backgroundColor: theme.palette.background.default,
@@ -120,9 +122,9 @@ class Layout extends React.Component {
       Header,
       Sidebar,
       classes,
-      currentVehicle,
       vehicleInfo,
-      liveRecording,
+      /*currentVehicle,
+      liveRecording,*/
       theme,
       onLogout
     } = this.props;

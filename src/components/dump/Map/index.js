@@ -5,14 +5,15 @@ import Snippet from '../Snippet';
 import GeoFenceForm from './GeoFenceForm';
 
 const mapProperties = props => {
-  const { trails, currentZone, drawnKML } = props;
-  let lat, lng, zoom, map, mapProps;
+  const { trails, currentZone/*, drawnKML*/ } = props;
+  let /*lat, lng, zoom, map,*/ mapProps;
   switch (trails.mode) {
     case 'none':
     case 'multi':
       mapProps = currentZone.mapProps;
       break;
     case 'single':
+    default:
       if (!trails.data) {
         mapProps = currentZone.mapProps;
       } else {
@@ -52,7 +53,7 @@ const getIconProps = (key, lastPoint) => ({
 
 const MapComponent = props => {
   const {
-    currentZone,
+    // currentZone,
     trails,
     onToggleOpen,
     isOpen,
@@ -68,7 +69,7 @@ const MapComponent = props => {
   } = props;
   const children = [];
   const { zoom, lat, lng } = mapProperties(props);
-  const center = { lat, lng }
+  const center = { lat, lng };
   const mapProps = {};
   switch (mapMode) {
     case "geoFences":
@@ -169,7 +170,7 @@ export default compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCniTt6A56xPK-x24erdQzoniv2yYV2NSM",
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `91%` }} />,
+    containerElement: <div style={{ flex: 1 }} />,
     mapElement: <div style={{ height: `100%` }} />,
   }),
   withStateHandlers(() => ({
@@ -200,7 +201,6 @@ export default compose(
               latitude: latLng.lat(),
               longitude: latLng.lng(),
               radius: 30,
-              visible: true,
             },
           };
         }
