@@ -30,22 +30,22 @@ class GeoFenceForm extends Component{
   handleChange = field => ({ target: { value } }) => this.setState({ [field]: value });
 
   handleSave = () => {
-    const { name, radius, latitude, longitude } = this.state;
+    const { name, radius, lat, lng } = this.state;
     const radiusNumber = Number(radius);
     if (!name || radiusNumber < 10) {
       return;
     }
-    console.log("newMaker", { name, radius, latitude, longitude });
-    this.props.onSave({ name, radius: radiusNumber, latitude, longitude });
+    console.log("newMaker", { name, radius, lat, lng });
+    this.props.onSave({ name, radius: radiusNumber, lat, lng });
   };
 
   render() {
     const { classes } = this.props;
-    const { name, radius, latitude, longitude } = this.state;
+    const { name, radius, lat, lng } = this.state;
     return (
       <div className={classes.root}>
         <Typography variant="headline">Agregar geo-fence</Typography>
-        <Typography>Lat/Lng: <strong>{latitude}, {longitude}</strong></Typography>
+        <Typography>Lat/Lng: <strong>{lat}, {lng}</strong></Typography>
         <TextField
           margin="normal"
           className={classes.textField}

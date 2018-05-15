@@ -79,16 +79,16 @@ const MapComponent = props => {
         children.push(<Marker
           key="marker_new"
           label={newGeoFence.name}
-          position={{ lat: newGeoFence.latitude, lng: newGeoFence.longitude }}
+          position={{ lat: newGeoFence.lat, lng: newGeoFence.lng }}
         >
           <InfoWindow
-            position={{ lat: newGeoFence.latitude, lng: newGeoFence.longitude }}
+            position={{ lat: newGeoFence.lat, lng: newGeoFence.lng }}
             onCloseClick={handleNewGeoFenceInfoWindowClose}
           >
             <GeoFenceForm {...newGeoFence} onSave={handleNewGeoFenceCreate} />
           </InfoWindow>
           <Circle
-            center={{ lat: newGeoFence.latitude, lng: newGeoFence.longitude }}
+            center={{ lat: newGeoFence.lat, lng: newGeoFence.lng }}
             radius={newGeoFence.radius}
           />
         </Marker>);
@@ -97,10 +97,10 @@ const MapComponent = props => {
         <Marker
           key={`marker_${geoFenceId}`}
           label={geoFences.byId[geoFenceId].name}
-          position={{ lat: geoFences.byId[geoFenceId].latitude, lng: geoFences.byId[geoFenceId].longitude }}
+          position={{ lat: geoFences.byId[geoFenceId].lat, lng: geoFences.byId[geoFenceId].lng }}
         >
           <Circle
-            center={{ lat: geoFences.byId[geoFenceId].latitude, lng: geoFences.byId[geoFenceId].longitude }}
+            center={{ lat: geoFences.byId[geoFenceId].lat, lng: geoFences.byId[geoFenceId].lng }}
             radius={geoFences.byId[geoFenceId].radius}
             visible={geoFences.byId[geoFenceId].visible}
           />
@@ -198,8 +198,8 @@ export default compose(
           return {
             newGeoFence: {
               name: "",
-              latitude: latLng.lat(),
-              longitude: latLng.lng(),
+              lat: latLng.lat(),
+              lng: latLng.lng(),
               radius: 30,
             },
           };
