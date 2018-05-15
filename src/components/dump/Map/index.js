@@ -170,7 +170,7 @@ export default compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCniTt6A56xPK-x24erdQzoniv2yYV2NSM",
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ flex: 1 }} />,
+    containerElement: <div style={{ height: '91%' }} />,
     mapElement: <div style={{ height: `100%` }} />,
   }),
   withStateHandlers(() => ({

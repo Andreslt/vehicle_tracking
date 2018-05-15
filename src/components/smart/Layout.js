@@ -72,8 +72,8 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   content: {
-    display: 'flex',
-    flexDirection: 'column',
+    // display: 'flex',
+    // flexDirection: 'column',
     flexGrow: 1,
     // paddingBottom: '66px',
     backgroundColor: theme.palette.background.default,
@@ -123,8 +123,6 @@ class Layout extends React.Component {
       Sidebar,
       classes,
       vehicleInfo,
-      /*currentVehicle,
-      liveRecording,*/
       theme,
       onLogout
     } = this.props;

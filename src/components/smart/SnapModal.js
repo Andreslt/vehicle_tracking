@@ -25,12 +25,15 @@ function TabContainer(props) {
   );
 }
 
-const camLinks = ['http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123', 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123'] // 0: Video, 1: Image
+const defaultSRC = {
+  video: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123',
+  img: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123'
+}
 
 class SnapModal extends Component {
   state = {
     open: true,
-    tabValue: 0
+    tabValue: 'video'
   };
 
   selectTab = tab => () => {
@@ -43,7 +46,12 @@ class SnapModal extends Component {
   }
 
   imgUrl = () => {
-    return this.props.liveRecording ? camLinks[this.state.tabValue] : '';
+    if (!this.props.liveRecording) return null;
+
+    const vhid = Object.keys(this.props.currentVehicle)[0];
+    const vh = this.props.currentVehicle[vhid];
+    const source = !!vh.src ? vh.src : defaultSRC;
+    return source[this.state.tabValue]
   };
 
   render() {
@@ -59,8 +67,8 @@ class SnapModal extends Component {
           <div>
             <AppBar position="static">
               <Tabs value={this.state.tabValue}>
-                <Tab label="VIDEO" onClick={this.selectTab(0)} />
-                <Tab label="INSTANTANEA" onClick={this.selectTab(1)} />
+                <Tab label="VIDEO" onClick={this.selectTab('video')} />
+                <Tab label="INSTANTANEA" onClick={this.selectTab('img')} />
                 <Tab
                   style={{ position: 'absolute', right: '1%' }}
                   icon={<CloseIcon />}
@@ -80,6 +88,7 @@ class SnapModal extends Component {
 
 const mapStateToProps = state => {
   return {
+    currentVehicle: state.vehicles.currentVehicle,
     liveRecording: state.vehicles.liveRecording
   }
 }

@@ -21,12 +21,6 @@ const VehicleItem = props => {
       {hooverVehicle === vehicleKey && (
         <div>
           <IconButton
-            aria-label="Open Camera"
-            onClick={onOpenModal}
-          >
-            <PhotoCamera/>
-          </IconButton>
-          <IconButton
             aria-label="Open Panel"
             style={{marginRight: '40px'}}
             onClick={onOpenPanel}

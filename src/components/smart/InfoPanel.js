@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { vehicleInfo, currentVehicle, exportTrailCSV } from '../../actionCreators';
+import { vehicleInfo, currentVehicle, exportTrailCSV, vehicleSnapshot } from '../../actionCreators';
 // import { compose, withProps, withStateHandlers } from "recompose";
 import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
-import { Typography, IconButton, Avatar, Button, TextField, Divider/*, Dialog, Toolbar, AppBar*/ } from 'material-ui';
+import { Typography, IconButton, Avatar, Button, TextField, Divider } from 'material-ui';
 // import Slide from 'material-ui/transitions/Slide';
-import { Clear, DirectionsBus, Close as CloseIcon } from 'material-ui-icons';
+import { Clear, DirectionsBus, Close as CloseIcon, Folder as FolderIcon, Pageview as PageviewIcon, Assignment as AssignmentIcon, PhotoCamera, FileDownload } from 'material-ui-icons';
 // import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 // import { CSVLink, CSVDownload } from 'react-csv';
@@ -42,10 +42,10 @@ class InfoPanel extends Component {
   };
 
   generateCSV = (vehicle) => () => {
-    const currentTime = moment(Date.now()).format();    
+    const currentTime = moment(Date.now()).format();
     const startingDate = (this.state.startingDate) ? moment(this.state.startingDate).format() : currentTime;
     const endingDate = (this.state.endingDate) ? moment(this.state.endingDate).format() : currentTime;
-    
+
     let check = false;
 
     if (startingDate && endingDate) {
@@ -68,6 +68,10 @@ class InfoPanel extends Component {
   handleCloseSnackbar = () => {
     this.setState({ csvData: false })
   }
+
+  handleModal = () => {
+    this.props.vehicleSnapshot(true);
+  };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.csvData) this.setState({ csvData: true });
@@ -140,7 +144,7 @@ class InfoPanel extends Component {
               >
                 Los resultados no contienen registros. Verifique los parámetros de búsqueda.
               </Typography>}
-            <div style={{ marginBottom: '20px' }}>
+            <div>
               <Fade
                 in={this.state.csvLoading}
                 style={{ transitionDelay: this.state.csvLoading ? '800ms' : '0ms' }}
@@ -153,11 +157,30 @@ class InfoPanel extends Component {
                   Descargando archivo CSV. Esta operación puede tardar unos minutos.
               </Typography> : ''}
             </div>
-            <Button
-              onClick={this.generateCSV(vehicle)}
+            <Button              
               variant="raised" color="secondary" style={{ flex: 1 }}
-            > Descargar CSV
+            > Ver Ruta
             </Button>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px', display: 'flex' }}>
+              <IconButton
+                aria-label="Download CSV"
+                style={{ flex: 1 }}
+                title={'Descargar CSV'}
+                disabled={false}
+                onClick={this.generateCSV(vehicle)}
+              >
+                CSV
+                <FileDownload />
+              </IconButton>
+              <IconButton
+                aria-label="Live Camera"
+                style={{ flex: 1 }}
+                onClick={this.handleModal}
+              >
+                CAM
+                <PhotoCamera />
+              </IconButton>
+            </div>
           </CardContent>
         </Card>
         <Snackbar
@@ -190,9 +213,10 @@ const mapDispatchToProps = dispatch => {
     vehicleInfo(state) {
       dispatch(vehicleInfo(state));
     },
+    vehicleSnapshot(state) {
+      dispatch(vehicleSnapshot(state));
+    },
     exportTrailCSV(vehicle, startingDate, endingDate) {
-      console.log('*exportTrailCSV * startingDate -> ', startingDate);
-      console.log('*exportTrailCSV * endingDate -> ', endingDate);
       dispatch(exportTrailCSV(vehicle, startingDate, endingDate));
     }
   }
