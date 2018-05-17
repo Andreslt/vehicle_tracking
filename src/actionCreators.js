@@ -122,9 +122,9 @@ export const setTrackingMode = mode => {
 
 export const printTrail = vehicle => {
   const company = vehicle.zone.slice(0, 5); // this code should ALWAYS be 5 characters long.
-  const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}/TRAILS`
+  const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}`;
   return async (dispatch, getState) => {
-    fB.child(path).limitToLast(limitToLast).on('value', snap => {
+    fB.child(`${path}/TRAILS`).limitToLast(limitToLast).on('value', snap => {
       const data = getState().trails.data;
       dispatch({
         type: "PRINT_VEHICLE_TRAIL",
@@ -132,10 +132,20 @@ export const printTrail = vehicle => {
           ...data,
           [vehicle.id]: snap.val()
         }
+      });
+    });
+    fB.child(`${path}/GEO_FENCES`).limitToLast(limitToLast).on('value', snap => {
+      const data = getState().geoFences.data;
+      dispatch({
+        type: "PRINT_VEHICLE_GEO_FENCES",
+        payload: {
+          ...data,
+          [vehicle.id]: snap.val()
+        }
       })
     })
-  }
-}
+  };
+};
 
 export const clearTrail = (vehicle, mode) => {
   const company = vehicle.zone.slice(0, 5); // this code should ALWAYS be 5 characters long.

@@ -33,6 +33,11 @@ const map = (state = initialState.geoFences, action) => {
           },
         },
       };
+    case "PRINT_VEHICLE_GEO_FENCES":
+      return {
+        ...state,
+        data: action.payload
+      };
     default:
       return state;
   }

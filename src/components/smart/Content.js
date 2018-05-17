@@ -6,6 +6,12 @@ import { addGeoFence } from '../../actionCreators';
 
 class ContentContainer extends Component {
   render() {
+    const { mapMode } = this.props;
+    if (mapMode === "history") {
+      return (
+        <div>{JSON.stringify(this.props.geoFences.data)}</div>
+      );
+    }
     return (
       <Map {...this.props} />
     )
