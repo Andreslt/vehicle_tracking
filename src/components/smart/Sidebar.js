@@ -103,7 +103,7 @@ const cssStyles = {
 function getTrackingMode(index) {
   let action = 'adding', mode;
 
-  if (checkLength == 0)
+  if (checkLength === 0)
     checkQueue[index] = true
   else {
     if (!checkQueue[index]) checkQueue[index] = true;
@@ -114,8 +114,8 @@ function getTrackingMode(index) {
   }
   checkLength = Object.keys(checkQueue).length;
 
-  if (checkLength == 0) mode = 'none'
-  else if (checkLength == 1) mode = 'single'
+  if (checkLength === 0) mode = 'none'
+  else if (checkLength === 1) mode = 'single'
   else mode = 'multi';
 
   return { action, mode }
@@ -160,6 +160,8 @@ class SidebarContainer extends Component {
       case 'removing':
         this.props.clearTrail(vehicle, mode);
         break;
+      default:
+        break;
     }
   };
 
@@ -193,6 +195,7 @@ class SidebarContainer extends Component {
   };
 
   handleTabChange = (event, value) => {
+    console.log("handleTabChange");
     this.props.changeMapMode(value);
   };
 

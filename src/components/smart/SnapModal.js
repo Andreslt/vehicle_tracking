@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { AppBar, Button, Toolbar, IconButton, Typography } from 'material-ui';
+import { AppBar/*, Button, Toolbar, IconButton, Typography*/ } from 'material-ui';
 import Dialog, {
-  DialogActions,
+  /*DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle,*/
 } from 'material-ui/Dialog';
-import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+// import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
+// import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { vehicleSnapshot } from '../../actionCreators';
 import { Close as CloseIcon } from 'material-ui-icons'; import Slide from 'material-ui/transitions/Slide';
@@ -16,7 +16,7 @@ import { Close as CloseIcon } from 'material-ui-icons'; import Slide from 'mater
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
-
+/*
 function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -24,11 +24,11 @@ function TabContainer(props) {
     </Typography>
   );
 }
-
+*/
 const defaultSRC = {
   video: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123',
   img: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123'
-}
+};
 
 class SnapModal extends Component {
   state = {
@@ -77,7 +77,7 @@ class SnapModal extends Component {
               </Tabs>
             </AppBar>
             <div>
-              <img src={this.imgUrl()} style={{ maxWidth: '100%' }} />
+              <img src={this.imgUrl()} style={{ maxWidth: '100%' }} alt=""/>
             </div>
           </div>
         </Dialog>
