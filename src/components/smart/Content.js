@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import Map from '../dump/Map';
+import Chart from '../dump/Chart';
 import { addGeoFence, deleteGeoFence } from '../../actionCreators';
 
 class ContentContainer extends Component {
@@ -9,7 +10,7 @@ class ContentContainer extends Component {
     const { mapMode } = this.props;
     if (mapMode === "history") {
       return (
-        <div>{JSON.stringify(this.props.geoFences.data)}</div>
+        <Chart data={this.props.geoFences.data} />
       );
     }
     return (
