@@ -33,6 +33,15 @@ const map = (state = initialState.geoFences, action) => {
           },
         },
       };
+    case "DELETE_GEO_FENCE": {
+      const { [action.payload]: remove, ...byId } = state.byId;
+      const ids = state.ids.filter(id => id !== action.payload);
+      return {
+        ...state,
+        ids,
+        byId,
+      };
+    }
     case "PRINT_VEHICLE_GEO_FENCES":
       return {
         ...state,

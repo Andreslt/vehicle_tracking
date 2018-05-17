@@ -194,10 +194,7 @@ class SidebarContainer extends Component {
     this.props.vehicleSnapshot(true);
   };
 
-  handleTabChange = (event, value) => {
-    console.log("handleTabChange");
-    this.props.changeMapMode(value);
-  };
+  handleTabChange = (event, value) => this.props.changeMapMode(value);
 
   handleGeoFenceVisibilityChange = geoFenceId => ({ target: { checked } }) => this.props.changeGeoFenceVisibility(geoFenceId, checked);
 

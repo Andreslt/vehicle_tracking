@@ -222,7 +222,7 @@ export const fetchGeoFences = () => async (dispatch, getState) => {
   fB.child(`CONTROL/GEO_FENCES/${currentCompany}`).once('value', snap => {
     dispatch({
       type: "FETCH_GEO_FENCES",
-      payload: snap.val()
+      payload: snap.val() || {},
     })
   });
 };
@@ -254,3 +254,12 @@ export const changeGeoFenceVisibility = (geoFenceId, visible) => ({
     visible,
   },
 });
+
+export const deleteGeoFence = geoFenceId => async (dispatch, getState) => {
+  const { companies: { currentCompany } } = getState();
+  fB.child(`CONTROL/GEO_FENCES/${currentCompany}/${geoFenceId}`).remove();
+  return dispatch({
+    type: "DELETE_GEO_FENCE",
+    payload: geoFenceId
+  });
+};

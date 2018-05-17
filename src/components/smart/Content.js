@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import Map from '../dump/Map';
-import { addGeoFence } from '../../actionCreators';
+import { addGeoFence, deleteGeoFence } from '../../actionCreators';
 
 class ContentContainer extends Component {
   render() {
@@ -28,10 +28,12 @@ const mapStateToProps = state => ({
   drawnKML: state.zones.drawnKML,
   mapMode: state.map.mode,
   geoFences: state.geoFences,
+  currentUserUID: state.users.currentUser.uid
 });
 
 const mapDispatchToProps = dispatch => ({
   addGeoFence: bindActionCreators(addGeoFence, dispatch),
+  deleteGeoFence: bindActionCreators(deleteGeoFence, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentContainer);
