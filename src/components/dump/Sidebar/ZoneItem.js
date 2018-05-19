@@ -1,7 +1,6 @@
 import React from 'react';
 import Divider from 'material-ui/Divider';
 import Switch from 'material-ui/Switch';
-import Typography from 'material-ui/Typography';
 import {ListItem, ListItemText, ListItemIcon, ListSubheader} from "material-ui/List";
 import Collapse from 'material-ui/transitions/Collapse';
 import { ExpandLess, ExpandMore, MoveToInbox as InboxIcon } from 'material-ui-icons';
@@ -10,7 +9,7 @@ import SubZonesSelect from './SubZonesSelect';
 
 const ZoneItem = props => {
   const {
-    zoneKey, zone, isExpanded, zonePicked, selectedSubZone, kmlEmptyError,
+    zoneKey, zone, isExpanded, zonePicked, selectedSubZone,
     vehicleList,
     onZoneClick, onSubZoneSelect, onToggleSwitch
   } = props;
@@ -45,7 +44,6 @@ const ZoneItem = props => {
               />
             </div>
           </ListSubheader>
-          {/* <Typography>{kmlEmptyError && 'El sector no contiene un archivo KML asignado.'}</Typography> */}
           <Divider />
         </div>
       </Collapse>

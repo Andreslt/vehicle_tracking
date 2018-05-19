@@ -161,14 +161,15 @@ const MapComponent = props => {
           />
         );
       }else {
-        const linePath = [];
         return <div key={`routeTrails`}>
-          {Object.keys(routeTrails).map((rt, key) => {
-            const trail = routeTrails[rt];
-            linePath.push({ lat: trail.lat, lng: trail.lng });
-          })}
           <Polyline
-            path={linePath}
+            options={{
+              key: 'polyline',
+              fillOpacity: 1,
+              strokeColor: 'blue',
+              strokeWeight: 5
+            }}
+            path={Object.values(routeTrails)}
           />
           <KmlLayer
             key="KmlLayer"

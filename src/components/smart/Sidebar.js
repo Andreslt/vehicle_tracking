@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  setCurrentUser,
   setCurrentZone,
   fetchZones,
   printZoneKml,
@@ -104,7 +103,7 @@ const cssStyles = {
 
 function getTrackingMode(index) {
   let action = 'adding', mode;
-  if (checkLength == 0)
+  if (checkLength === 0)
     checkQueue[index] = true
   else {
     if (!checkQueue[index]) checkQueue[index] = true;
@@ -115,8 +114,8 @@ function getTrackingMode(index) {
   }
   checkLength = Object.keys(checkQueue).length;
 
-  if (checkLength == 0) mode = 'none'
-  else if (checkLength == 1) mode = 'single'
+  if (checkLength === 0) mode = 'none'
+  else if (checkLength === 1) mode = 'single'
   else mode = 'multi';
 
   return { action, mode }
@@ -138,8 +137,8 @@ class SidebarContainer extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.printedRoute) unCheckAll = true;
-    else unCheckAll = false;
+    unCheckAll = (nextProps.printedRoute) ? true : false;
+    checkQueue = (nextProps.mapMode !== 'recent') ? checkQueue = {} : checkQueue;
   }
 
   componentDidMount() {
@@ -165,6 +164,7 @@ class SidebarContainer extends Component {
         this.props.printTrail(vehicle);
         break;
       case 'removing':
+      default:
         this.props.clearTrail(vehicle, mode);
         break;
     }
@@ -191,7 +191,7 @@ class SidebarContainer extends Component {
     this.setState({ hooverVehicle: (type) ? vehicle : '' });
   };
 
-  handlePanel = (vehicleId) => () => {
+  handlePanel = vehicleId => () => {
     this.props.currentVehicle(vehicleId);
   };
 
@@ -200,6 +200,7 @@ class SidebarContainer extends Component {
   };
 
   handleTabChange = (event, value) => {
+    this.props.clearAllTrails();
     this.props.changeMapMode(value);
   };
 
@@ -327,9 +328,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser() {
-    dispatch(setCurrentUser());
-  },
   setCurrentZone(zoneId) {
     dispatch(setCurrentZone(zoneId));
   },

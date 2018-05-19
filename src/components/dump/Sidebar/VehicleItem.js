@@ -2,12 +2,12 @@ import React from 'react';
 import Checkbox from "material-ui/Checkbox";
 import IconButton from 'material-ui/IconButton';
 import { ListItem, ListItemText } from "material-ui/List";
-import { Input, PhotoCamera } from 'material-ui-icons';
+import { Input } from 'material-ui-icons';
 
 const VehicleItem = props => {
   const {
     hooverVehicle, vehicleKey, vehicle,
-    onMouseEnter, onMouseLeave, onCheck, onOpenModal, onOpenPanel, unCheckAll
+    onMouseEnter, onMouseLeave, onCheck, onOpenPanel, unCheckAll
   } = props;
   return (
     <ListItem

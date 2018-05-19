@@ -144,7 +144,9 @@ export const clearTrail = (vehicle, mode) => {
   ref.off('value', null);
   return async (dispatch, getState) => {
     let trails = getState().trails;
-    if (mode === 'none') delete trails.data
+    if (mode === 'none') {
+      !!trails.data && delete trails.data
+    }
     else delete trails.data[vehicle.id]
     dispatch({
       type: "CLEAR_VEHICLE_TRAIL",
@@ -192,7 +194,7 @@ export const exportTrailCSV = (vehicle, startingDate, endingDate) => {
     endingDate
   };
   const serverhost = ['http://ec2-13-58-10-199.us-east-2.compute.amazonaws.com:8080', 'http://localhost:8080'];
-  const env = 0 // 0: prod, 1: local
+  const env = 1 // 0: prod, 1: local
   return async dispatch => {
     dispatch({
       type: "TRAIL_CSV_DATA_LOADING",
@@ -215,16 +217,6 @@ export const exportTrailCSV = (vehicle, startingDate, endingDate) => {
       payload: false
     })
   };
-
-  return (dispatch) => {
-    fB.child('trails').orderByChild('sent_tsmp').startAt(startingDate).endAt(endingDate)
-      .on('value', snap => {
-        dispatch({
-          type: "TRAIL_CSV_DATA",
-          payload: snap.val()
-        })
-      })
-  }
 }
 
 export const changeMapMode = mode => dispatch => {

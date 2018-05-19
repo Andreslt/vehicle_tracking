@@ -35,7 +35,6 @@ class GeoFenceForm extends Component{
     if (!name || radiusNumber < 10) {
       return;
     }
-    console.log("newMaker", { name, radius, lat, lng });
     this.props.onSave({ name, radius: radiusNumber, lat, lng });
   };
 

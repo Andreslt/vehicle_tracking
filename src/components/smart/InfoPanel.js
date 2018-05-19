@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   vehicleInfo,
-  currentVehicle,
   exportTrailCSV,
   vehicleSnapshot,
   printRoute,
   clearRoute,
   clearAllTrails
 } from '../../actionCreators';
-import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
 import { Typography, IconButton, Avatar, Button, TextField, Divider } from 'material-ui';
-import { Clear, DirectionsBus, Close as CloseIcon, Folder as FolderIcon, Pageview as PageviewIcon, Assignment as AssignmentIcon, PhotoCamera, FileDownload } from 'material-ui-icons';
+import { Clear, DirectionsBus, PhotoCamera, FileDownload } from 'material-ui-icons';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import moment from 'moment';
 import { CircularProgress } from 'material-ui/Progress';
@@ -27,7 +26,8 @@ class InfoPanel extends Component {
     invalidDates: false,
     csvData: false,
     csvDataError: false,
-    printRouteInvalid: false
+    printRouteInvalid: false,
+    buildingRoute: false
   };
 
   closePanel = () => () => {
@@ -43,23 +43,27 @@ class InfoPanel extends Component {
   };
 
   generateCSV = (vehicle) => () => {
+    const { check, startingDate, endingDate } = this.validateEntryDates();
+    if (!check) this.setState({ invalidDates: true })
+    else {
+      this.setState({ csvData: true, csvDataError: false })
+      this.props.exportTrailCSV(vehicle, startingDate, endingDate)
+    }
+  };
+
+  validateEntryDates = () => {
     const currentTime = moment(Date.now()).format();
     const startingDate = (this.state.startingDate) ? moment(this.state.startingDate).format() : currentTime;
     const endingDate = (this.state.endingDate) ? moment(this.state.endingDate).format() : currentTime;
 
     let check = false;
-
     if (startingDate && endingDate) {
-      const startingDateUnix = moment().unix(startingDate);
-      const endingDateUnix = moment().unix(endingDate);
-      if (startingDateUnix <= endingDateUnix) {
+      if (startingDate <= endingDate) {
         check = true
-        this.setState({ csvData: true, csvDataError: false })
-        this.props.exportTrailCSV(vehicle, startingDate, endingDate)
       }
     }
-    if (!check) this.setState({ invalidDates: true })
-  };
+    return { check, startingDate, endingDate };
+  }
 
   datePicked = event => {
     this.setState({ invalidDates: false })
@@ -75,10 +79,13 @@ class InfoPanel extends Component {
   };
 
   printRoute = () => {
-    const vehicle = this.props.currentVehicle;
-    const { startingDate, endingDate } = this.state;
-    this.props.clearAllTrails();
-    this.props.printRoute(vehicle, startingDate, endingDate);
+    const { check, startingDate, endingDate } = this.validateEntryDates();
+    if (!check) this.setState({ invalidDates: true })
+    else {
+      this.props.clearAllTrails();
+      this.setState({ buildingRoute: true });
+      this.props.printRoute(this.props.currentVehicle, startingDate, endingDate);
+    }
   }
 
   clearRoute = () => {
@@ -90,6 +97,8 @@ class InfoPanel extends Component {
     if (nextProps.csvDataError) this.setState({ csvDataError: true });
     if (nextProps.trailMode !== 'none') this.setState({ printRouteInvalid: true });
     else this.setState({ printRouteInvalid: false });
+    if (nextProps.printedRoute) this.setState({ buildingRoute: false })
+
     this.setState({ csvLoading: nextProps.csvLoading });
   }
 
@@ -166,6 +175,19 @@ class InfoPanel extends Component {
                   Descargando archivo CSV. Esta operación puede tardar unos minutos.
               </Typography> : ''}
             </div>
+            <div>
+              <Fade
+                in={this.state.buildingRoute}
+                style={{ transitionDelay: !this.props.buildingRoute ? '800ms' : '0ms' }}
+                unmountOnExit
+              >
+                <CircularProgress />
+              </Fade>
+              {this.state.buildingRoute ?
+                <Typography >
+                  Reconstruyendo recorrido. Esta operación puede tardar unos minutos.
+              </Typography> : ''}
+            </div>
             <Button
               disabled={this.state.printRouteInvalid}
               onClick={!!this.props.printedRoute ? this.clearRoute : this.printRoute}
@@ -173,7 +195,7 @@ class InfoPanel extends Component {
             >
               {!!this.props.printedRoute ? 'Ocultar Ruta' : 'Ver Ruta'}
             </Button>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px', display: 'flex' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px'}}>
               <IconButton
                 aria-label="Download CSV"
                 style={{ flex: 1 }}
