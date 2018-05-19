@@ -55,6 +55,7 @@ const MapComponent = props => {
   const {
     // currentZone,
     trails,
+    vehicles,
     onToggleOpen,
     isOpen,
     selectedKey,
@@ -68,6 +69,10 @@ const MapComponent = props => {
     handleNewGeoFenceCreate,
   } = props;
   const children = [];
+  let routeTrails = null;
+  if (vehicles && vehicles.routeTrails) {
+    routeTrails = vehicles.routeTrails;
+  }
   const { zoom, lat, lng } = mapProperties(props);
   const center = { lat, lng };
   const mapProps = {};
@@ -112,48 +117,66 @@ const MapComponent = props => {
       mapProps.zoom = zoom;
       mapProps.center = center;
       const data = trails.data;
-      if (!!data) {
-        children.push(...Object.keys(data).map((vehicleId, vehiKey) => {
-          const linePath = [];
-          return <div key={`vehiKey_${vehiKey}`}>
-            {Object.keys(data[vehicleId]).map((point, key) => {
-              const trail = data[vehicleId][point];
-              const lastPoint = Object.keys(data[vehicleId]).length - 1;
-              linePath.push({ lat: trail.lat, lng: trail.lng });
-              const iconProps = getIconProps(key, lastPoint);
-              return (
-                <Marker
-                  id={`marker_${point}`}
-                  position={{ lat: trail.lat, lng: trail.lng }}
-                  key={point}
-                  icon={iconProps}
-                  onClick={() => {
-                    onToggleOpen(key)
-                  }}
-                >
-                  {isOpen && selectedKey === key && <InfoWindow
-                    id={key}
+      if(!routeTrails){
+        if (!!data) {
+          children.push(...Object.keys(data).map((vehicleId, vehiKey) => {
+            const linePath = [];
+            return <div key={`vehiKey_${vehiKey}`}>
+              {Object.keys(data[vehicleId]).map((point, key) => {
+                const trail = data[vehicleId][point];
+                const lastPoint = Object.keys(data[vehicleId]).length - 1;
+                linePath.push({ lat: trail.lat, lng: trail.lng });
+                const iconProps = getIconProps(key, lastPoint);
+                return (
+                  <Marker
+                    id={`marker_${point}`}
                     position={{ lat: trail.lat, lng: trail.lng }}
-                    onCloseClick={onToggleOpen}
+                    key={point}
+                    icon={iconProps}
+                    onClick={() => {
+                      onToggleOpen(key)
+                    }}
                   >
-                    <Snippet point={trail} />
-                  </InfoWindow>}
-                </Marker>)
-            })}
-            <Polyline
-              {...lineProps}
-              path={linePath}
-            />
-          </div>
-        }));
+                    {isOpen && selectedKey === key && <InfoWindow
+                      id={key}
+                      position={{ lat: trail.lat, lng: trail.lng }}
+                      onCloseClick={onToggleOpen}
+                    >
+                      <Snippet point={trail} />
+                    </InfoWindow>}
+                  </Marker>)
+              })}
+              <Polyline
+                {...lineProps}
+                path={linePath}
+              />
+            </div>
+          }));
+        }
+        children.push(
+          <KmlLayer
+            key="KmlLayer"
+            url={drawnKML}
+            options={{ preserveViewport: true }}
+          />
+        );
+      }else {
+        const linePath = [];
+        return <div key={`routeTrails`}>
+          {Object.keys(routeTrails).map((rt, key) => {
+            const trail = routeTrails[rt];
+            linePath.push({ lat: trail.lat, lng: trail.lng });
+          })}
+          <Polyline
+            path={linePath}
+          />
+          <KmlLayer
+            key="KmlLayer"
+            url={drawnKML}
+            options={{ preserveViewport: true }}
+          />
+        </div>
       }
-      children.push(
-        <KmlLayer
-          key="KmlLayer"
-          url={drawnKML}
-          options={{ preserveViewport: true }}
-        />
-      );
       break;
   }
   return (

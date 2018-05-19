@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { vehicleInfo, currentVehicle, exportTrailCSV, vehicleSnapshot } from '../../actionCreators';
-// import { compose, withProps, withStateHandlers } from "recompose";
+import {
+  vehicleInfo,
+  currentVehicle,
+  exportTrailCSV,
+  vehicleSnapshot,
+  printRoute,
+  clearRoute,
+  clearAllTrails
+} from '../../actionCreators';
 import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
 import { Typography, IconButton, Avatar, Button, TextField, Divider } from 'material-ui';
-// import Slide from 'material-ui/transitions/Slide';
 import { Clear, DirectionsBus, Close as CloseIcon, Folder as FolderIcon, Pageview as PageviewIcon, Assignment as AssignmentIcon, PhotoCamera, FileDownload } from 'material-ui-icons';
-// import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-// import { CSVLink, CSVDownload } from 'react-csv';
 import moment from 'moment';
 import { CircularProgress } from 'material-ui/Progress';
 import Fade from 'material-ui/transitions/Fade';
 import Snackbar from 'material-ui/Snackbar';
-/*
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
-*/
+
 class InfoPanel extends Component {
 
   state = {
@@ -26,7 +26,8 @@ class InfoPanel extends Component {
     endingDate: null,
     invalidDates: false,
     csvData: false,
-    csvDataError: false
+    csvDataError: false,
+    printRouteInvalid: false
   };
 
   closePanel = () => () => {
@@ -73,26 +74,34 @@ class InfoPanel extends Component {
     this.props.vehicleSnapshot(true);
   };
 
+  printRoute = () => {
+    const vehicle = this.props.currentVehicle;
+    const { startingDate, endingDate } = this.state;
+    this.props.clearAllTrails();
+    this.props.printRoute(vehicle, startingDate, endingDate);
+  }
+
+  clearRoute = () => {
+    this.props.clearRoute();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.csvData) this.setState({ csvData: true });
     if (nextProps.csvDataError) this.setState({ csvDataError: true });
+    if (nextProps.trailMode !== 'none') this.setState({ printRouteInvalid: true });
+    else this.setState({ printRouteInvalid: false });
     this.setState({ csvLoading: nextProps.csvLoading });
   }
 
   render() {
     const currentDate = moment().format('YYYY-MM-DDThh:mm');
-    const {
-      currentVehicle,
-      /*csvLoading,
-      csvData*/
-    } = this.props;
-    const vehicle = currentVehicle[Object.keys(currentVehicle)[0]];
+    const { currentVehicle } = this.props;
     return (
       <div id="infoPanelID" style={{ float: 'right', width: '300px', height: '535px' }}>
         <Card>
           <CardHeader
             title={
-              <Typography style={{ marginRight: '20px' }} variant="title" > Vehicle ID {vehicle.id}</Typography>
+              <Typography style={{ marginRight: '20px' }} variant="title" > ID Vehículo {currentVehicle.id}</Typography>
             }
             style={{ margin: 0 }}
             subheader={moment().format('Do MMMM YYYY')}
@@ -157,9 +166,12 @@ class InfoPanel extends Component {
                   Descargando archivo CSV. Esta operación puede tardar unos minutos.
               </Typography> : ''}
             </div>
-            <Button              
+            <Button
+              disabled={this.state.printRouteInvalid}
+              onClick={!!this.props.printedRoute ? this.clearRoute : this.printRoute}
               variant="raised" color="secondary" style={{ flex: 1 }}
-            > Ver Ruta
+            >
+              {!!this.props.printedRoute ? 'Ocultar Ruta' : 'Ver Ruta'}
             </Button>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px', display: 'flex' }}>
               <IconButton
@@ -167,7 +179,7 @@ class InfoPanel extends Component {
                 style={{ flex: 1 }}
                 title={'Descargar CSV'}
                 disabled={false}
-                onClick={this.generateCSV(vehicle)}
+                onClick={this.generateCSV(currentVehicle)}
               >
                 CSV
                 <FileDownload />
@@ -176,6 +188,7 @@ class InfoPanel extends Component {
                 aria-label="Live Camera"
                 style={{ flex: 1 }}
                 onClick={this.handleModal}
+                disabled={!!currentVehicle.src ? false : true}
               >
                 CAM
                 <PhotoCamera />
@@ -201,6 +214,8 @@ const mapStateToProps = state => {
   return {
     vehicleInfo: state.vehicles.vehicleInfo,
     currentVehicle: state.vehicles.currentVehicle,
+    printedRoute: state.vehicles.printedRoute,
+    trailMode: state.trails.mode,
     liveRecording: state.vehicles.liveRecording,
     csvData: state.trails.csvData,
     csvDataError: state.trails.csvDataError,
@@ -210,6 +225,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    printRoute(vehicle, startingDate, endingDate) {
+      dispatch(printRoute(vehicle, startingDate, endingDate));
+    },
+    clearRoute() {
+      dispatch(clearRoute());
+    },
+    clearAllTrails() {
+      dispatch(clearAllTrails());
+    },
     vehicleInfo(state) {
       dispatch(vehicleInfo(state));
     },

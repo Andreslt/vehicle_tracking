@@ -9,6 +9,7 @@ import {
   setTrackingMode,
   printTrail,
   clearTrail,
+  clearAllTrails,
   currentVehicle,
   vehicleInfo,
   vehicleSnapshot,
@@ -34,6 +35,7 @@ const layout = theme.layout;
 const themeSelector = 0; // 0: Light, 1: Dark
 let checkLength = 0;
 let checkQueue = {};
+let unCheckAll = false;
 
 export const styles = theme => ({
   tabWrapper: {
@@ -102,7 +104,6 @@ const cssStyles = {
 
 function getTrackingMode(index) {
   let action = 'adding', mode;
-
   if (checkLength == 0)
     checkQueue[index] = true
   else {
@@ -136,16 +137,22 @@ class SidebarContainer extends Component {
     geoFenceFilter: "",
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.printedRoute) unCheckAll = true;
+    else unCheckAll = false;
+  }
+
   componentDidMount() {
     this.props.fetchZones(this.props.currentCompany);
-  }
+  };
 
   handleClick = (zoneId) => () => {
     if (!this.state.open) {
       const zone = this.props.zones[zoneId];
       this.props.setCurrentZone(zone);
       this.props.fetchVehicles(zone);
-      // this.props.clearZoneKml(zone);
+      this.props.setTrackingMode('none');
+      if (!this.state.open) { this.props.clearAllTrails(); checkQueue = {} }
       this.setState({ open: true, colKey: zoneId, switch: false, zonePicked: this.props.zones[zoneId] });
     } else this.setState({ open: false });
   };
@@ -249,6 +256,7 @@ class SidebarContainer extends Component {
                   onCheckItem={this.handleCheck}
                   onOpenModal={this.handleModal}
                   onOpenPanel={this.handlePanel}
+                  unCheckAll={unCheckAll}
                 />
               }
               onZoneClick={this.handleClick(zoneKey)}
@@ -307,6 +315,7 @@ const mapStateToProps = state => {
     currentUser: state.users.currentUser,
     currentCompany: state.companies.currentCompany,
     currentZone: state.zones.currentZone,
+    printedRoute: state.vehicles.printedRoute,
     zones: state.zones.data,
     vehicles: state.vehicles.data,
     trails: state.trails.data,
@@ -339,11 +348,14 @@ const mapDispatchToProps = dispatch => ({
   clearZoneKml(zone) {
     dispatch(clearZoneKml(zone));
   },
-  printTrail(zoneId, vehicleId) {
-    dispatch(printTrail(zoneId, vehicleId));
+  printTrail(vehicle) {
+    dispatch(printTrail(vehicle));
   },
   clearTrail(zoneId, vehicleId, blank) {
     dispatch(clearTrail(zoneId, vehicleId, blank));
+  },
+  clearAllTrails() {
+    dispatch(clearAllTrails());
   },
   currentVehicle(zoneId, vehicleId) {
     dispatch(currentVehicle(zoneId, vehicleId))

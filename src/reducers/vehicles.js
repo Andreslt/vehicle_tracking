@@ -23,6 +23,18 @@ export default (state = initialState.vehicles, action) => {
         ...state,
         liveRecording: action.payload
       };
+    case 'PRINT_VEHICLE_ROUTE':
+      return {
+        ...state,
+        printedRoute: true,
+        routeTrails: action.payload
+      };
+    case 'CLEAR_VEHICLE_ROUTE':
+      return {
+        ...state,
+        printedRoute: false,
+        routeTrails: null
+      };
     default: return state;
   }
 }

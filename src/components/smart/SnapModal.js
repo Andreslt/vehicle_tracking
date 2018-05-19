@@ -25,10 +25,10 @@ function TabContainer(props) {
   );
 }
 
-const defaultSRC = {
-  video: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123',
-  img: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123'
-}
+// const defaultSRC = {
+//   video: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123',
+//   img: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123'
+// }
 
 class SnapModal extends Component {
   state = {
@@ -47,11 +47,8 @@ class SnapModal extends Component {
 
   imgUrl = () => {
     if (!this.props.liveRecording) return null;
-
-    const vhid = Object.keys(this.props.currentVehicle)[0];
-    const vh = this.props.currentVehicle[vhid];
-    const source = !!vh.src ? vh.src : defaultSRC;
-    return source[this.state.tabValue]
+    const src = this.props.currentVehicle.src;
+    return src[this.state.tabValue]
   };
 
   render() {

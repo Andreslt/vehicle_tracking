@@ -77,7 +77,7 @@ export const currentVehicle = (vehicleId) => {
       dispatch({
         type: "CURRENT_VEHICLE",
         payload: {
-          data: snap.val(),
+          data: Object.values(snap.val())[0],
         }
       })
       dispatch({
@@ -149,6 +149,38 @@ export const clearTrail = (vehicle, mode) => {
     dispatch({
       type: "CLEAR_VEHICLE_TRAIL",
       payload: trails.data
+    })
+  }
+}
+
+export const clearAllTrails = () => {
+  return async (dispatch, getState) => {
+    let trails = getState().trails;
+    delete trails.data
+    dispatch({
+      type: "CLEAR_VEHICLE_TRAIL",
+      payload: trails.data
+    })
+  }
+}
+
+export const printRoute = (vehicle, startingDate, endingDate) => {
+  const company = vehicle.zone.slice(0, 5); // this code should ALWAYS be 5 characters long.
+  const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}/TRAILS`;
+  return async dispatch => {
+    fB.child(path).orderByChild('sent_tsmp').startAt(startingDate).endAt(endingDate).on('value', snap => {
+      dispatch({
+        type: "PRINT_VEHICLE_ROUTE",
+        payload: snap.val()
+      })
+    })
+  }
+}
+
+export const clearRoute = () => {
+  return dispatch => {
+    dispatch({
+      type: "CLEAR_VEHICLE_ROUTE"
     })
   }
 }
