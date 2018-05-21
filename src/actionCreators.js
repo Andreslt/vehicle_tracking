@@ -71,7 +71,7 @@ export const fetchVehicles = currentZone => {
 }
 
 export const currentVehicle = (vehicleId) => {
-  const vehId = vehicleId.slice(-6);
+  const vehId = vehicleId.split('_')[1];
   return async dispatch => {
     fB.child('CONTROL/VEHICLES').orderByChild('id').equalTo(vehId).on('value', snap => {
       dispatch({
@@ -121,16 +121,18 @@ export const setTrackingMode = mode => {
 }
 
 export const printTrail = vehicle => {
-  const company = vehicle.zone.slice(0, 5); // this code should ALWAYS be 5 characters long.
+  const company = vehicle.zone.split('_')[0];// this code should ALWAYS be 5 characters long.
   const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}/TRAILS`
   return async (dispatch, getState) => {
     fB.child(path).limitToLast(limitToLast).on('value', snap => {
       const data = getState().trails.data;
+      const snapValObj = Object.values(snap.val());
+      snapValObj.sort(compare);
       dispatch({
         type: "PRINT_VEHICLE_TRAIL",
         payload: {
           ...data,
-          [vehicle.id]: snap.val()
+          [vehicle.id]: snapValObj
         }
       })
     })
@@ -138,7 +140,7 @@ export const printTrail = vehicle => {
 }
 
 export const clearTrail = (vehicle, mode) => {
-  const company = vehicle.zone.slice(0, 5); // this code should ALWAYS be 5 characters long.
+  const company = vehicle.zone.split('_')[0]; // this code should ALWAYS be 5 characters long.
   const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}/TRAILS`
   const ref = fB.child(path).limitToLast(limitToLast);
   ref.off('value', null);
@@ -171,9 +173,11 @@ export const printRoute = (vehicle, startingDate, endingDate) => {
   const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}/TRAILS`;
   return async dispatch => {
     fB.child(path).orderByChild('sent_tsmp').startAt(startingDate).endAt(endingDate).on('value', snap => {
+      const snapValObj = Object.values(snap.val());
+      snapValObj.sort(compare);      
       dispatch({
         type: "PRINT_VEHICLE_ROUTE",
-        payload: snap.val()
+        payload: snapValObj
       })
     })
   }
@@ -194,7 +198,7 @@ export const exportTrailCSV = (vehicle, startingDate, endingDate) => {
     endingDate
   };
   const serverhost = ['http://ec2-13-58-10-199.us-east-2.compute.amazonaws.com:8080', 'http://localhost:8080'];
-  const env = 1 // 0: prod, 1: local
+  const env = 0 // 0: prod, 1: local
   return async dispatch => {
     dispatch({
       type: "TRAIL_CSV_DATA_LOADING",
@@ -268,3 +272,13 @@ export const changeGeoFenceVisibility = (geoFenceId, visible) => ({
     visible,
   },
 });
+
+function compare(a, b) {
+  const aDate = new Date (a.sent_tsmp);
+  const bDate = new Date (b.sent_tsmp);
+  if (aDate < bDate)
+    return -1;
+  if (aDate > bDate)
+    return 1;
+  return 0;
+}
