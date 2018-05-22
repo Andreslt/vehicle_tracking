@@ -6,7 +6,7 @@ import VehicleItem from './VehicleItem';
 const VehicleList = props => {
   const {
     vehicles, hooverVehicle, trails,
-    onMouseHoverItem, onCheckItem, onOpenModal, onOpenPanel
+    onMouseHoverItem, onCheckItem, onOpenModal, onOpenPanel, unCheckAll
   } = props;
   return (
     <List component="div" disablePadding>
@@ -21,6 +21,7 @@ const VehicleList = props => {
           onCheck={onCheckItem(vehicles[vehicleKey], vehicleIndex, trails)}
           onOpenModal={onOpenModal(vehicleKey)}
           onOpenPanel={onOpenPanel(vehicleKey)}
+          unCheckAll={unCheckAll}
         />
       ))}
     </List>

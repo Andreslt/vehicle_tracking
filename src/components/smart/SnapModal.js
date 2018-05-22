@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { AppBar/*, Button, Toolbar, IconButton, Typography*/ } from 'material-ui';
-import Dialog, {
-  /*DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,*/
-} from 'material-ui/Dialog';
-// import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
-// import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import { AppBar } from 'material-ui';
+import Dialog from 'material-ui/Dialog';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { vehicleSnapshot } from '../../actionCreators';
 import { Close as CloseIcon } from 'material-ui-icons'; import Slide from 'material-ui/transitions/Slide';
@@ -16,19 +9,6 @@ import { Close as CloseIcon } from 'material-ui-icons'; import Slide from 'mater
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
-/*
-function TabContainer(props) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {props.children}
-    </Typography>
-  );
-}
-*/
-const defaultSRC = {
-  video: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=jpeg&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123',
-  img: 'http://186.146.26.224:8080/zm/cgi-bin/nph-zms?mode=single&monitor=2$scale=100&maxfps=6&user=admin&pass=admin123'
-};
 
 class SnapModal extends Component {
   state = {
@@ -38,20 +18,17 @@ class SnapModal extends Component {
 
   selectTab = tab => () => {
     this.setState({ tabValue: tab });
-  }
+  };
 
   handleClose = () => {
     this.setState({ open: false });
     this.props.closeModal();
-  }
+  };
 
   imgUrl = () => {
     if (!this.props.liveRecording) return null;
-
-    const vhid = Object.keys(this.props.currentVehicle)[0];
-    const vh = this.props.currentVehicle[vhid];
-    const source = !!vh.src ? vh.src : defaultSRC;
-    return source[this.state.tabValue]
+    const src = this.props.currentVehicle.src;
+    return src[this.state.tabValue]
   };
 
   render() {
@@ -77,7 +54,7 @@ class SnapModal extends Component {
               </Tabs>
             </AppBar>
             <div>
-              <img src={this.imgUrl()} style={{ maxWidth: '100%' }} alt=""/>
+              <img alt="source" src={this.imgUrl()} style={{ maxWidth: '100%' }} />
             </div>
           </div>
         </Dialog>
@@ -91,7 +68,7 @@ const mapStateToProps = state => {
     currentVehicle: state.vehicles.currentVehicle,
     liveRecording: state.vehicles.liveRecording
   }
-}
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -99,6 +76,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(vehicleSnapshot(false))
     }
   }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SnapModal);
