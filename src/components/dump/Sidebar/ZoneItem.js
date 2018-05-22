@@ -26,8 +26,8 @@ const ZoneItem = props => {
       </ListItem>
       <Collapse in={isExpanded} timeout="auto" unmountOnExit>
         {vehicleList}
-        <Divider />
         <div>
+          <Divider />
           <SubZonesSelect
             zoneKey={zoneKey}
             zoneId={zone.id}
@@ -35,8 +35,8 @@ const ZoneItem = props => {
             zonePicked={zonePicked}
             handleSelect={onSubZoneSelect}
           />
-          <ListSubheader style={{ display: 'flex', flexDirection: 'row', marginRight: '55px' }}>
-            <div style={{ flex: 1, fontWeight: 'bold', marginRight: '45px' }}>Mostrar en Mapa</div>
+          <ListSubheader style={{ display: 'flex', flexDirection: 'row', marginRight: '40px' }}>
+            <div style={{ flex: 1, fontWeight: 'bold', marginRight: '40px' }}>Mostrar en Mapa</div>
             <div>
               <Switch
                 onChange={onToggleSwitch}
