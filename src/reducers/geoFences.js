@@ -47,6 +47,14 @@ const map = (state = initialState.geoFences, action) => {
         ...state,
         data: action.payload
       };
+    case "CLEAR_VEHICLE_GEO_FENCES":
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [action.payload]: undefined,
+        }
+      };
     default:
       return state;
   }

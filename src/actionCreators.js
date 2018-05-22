@@ -134,7 +134,9 @@ export const printTrail = vehicle => {
         }
       });
     });
-    fB.child(`${path}/GEO_FENCES`).limitToLast(limitToLast).on('value', snap => {
+    const endingDate = moment().format();
+    const startingDate = moment().subtract(3, 'd').format();
+    fB.child(`${path}/GEO_FENCES`).orderByChild('timestamp').startAt(startingDate).endAt(endingDate).on('value', snap => {
       const data = getState().geoFences.data;
       dispatch({
         type: "PRINT_VEHICLE_GEO_FENCES",
@@ -142,26 +144,35 @@ export const printTrail = vehicle => {
           ...data,
           [vehicle.id]: snap.val()
         }
-      })
-    })
+      });
+    });
   };
 };
 
 export const clearTrail = (vehicle, mode) => {
   const company = vehicle.zone.slice(0, 5); // this code should ALWAYS be 5 characters long.
-  const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}/TRAILS`
-  const ref = fB.child(path).limitToLast(limitToLast);
-  ref.off('value', null);
+  const path = `DATA/ENTITIES/${company}/ZONES/${vehicle.zone}/VEHICLES/${vehicle.id}`;
   return async (dispatch, getState) => {
+    const refTrails = fB.child(`${path}/TRAILS`).limitToLast(limitToLast);
+    refTrails.off('value', null);
+    const refGeoFences = fB.child(`${path}/GEO_FENCES`);
+    refGeoFences.off('value', null);
     let trails = getState().trails;
-    if (mode === 'none') delete trails.data
-    else delete trails.data[vehicle.id]
+    if (mode === 'none') {
+      delete trails.data;
+    } else {
+      delete trails.data[vehicle.id];
+    }
     dispatch({
       type: "CLEAR_VEHICLE_TRAIL",
-      payload: trails.data
-    })
+      payload: trails.data,
+    });
+    dispatch({
+      type: "CLEAR_VEHICLE_GEO_FENCES",
+      payload: vehicle.id,
+    });
   }
-}
+};
 
 export const exportTrailCSV = (vehicle, startingDate, endingDate) => {
   const data = {
