@@ -102,22 +102,28 @@ const cssStyles = {
 };
 
 function getTrackingMode(index) {
+  console.log(checkLength, checkQueue)
   let action = 'adding', mode;
-  if (checkLength === 0)
-    checkQueue[index] = true
-  else {
-    if (!checkQueue[index]) checkQueue[index] = true;
-    else {
+  if (checkLength === 0) {
+    checkQueue[index] = true;
+  } else {
+    if (!checkQueue[index]) {
+      checkQueue[index] = true;
+    } else {
       delete checkQueue[index];
       action = 'removing'
     }
   }
   checkLength = Object.keys(checkQueue).length;
 
-  if (checkLength === 0) mode = 'none'
-  else if (checkLength === 1) mode = 'single'
-  else mode = 'multi';
-
+  if (checkLength === 0) {
+    mode = 'none';
+  } else if (checkLength === 1) {
+    mode = 'single';
+  } else {
+    mode = 'multi';
+  }
+  console.log(checkLength, checkQueue)
   return { action, mode }
 }
 
@@ -137,8 +143,8 @@ class SidebarContainer extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    unCheckAll = (nextProps.printedRoute) ? true : false;
-    checkQueue = (nextProps.mapMode !== 'recent') ? checkQueue = {} : checkQueue;
+    unCheckAll = Boolean(nextProps.printedRoute);
+    checkQueue = (nextProps.mapMode === 'geoFences') ? checkQueue = {} : checkQueue;
   }
 
   componentDidMount() {
@@ -156,8 +162,9 @@ class SidebarContainer extends Component {
     } else this.setState({ open: false });
   };
 
-  handleCheck = (vehicle, index) => () => {
+  handleCheck = (vehicle) => () => {
     const { action, mode } = getTrackingMode(vehicle.id);
+    console.log("TrackingMode -> ", action, mode);
     this.props.setTrackingMode(mode);
     switch (action) {
       case 'adding':
@@ -195,13 +202,17 @@ class SidebarContainer extends Component {
     this.props.currentVehicle(vehicleId);
   };
 
-  handleModal = vehicleId => () => {
+  handleModal = () => () => {
     this.props.vehicleSnapshot(true);
   };
 
   handleTabChange = (event, value) => {
-    this.props.clearAllTrails();
-    this.props.changeMapMode(value);
+    if (this.props.mapMode !== value) {
+      if (this.props.mapMode === "geoFences") {
+        this.props.clearAllTrails();
+      }
+      this.props.changeMapMode(value);
+    }
   };
 
   handleGeoFenceVisibilityChange = geoFenceId => ({ target: { checked } }) => this.props.changeGeoFenceVisibility(geoFenceId, checked);

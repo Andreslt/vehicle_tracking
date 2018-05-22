@@ -14,8 +14,8 @@ const actions = {
     label: "Geo-fences",
     icon: LocationOnIcon,
   },
-  nearby: {
-    label: "Nearby",
+  history: {
+    label: "History",
     icon: RestoreIcon,
   },
 };

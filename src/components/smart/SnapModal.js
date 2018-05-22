@@ -18,12 +18,12 @@ class SnapModal extends Component {
 
   selectTab = tab => () => {
     this.setState({ tabValue: tab });
-  }
+  };
 
   handleClose = () => {
     this.setState({ open: false });
     this.props.closeModal();
-  }
+  };
 
   imgUrl = () => {
     if (!this.props.liveRecording) return null;
@@ -68,7 +68,7 @@ const mapStateToProps = state => {
     currentVehicle: state.vehicles.currentVehicle,
     liveRecording: state.vehicles.liveRecording
   }
-}
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -76,6 +76,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(vehicleSnapshot(false))
     }
   }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SnapModal);

@@ -3,6 +3,7 @@ import { compose, withProps, withStateHandlers } from "recompose";
 import { withScriptjs, withGoogleMap, GoogleMap, KmlLayer, Marker, InfoWindow, Polyline, Circle } from "react-google-maps";
 import Snippet from '../Snippet';
 import GeoFenceForm from './GeoFenceForm';
+import GeoFenceMarker from './GeoFenceMarker';
 
 const mapProperties = props => {
   const { trails, currentZone/*, drawnKML*/ } = props;
@@ -28,7 +29,7 @@ const mapProperties = props => {
       }
   }
   return mapProps
-}
+};
 
 const getIconProps = (key, lastPoint) => ({
   path: 'M 100 100 L 300 100 L 200 300 z',
@@ -67,6 +68,8 @@ const MapComponent = props => {
     newGeoFence,
     handleNewGeoFenceInfoWindowClose,
     handleNewGeoFenceCreate,
+    currentUserUID,
+    handleDeleteGeoFence,
   } = props;
   const children = [];
   let routeTrails = null;
@@ -99,17 +102,13 @@ const MapComponent = props => {
         </Marker>);
       }
       children.push(...geoFences.ids.map(geoFenceId => (
-        <Marker
-          key={`marker_${geoFenceId}`}
-          label={geoFences.byId[geoFenceId].name}
-          position={{ lat: geoFences.byId[geoFenceId].lat, lng: geoFences.byId[geoFenceId].lng }}
-        >
-          <Circle
-            center={{ lat: geoFences.byId[geoFenceId].lat, lng: geoFences.byId[geoFenceId].lng }}
-            radius={geoFences.byId[geoFenceId].radius}
-            visible={geoFences.byId[geoFenceId].visible}
-          />
-        </Marker>
+        <GeoFenceMarker
+          key={geoFenceId}
+          id={geoFenceId}
+          {...geoFences.byId[geoFenceId]}
+          currentUser={currentUserUID}
+          onDelete={handleDeleteGeoFence}
+        />
       )));
       break;
     case "recent":
@@ -235,7 +234,8 @@ export default compose(
       handleNewGeoFenceCreate: (state, { addGeoFence }) => geoFence => {
         addGeoFence(geoFence);
         return { newGeoFence: null };
-      }
+      },
+      handleDeleteGeoFence: (state, { deleteGeoFence }) => geoFenceId => deleteGeoFence(geoFenceId),
     }),
   withScriptjs,
   withGoogleMap,
