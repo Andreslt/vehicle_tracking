@@ -26,6 +26,9 @@ const styles = theme => ({
     position: 'relative',
     display: 'flex',
     width: '100%',
+    [theme.breakpoints.down('xs')]: {
+      marginTop: 56,
+    },
   },
   appBar: {
     background: layout[themeSelector].background,
