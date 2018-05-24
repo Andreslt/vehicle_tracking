@@ -19,12 +19,16 @@ const mapProperties = props => {
         mapProps = currentZone.mapProps;
       } else {
         const index = Object.keys(trails.data).slice(0)[0]; // Vehicle ID
-        const lastTrail = Object.keys(trails.data[index]).slice(-1);
-        const { lat, lng } = trails.data[index][lastTrail];
-        mapProps = {
-          lat,
-          lng,
-          zoom: 16,
+        if (!index) {
+          mapProps = currentZone.mapProps;
+        } else {
+          const lastTrail = Object.keys(trails.data[index]).slice(-1);
+          const { lat, lng } = trails.data[index][lastTrail];
+          mapProps = {
+            lat,
+            lng,
+            zoom: 16,
+          }
         }
       }
   }

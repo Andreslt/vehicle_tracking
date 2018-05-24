@@ -159,7 +159,9 @@ class SidebarContainer extends Component {
       this.props.setTrackingMode('none');
       if (!this.state.open) { this.props.clearAllTrails(); checkQueue = {} }
       this.setState({ open: true, colKey: zoneId, switch: false, zonePicked: this.props.zones[zoneId] });
-    } else this.setState({ open: false });
+    } else {
+      this.setState({ open: false });
+    }
   };
 
   handleCheck = (vehicle) => () => {

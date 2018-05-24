@@ -6,6 +6,7 @@ import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
+import Logo from '../../smartsealsco_logo.jpeg';
 
 import { auth } from '../../firebase';
 import { LANDING } from '../../routes';
@@ -55,6 +56,7 @@ class SignInPage extends Component {
     return (
       <div style={{ display: "flex", flexDirection: "column",  alignItems: "center" }}>
         <Paper className={classes.root}>
+          <img src={Logo} alt="" style={{ width: 256 }}/>
           <Typography variant="headline" color="primary" style={{ fontSize: "2rem" }}>Sign In</Typography>
           <form style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <TextField
