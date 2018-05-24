@@ -274,6 +274,7 @@ class SidebarContainer extends Component {
               onZoneClick={this.handleClick(zoneKey)}
               onSubZoneSelect={this.handleSelect}
               onToggleSwitch={this.handleSwitch(this.props.zones[zoneKey])}
+              isSwitchOn={this.state.switch}
             />
           ))
         }
