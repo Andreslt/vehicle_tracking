@@ -11,7 +11,7 @@ const ZoneItem = props => {
   const {
     zoneKey, zone, isExpanded, zonePicked, selectedSubZone,
     vehicleList,
-    onZoneClick, onSubZoneSelect, onToggleSwitch
+    onZoneClick, onSubZoneSelect, onToggleSwitch, isSwitchOn
   } = props;
   return (
     <div>
@@ -39,6 +39,7 @@ const ZoneItem = props => {
             <div style={{ flex: 1, fontWeight: 'bold', marginRight: '40px' }}>Mostrar en Mapa</div>
             <div>
               <Switch
+                checked={isSwitchOn}
                 onChange={onToggleSwitch}
                 disabled={!selectedSubZone}
               />

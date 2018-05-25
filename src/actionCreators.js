@@ -178,13 +178,8 @@ export const clearTrail = (vehicle, mode) => {
 
 export const clearAllTrails = () => {
   return async (dispatch, getState) => {
-    let trails = getState().trails;
-    delete trails.data;
-    dispatch({
-      type: "CLEAR_VEHICLE_TRAIL",
-      payload: trails.data
-    });
-    dispatch({ type: "CLEAR_VEHICLE_GEO_FENCES_ALL" });
+    let { vehicles } = getState();
+    vehicles.data && Object.values(vehicles.data).forEach(vehicle => dispatch(clearTrail(vehicle)));
   }
 };
 

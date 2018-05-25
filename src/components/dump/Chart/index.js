@@ -29,37 +29,40 @@ const ChartComponent = ({ data }) => {
     });
   }
   return (
-    <div >
-      <Line
-        data={theData}
-        options={{
-          scales: {
-            xAxes: [{
-              type: 'time',
-              distribution: 'linear',
-              time: {
-                unit: 'hour',
-                displayFormats: {
-                  hour: 'MMM D h:mm a',
+    <div style={{ height: '91%' }}>
+      <div style={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
+        <Line
+          data={theData}
+          options={{
+            scales: {
+              xAxes: [{
+                type: 'time',
+                distribution: 'linear',
+                time: {
+                  unit: 'hour',
+                  displayFormats: {
+                    hour: 'MMM D h:mm a',
+                  },
+                  max: moment().format(),
+                  min: moment().subtract(3, 'd').format(),
                 },
-                max: moment().format(),
-                min: moment().subtract(3, 'd').format(),
-              },
-            }],
-            yAxes: [{
-              ticks: {
-                stepSize: 1,
-                callback: function (v) {
-                  if (geoFences.length > 0 && v >= 0) {
-                    return geoFences[v];
+              }],
+              yAxes: [{
+                ticks: {
+                  stepSize: 1,
+                  callback: function (v) {
+                    if (geoFences.length > 0 && v >= 0) {
+                      return geoFences[v];
+                    }
+                    return v;
                   }
-                  return v;
-                }
-              },
-            }],
-          },
-        }}
-      />
+                },
+              }],
+            },
+          }}
+          style={{ height: '100%', width: '100%' }}
+        />
+      </div>
     </div>
   );
 };
