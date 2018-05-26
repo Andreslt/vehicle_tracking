@@ -2,6 +2,8 @@ export default {
   userInfo: null,
   company: {
     currentCompany: null,
+    ids: [],
+    byId: {},
   },
   trails: {
     mode: "none"

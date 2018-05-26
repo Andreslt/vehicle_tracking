@@ -10,7 +10,8 @@ import { Layout, Content, Sidebar, SignIn } from '../components/smart';
 import { Header, Route } from '../components/dump';
 
 import {
-  setCurrentUser
+  setCurrentUser,
+  changeCompany
 } from '../actionCreators';
 
 const Landing = props => {
@@ -77,16 +78,19 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    vehicleInfo: state.vehicles.vehicleInfo,
-    liveRecording: state.vehicles.liveRecording,
-  }
-};
+const mapStateToProps = state => ({
+  vehicleInfo: state.vehicles.vehicleInfo,
+  liveRecording: state.vehicles.liveRecording,
+  companies: state.companies,
+  isAdmin: state.users && state.users.currentUser && state.users.currentUser.role === 'admin',
+});
 
 const mapDispatchToProps = dispatch => ({
   setCurrentUser(userInfo) {
     dispatch(setCurrentUser(userInfo));
+  },
+  changeCompany(company) {
+    dispatch(changeCompany(company));
   },
 });
 

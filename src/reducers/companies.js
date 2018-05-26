@@ -7,6 +7,13 @@ const company = (state = initialState.company, action) => {
         ...state,
         currentCompany: action.payload
       };
+    case "FETCH_COMPANIES":
+      const byId = action.payload;
+      return {
+        ...state,
+        byId,
+        ids: Object.keys(byId),
+      };
     default:
       return state;
   }

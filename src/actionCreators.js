@@ -7,6 +7,7 @@ const limitToLast = 100; // Controlling the amount of trails
 
 /* >>>> USERS <<<< */
 export const setCurrentUser = currentUser => {
+  console.log("currentUser", currentUser);
   return async dispatch => {
     dispatch({
       type: "SET_CURRENT_USER",
@@ -16,6 +17,24 @@ export const setCurrentUser = currentUser => {
       type: "SET_CURRENT_COMPANY",
       payload: currentUser.company
     });
+    if (currentUser.role === "admin") {
+      fB.child('CONTROL/COMPANIES').on('value', snap => {
+        dispatch({
+          type: "FETCH_COMPANIES",
+          payload: snap.val(),
+        });
+      });
+    }
+  };
+};
+
+export const changeCompany = company => {
+  return async (dispatch, getState) => {
+    const user = getState().users.currentUser;
+    await fB.update({
+      [`CONTROL/USERS/${user.uid}/company`]: company,
+    });
+    window.location.reload();
   };
 };
 
