@@ -6,9 +6,9 @@ import { Typography, IconButton, Toolbar, AppBar, Drawer } from 'material-ui';
 import MenuIcon from 'material-ui-icons/Menu';
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
+import Slide from 'material-ui/transitions/Slide';
 import InfoPanel from './InfoPanel';
 import SnapModal from './SnapModal';
-import Slide from 'material-ui/transitions/Slide';
 
 import theme from '../../app/theme';
 const layout = theme.layout;
@@ -119,6 +119,10 @@ class Layout extends React.Component {
     this.setState({ open: false });
   };
 
+  handleChange = event => {
+    this.props.changeCompany(event.target.value);
+  };
+
   render() {
     const {
       Content,
@@ -127,7 +131,9 @@ class Layout extends React.Component {
       classes,
       vehicleInfo,
       theme,
-      onLogout
+      onLogout,
+      isAdmin,
+      companies,
     } = this.props;
     const { anchor, open } = this.state;
     const drawer = (
@@ -178,7 +184,7 @@ class Layout extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Header onLogout={onLogout} />
+              <Header isAdmin={isAdmin} companies={companies} handleCompanyChange={this.handleChange} onLogout={onLogout} />
             </Toolbar>
           </AppBar>
           {before}
@@ -205,6 +211,7 @@ class Layout extends React.Component {
 Layout.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  isAdmin: PropTypes.bool,
 };
 
 export default withStyles(styles, { withTheme: true })(Layout);
