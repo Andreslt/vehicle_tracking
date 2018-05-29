@@ -22,7 +22,12 @@ html, body, #root, .App {
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: Montserrat, sans-serif;
+  line-height: 1;
+  background: rgba(3,136,163,1);
+  background: linear-gradient(135deg, rgba(3,136,163,1) 0%, rgba(14,208,108,1) 100%);
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .App-main {

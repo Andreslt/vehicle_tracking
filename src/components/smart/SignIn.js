@@ -5,8 +5,8 @@ import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
-import Typography from 'material-ui/Typography';
-import Logo from '../../smartsealsco_logo.jpeg';
+import Logo from '../../img/logo-smart-seals.svg';
+import Logo2 from '../../img/sts-logo.svg';
 
 import { auth } from '../../firebase';
 import { LANDING } from '../../routes';
@@ -14,19 +14,50 @@ import { LANDING } from '../../routes';
 const INITIAL_STATE = { email: '', password: '', error: null };
 
 const styles = theme => ({
-  root: theme.mixins.gutters({
-    paddingTop: 16,
-    paddingBottom: 16,
-    margintTop: theme.spacing.unit * 3,
-  }),
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: '100%',
+    position: 'relative'
+  },
+  base: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '20px 40px 35px',
+    width: 400,
+    borderRadius: 9,
+    boxShadow: '1px 1px 50px 50px rgba(124,123,123, 0.1)',
+  },
+  logo: {
+    width: 180,
+    margin: '10px auto 30px'
+  },
   button: {
-    margin: theme.spacing.unit,
-    width: 256,
+    marginTop: 5 * theme.spacing.unit,
+    paddingTop: 2.5 * theme.spacing.unit,
+    paddingBottom: 2.5 * theme.spacing.unit,
+    backgroundColor: '#0dc873',
+    color: '#ffffff',
+    fontSize: 13,
+    fontWeight: 'bold',
+    borderRadius: 9,
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 256,
+    paddingTop: 1.5 * theme.spacing.unit,
+    paddingBottom: 1.25 * theme.spacing.unit,
+    color: '#b5b5b5',
+  },
+  logo2: {
+    position: 'absolute',
+    right: 50,
+    bottom: 50,
+    width: 140,
   },
 });
 
@@ -54,33 +85,39 @@ class SignInPage extends Component {
     const { email, password, error } = this.state;
     const isInvalid = email === '' || password === '';
     return (
-      <div style={{ display: "flex", flexDirection: "column",  alignItems: "center" }}>
-        <Paper className={classes.root}>
-          <img src={Logo} alt="" style={{ width: 256 }}/>
-          <Typography variant="headline" color="primary" style={{ fontSize: "2rem" }}>Sign In</Typography>
-          <form style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <div className={classes.root}>
+        <div className={classes.base}>
+          <Paper className={classes.form}>
+            <img src={Logo} alt="" className={classes.logo}/>
             <TextField
               type="email"
               id="email"
-              label="E-mail"
+              label="EMAIL ADDRESS"
               className={classes.textField}
               value={email}
               onChange={this.handleChange('email')}
-              margin="normal"
             />
             <TextField
               type="password"
               id="password"
-              label="Password"
+              label="PASSWORD"
               className={classes.textField}
               value={password}
               onChange={this.handleChange('password')}
-              margin="normal"
             />
-            <Button variant="raised" disabled={isInvalid} className={classes.button} onClick={this.handleSubmit}>Sign In</Button>
+            <Button
+              variant="raised"
+              size="large"
+              disabled={isInvalid}
+              className={classes.button}
+              onClick={this.handleSubmit}
+            >
+              LOGIN
+            </Button>
             {error && <p>{error.message}</p>}
-          </form>
-        </Paper>
+          </Paper>
+        </div>
+        <img src={Logo2} alt="" className={classes.logo2}/>
       </div>
     );
   }
