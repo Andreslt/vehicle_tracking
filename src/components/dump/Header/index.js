@@ -65,7 +65,6 @@ const Header = compose(
         open={open}
         onClose={props.handleClose}
       >
-        <MenuItem onClick={props.handleClose}>Cuenta</MenuItem>
         <MenuItem onClick={props.onLogout}>Salir</MenuItem>
       </Menu>
     </div>
